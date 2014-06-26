@@ -1,5 +1,7 @@
 package com.bitvault;
 
+import java.io.IOException;
+
 import org.junit.*;
 
 public class ClientTest {
@@ -14,5 +16,9 @@ public class ClientTest {
     Assert.assertEquals(apiToken, client.getApiToken());
   }
 
+  @Test public void testGetApplication() throws IOException {
+	  Assert.assertNotNull(client.getApplication());
+	
+  }
   
 }
