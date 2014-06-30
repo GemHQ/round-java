@@ -26,6 +26,8 @@ public class Application {
 	}
 	
 	private void parse(String response) {
+		
+		
 		JsonElement jelement = new JsonParser().parse(response.toString());
 	       JsonObject  jobject = jelement.getAsJsonObject();
 	        
@@ -45,12 +47,15 @@ public class Application {
 	        
 	       JsonObject jobject1 = jobject.getAsJsonObject("wallets");
 	        String keyw = jobject1.get("key").toString();
-	        String urlw=jobject1.get("url").toString();
-	        System.out.println("wallets");
-	        System.out.println("  key"+keyw) ; 
-	        System.out.println("  url"+urlw) ;
+	        String urlw=jobject1.get("url").getAsString();
+	       // System.out.println("wallets");
+	       // System.out.println("  key"+keyw) ; 
+	        //System.out.println(" url"+urlw) ;
+	        
+	       
 	        
 	        this.walletsUrl = urlw;
+	        walletsCollection = new WalletsCollection(this.walletsUrl);
 	        
 	        /*
 	        JsonObject jobject2 = jobject.getAsJsonObject("owner");
