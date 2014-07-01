@@ -44,7 +44,7 @@ public class AccountCollection {
 	    	Account accountt = new Account();
 	    	
 	    	//Call account.parse with string
-            accountt.parse(jobject.getAsString());
+            accountt.parse(jobject.toString());
             
             
           //Add to accounts collection 

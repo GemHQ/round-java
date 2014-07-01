@@ -32,7 +32,8 @@ public String AccountsUrl;
 		// Fetch wallets resource
 		String wallets= Client.getHttpClient().get(this.url, ACCEPT);
 		
-		System.out.println(wallets);
+		//System.out.println(wallets);
+		
 		this.parse(wallets);
 		
 	}
@@ -49,7 +50,7 @@ public String AccountsUrl;
             JsonObject  jobject = a.get(i).getAsJsonObject();
         
             Wallet wallet = new Wallet();
-            wallet.parse(jobject.getAsString());
+            wallet.parse(jobject.toString());
 		    
             this.wallets.add(wallet);
             

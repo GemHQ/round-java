@@ -21,7 +21,7 @@ public class Application {
 	public Application(String url) {
 		this.url = url;
 		
-		String response = Client.getHttpClient().get(url, ACCEPT);
+		String response = Client.getHttpClient().get(this.url, ACCEPT);
 		this.parse(response);
 	}
 	
@@ -37,7 +37,7 @@ public class Application {
 	       String callback_url = jobject.get("callback_url").toString();
 	       String url = jobject.get("url").toString();
 	       
-	       /*System.out.println("key:"+key);       
+	      /* System.out.println("key:"+key);       
 	       System.out.println("name:"+name);
 	       System.out.println("api_token:"+api_token);
 	       System.out.println("callback_url:"+callback_url);

@@ -13,8 +13,6 @@ import com.google.gson.JsonParser;
  
 
 
-
-
 public class Client {
   private String appUrl;
   private static String apiToken;

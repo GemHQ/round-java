@@ -17,6 +17,7 @@ public class Wallet {
 		JsonElement jelement = new JsonParser().parse(json);
 		JsonObject jobject = jelement.getAsJsonObject();
 		
+		
 	    String key = jobject.get("key").toString();
 	    String name = jobject.get("name").toString();
 	    String network = jobject.get("network").toString();
@@ -32,7 +33,7 @@ public class Wallet {
 	    
 	    JsonObject jobject2 = jobject.getAsJsonObject("primary_private_seed");
 	    String salt = jobject2.get("salt").toString();
-	    String iterations=jobject2.get("iterations").getAsString();
+	    String iterations=jobject2.get("iterations").toString();
 	    String nonce = jobject2.get("nonce").toString();
 	    String ciphertext = jobject2.get("ciphertext").toString();
 	    
