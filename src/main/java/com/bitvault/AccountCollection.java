@@ -1,5 +1,7 @@
 package com.bitvault;
 
+import java.util.ArrayList;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,6 +17,7 @@ public class AccountCollection {
 	public String url;
 	
 	public static final String ACCEPT = "application/vnd.bitvault.account_list+json;version=1.0";
+	public ArrayList<Account> accounts = new ArrayList<Account>();
 	
 	public AccountCollection(String url)  {
 		
@@ -34,6 +37,10 @@ public class AccountCollection {
 	    JsonArray a = jelement.getAsJsonArray();
 	    
 	    for(int i=0; i<a.size();i++){
+	    	
+	    	//Create Account object
+	    	//Call account.parse with string
+	    	//Add to accounts collection
 	    	
             JsonObject  jobject = a.get(i).getAsJsonObject();
         

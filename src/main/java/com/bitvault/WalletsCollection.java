@@ -1,4 +1,5 @@
 package com.bitvault;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.google.gson.JsonElement;
@@ -21,6 +22,8 @@ public String AccountsUrl;
 
 	public static final String ACCEPT = "application/vnd.bitvault.wallet_list+json;version=1.0";
 	//private String urll;
+	
+	public ArrayList<Wallet> wallets = new ArrayList<Wallet>();
 	
 	public WalletsCollection(String url)  {
 		this.url = url;
@@ -48,6 +51,8 @@ public String AccountsUrl;
             Wallet wallet = new Wallet();
             wallet.parse(jobject.getAsString());
 		    
+            this.wallets.add(wallet);
+            
 		    // below is just to see whether the wallets collection is parsed correctly or not
 		    // this below block can be commented out
 		    
