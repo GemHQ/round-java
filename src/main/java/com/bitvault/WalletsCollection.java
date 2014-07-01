@@ -17,7 +17,6 @@ public class WalletsCollection {
 	public String url;
 	
 public String AccountsUrl;
-private AccountCollection accountsCollection;
 	
 
 	public static final String ACCEPT = "application/vnd.bitvault.wallet_list+json;version=1.0";
@@ -46,37 +45,8 @@ private AccountCollection accountsCollection;
 	    	
             JsonObject  jobject = a.get(i).getAsJsonObject();
         
-		    String key = jobject.get("key").toString();
-		    String name = jobject.get("name").toString();
-		    String network = jobject.get("network").toString();
-		    String backup_public_seed = jobject.get("backup_public_seed").toString();
-		    String primary_public_seed = jobject.get("primary_public_seed").toString();
-		    String cosigner_public_seed = jobject.get("cosigner_public_seed").toString();
-		    String url = jobject.get("url").toString();
-		    
-		    
-		    JsonObject jobject1 = jobject.getAsJsonObject("default_account");
-		    String keyd = jobject1.get("key").toString();
-		    String urld=jobject1.get("url").getAsString();
-		    
-		    JsonObject jobject2 = jobject.getAsJsonObject("primary_private_seed");
-		    String salt = jobject2.get("salt").toString();
-		    String iterations=jobject2.get("iterations").getAsString();
-		    String nonce = jobject2.get("nonce").toString();
-		    String ciphertext = jobject2.get("ciphertext").toString();
-		    
-		    
-		    JsonObject jobject3 = jobject.getAsJsonObject("accounts");
-		    String keya = jobject3.get("key").toString();
-		    String urla=jobject3.get("url").getAsString();
-		    
-		    JsonObject jobject4 = jobject.getAsJsonObject("transfers");
-		    String keyt = jobject4.get("key").toString();
-		    String urlt=jobject4.get("url").getAsString();
-		    
-		    
-		    this.AccountsUrl = urla;
-	        accountsCollection = new AccountCollection(this.AccountsUrl);
+            Wallet wallet = new Wallet();
+            wallet.parse(jobject.getAsString());
 		    
 		    // below is just to see whether the wallets collection is parsed correctly or not
 		    // this below block can be commented out
@@ -120,7 +90,7 @@ private AccountCollection accountsCollection;
 		
 		}
 			
-		
+
 		
 		
 	}

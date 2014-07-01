@@ -15,7 +15,6 @@ public class AccountCollection {
 	public String url;
 	
 	public static final String ACCEPT = "application/vnd.bitvault.account_list+json;version=1.0";
-	//private String url;
 	
 	public AccountCollection(String url)  {
 		
@@ -28,7 +27,7 @@ public class AccountCollection {
 		
 	}
 	
-private void parse(String account) {
+	private void parse(String account) {
 		
 		//JsonObject jobject1 = jobject.getAsJsonObject(0);
 		JsonElement jelement = new JsonParser().parse(account);
@@ -63,6 +62,13 @@ private void parse(String account) {
         this.url = url;*/
 			}
 
+
+	public Account create(String name) {
+		String response = Client.getHttpClient().post(this.url, Account.CONTENT_TYPE, Account.ACCEPT, "name=" + name);
+		Account account = new Account();
+		account.parse(response);
+		return account;
+	}
 
 
 }
