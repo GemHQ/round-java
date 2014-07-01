@@ -81,7 +81,15 @@ public class AccountCollection {
 
 
 	public Account create(String name) {
+		
+		System.out.println("URL:"+this.url);
+		System.out.println(name);
+		System.out.println( Account.CONTENT_TYPE);
+		System.out.println( Account.ACCEPT);
+		
+		
 		String response = Client.getHttpClient().post(this.url, Account.CONTENT_TYPE, Account.ACCEPT, "name=" + name);
+		System.out.println(response);
 		Account account = new Account();
 		account.parse(response);
 		return account;
