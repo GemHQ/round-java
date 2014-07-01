@@ -16,21 +16,21 @@ public class Account {
 		
 		JsonElement jelement = new JsonParser().parse(json);
 		JsonObject jobject = jelement.getAsJsonObject();
-		
-		String id = jobject.get("id").toString();
-		
-		
-		JsonObject jobject1 = jobject.getAsJsonObject("properties");
-		JsonObject jobject2 = jobject1.getAsJsonObject("url");
-		
-		String type = jobject2.get("type").toString();
-		String format = jobject2.get("format").toString();
-		Boolean readonly = jobject2.get("readonly").getAsBoolean();
-		
-		System.out.println(id);
-		System.out.println(type);
-		System.out.println(format);
-		System.out.println(readonly);
+		String key = jobject.get("key").toString();
+	    String name = jobject.get("name").toString();
+	    String path = jobject.get("path").toString();
+		 String url = jobject.get("url").toString();
+		 float balance = jobject.get("balance").getAsFloat();
+		   float pending_balance = jobject.get("pending_balance").getAsFloat();
+		   
+		   
+		   System.out.println("-----------------------");
+		    System.out.println("key:"+key); 
+		    System.out.println("name:"+name);
+		    System.out.println("url:"+url); 
+		    System.out.println("path:"+path); 
+		    System.out.println("balance:"+balance);
+		    System.out.println("pending_balance:"+pending_balance);
 		
 	}
 

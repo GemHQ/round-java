@@ -38,13 +38,23 @@ public class AccountCollection {
 	    
 	    for(int i=0; i<a.size();i++){
 	    	
-	    	//Create Account object
-	    	//Call account.parse with string
-	    	//Add to accounts collection
+	    	 JsonObject  jobject = a.get(i).getAsJsonObject();
 	    	
-            JsonObject  jobject = a.get(i).getAsJsonObject();
+	    	 //Create Account object
+	    	Account accountt = new Account();
+	    	
+	    	//Call account.parse with string
+            accountt.parse(jobject.getAsString());
+            
+            
+          //Add to accounts collection 
+            this.accounts.add(accountt);
+	    	
+	    	
+	    	
+	    }       
         
-		    String key = jobject.get("key").toString();
+		   /* String key = jobject.get("key").toString();
 		    String name = jobject.get("name").toString();
 		    String path = jobject.get("path").toString();
 			 String url = jobject.get("url").toString();
@@ -58,9 +68,9 @@ public class AccountCollection {
 			    System.out.println("url:"+url); 
 			    System.out.println("path:"+path); 
 			    System.out.println("balance:"+balance);
-			    System.out.println("pending_balance:"+pending_balance);
+			    System.out.println("pending_balance:"+pending_balance);*/
 			    
-			}
+			
 	   /* this.key= key;
         this.name= name;
         this.path= path;
