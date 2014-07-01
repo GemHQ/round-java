@@ -22,7 +22,8 @@ public class HttpClient {
   public String post(String url, String accept, String contentType, String body) {
     String response = HttpRequest.post(url)
     		.contentType(contentType)
-    		.accept(accept).authorization(this.authorization())
+    		.accept(accept)
+    		.authorization(this.authorization())
     		.send(body)
     		.body();
 

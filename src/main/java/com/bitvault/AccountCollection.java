@@ -87,8 +87,9 @@ public class AccountCollection {
 		System.out.println( Account.CONTENT_TYPE);
 		System.out.println( Account.ACCEPT);
 		
-		
-		String response = Client.getHttpClient().post(this.url, Account.CONTENT_TYPE, Account.ACCEPT, "name=" + name);
+		JsonObject object = new JsonObject();
+		object.addProperty("name", name);
+		String response = Client.getHttpClient().post(this.url, Account.CONTENT_TYPE, Account.ACCEPT, object.toString());
 		System.out.println(response);
 		Account account = new Account();
 		account.parse(response);

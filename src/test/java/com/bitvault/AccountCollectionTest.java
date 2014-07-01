@@ -1,6 +1,7 @@
 package com.bitvault;
 
 import java.io.IOException;
+import java.util.Random;
 
 import org.junit.*;
 
@@ -16,7 +17,8 @@ public class AccountCollectionTest {
 		AccountCollection collection = wallet.accounts();
 		
 		int accountsCount = collection.accounts.size();
-		collection.create("spending");
+		int random = new Random().nextInt();
+		collection.create("spending" + random);
 		Assert.assertEquals(collection.accounts.size(), accountsCount + 1);
 	}
 }
