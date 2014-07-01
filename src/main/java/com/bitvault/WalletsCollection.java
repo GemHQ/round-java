@@ -7,9 +7,21 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonArray;
 
 public class WalletsCollection {
+	
+	public String key;
+	public String name;
+	public String network;
+	public String backup_public_seed;
+	public String primary_public_seed;
+	public String cosigner_public_seed;
+	public String url;
+	
+public String AccountsUrl;
+private AccountCollection accountsCollection;
+	
 
 	public static final String ACCEPT = "application/vnd.bitvault.wallet_list+json;version=1.0";
-	private String url;
+	//private String urll;
 	
 	public WalletsCollection(String url)  {
 		this.url = url;
@@ -63,10 +75,13 @@ public class WalletsCollection {
 		    String urlt=jobject4.get("url").getAsString();
 		    
 		    
+		    this.AccountsUrl = urla;
+	        accountsCollection = new AccountCollection(this.AccountsUrl);
+		    
 		    // below is just to see whether the wallets collection is parsed correctly or not
 		    // this below block can be commented out
 		    
-		    System.out.println("-----------------------");
+		   /* System.out.println("-----------------------");
 		    System.out.println("key:"+key); 
 		    System.out.println("name:"+name);
 		    System.out.println("network:"+network);
@@ -88,7 +103,16 @@ public class WalletsCollection {
             System.out.println("  url:"+urla);
             System.out.println("transfers");
             System.out.println("  key:"+keyt); 
-            System.out.println("  url:"+urlt);
+            System.out.println("  url:"+urlt);*/
+	        
+	        /*this.key= key;
+	        this.name= name;
+	        this.backup_public_seed= backup_public_seed;
+	        this.cosigner_public_seed= cosigner_public_seed;
+	        this.primary_public_seed= cosigner_public_seed;
+	        this.network= network;
+	        
+	        this.url = url;*/
 	    }
 	
 		
