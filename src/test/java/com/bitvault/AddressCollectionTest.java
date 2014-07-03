@@ -24,7 +24,7 @@ public class AddressCollectionTest {
 		
 		int addressCount = collection.address.size();
 		//int random = new Random().nextInt();
-		collection.create("http://bitvault.pandastrike.com/accounts");
+		collection.create();
 		Assert.assertEquals(collection.address.size(), addressCount + 1);
 	}
 
