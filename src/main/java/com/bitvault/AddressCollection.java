@@ -22,6 +22,7 @@ public AddressCollection(String url)  {
 	
 		// Fetch accounts resource
 		String addr= Client.getHttpClient().get(this.url, ACCEPT);
+		System.out.println("***************");
 	    System.out.println(addr);
 		this.parse(addr);
 		
@@ -29,6 +30,8 @@ public AddressCollection(String url)  {
 	
 	private void parse(String addr) {
 		
+		
+	
 		//JsonObject jobject1 = jobject.getAsJsonObject(0);
 		JsonElement jelement = new JsonParser().parse(addr);
 	    JsonArray a = jelement.getAsJsonArray();

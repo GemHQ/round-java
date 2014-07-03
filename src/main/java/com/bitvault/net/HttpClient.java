@@ -11,7 +11,7 @@ public class HttpClient {
 	}
 	
   public String get(String url, String accept) {
-	 
+	
     String response = HttpRequest.get(url)
     		.accept(accept)
     		.authorization(this.authorization())

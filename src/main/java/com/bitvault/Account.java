@@ -31,6 +31,9 @@ public class Account {
 		 float balance = jobject.get("balance").getAsFloat();
 		   float pending_balance = jobject.get("pending_balance").getAsFloat();
 		   
+		   JsonObject jobj = jobject.getAsJsonObject("addresses");
+		   String addrurl = jobj.get("url").toString();
+		   
 		   
 		   System.out.println("-----------------------");
 		    System.out.println("key:"+key); 
@@ -40,11 +43,12 @@ public class Account {
 		    System.out.println("balance:"+balance);
 		    System.out.println("pending_balance:"+pending_balance);
 		    
-		    this.urladd = url;
+		    this.urladd = addrurl;
 		
 	}
 	
 	public AddressCollection getAddress() {
+		System.out.println("URL TTTT:"+ this.urladd);
 		if (this.addressCollection == null) {
 			this.addressCollection = new AddressCollection(this.urladd);
 		}
