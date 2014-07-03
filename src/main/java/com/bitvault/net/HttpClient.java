@@ -20,16 +20,19 @@ public class HttpClient {
   }
   
   public String post(String url, String accept, String contentType, String body) {
-    String response = HttpRequest.post(url)
-    		.contentType(contentType)
-    		.accept(accept)
-    		.authorization(this.authorization())
-    		.send(body)
-    		.body();
-
-    return response;
+	HttpRequest request = HttpRequest.post(url)
+			.accept(accept)
+			.authorization(this.authorization());
+	
+	if (contentType != null)
+		request.contentType(contentType);
+	
+	if (body != null)
+		request.send(body);
+	
+    return request.body();
   }
-
+  
   private String authorization() {
 	  return "BitVault-Token " + this.apiToken;
   }
