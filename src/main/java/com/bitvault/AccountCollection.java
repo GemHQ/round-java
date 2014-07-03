@@ -93,7 +93,9 @@ public class AccountCollection {
 		System.out.println(response);
 		Account account = new Account();
 		account.parse(response);
+		accounts.add(account);
 		return account;
+		
 	}
 
 
