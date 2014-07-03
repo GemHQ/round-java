@@ -22,7 +22,7 @@ public AddressCollection(String url)  {
 	
 		// Fetch accounts resource
 		String addr= Client.getHttpClient().get(this.url, ACCEPT);
-	    System.out.println(address);
+	    System.out.println(addr);
 		this.parse(addr);
 		
 	}
@@ -60,13 +60,13 @@ public AddressCollection(String url)  {
 }
 
 
-	public Addresses create(String url) {
+	public Addresses create() {
 		
 		System.out.println("URL:"+this.url);
 		System.out.println( Addresses.ACCEPT);
 		
 	
-		String response = Client.getHttpClient().get(this.url, Addresses.ACCEPT);
+		String response = Client.getHttpClient().post(this.url, Addresses.ACCEPT, null, null);
 		System.out.println(response);
 		Addresses addr1 = new Addresses();
 		addr1.parse(response);

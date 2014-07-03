@@ -9,11 +9,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Account {
+	
+	private AddressCollection addressCollection;
+	private String urladd;
+	
+	
 	public static final String CONTENT_TYPE = "application/vnd.bitvault.account+json;version=1.0";
 	public static final String ACCEPT = "application/vnd.bitvault.account_create+json;version=1.0";
 	
-	private AddressCollection addressCollection;
-	String urlacc;
+	
+	
+	
 	public void parse(String json) {
 		
 		JsonElement jelement = new JsonParser().parse(json);
@@ -34,13 +40,13 @@ public class Account {
 		    System.out.println("balance:"+balance);
 		    System.out.println("pending_balance:"+pending_balance);
 		    
-		    this.urlacc = url;
+		    this.urladd = url;
 		
 	}
 	
 	public AddressCollection getAddress() {
 		if (this.addressCollection == null) {
-			this.addressCollection = new AddressCollection(this.urlacc);
+			this.addressCollection = new AddressCollection(this.urladd);
 		}
 		
 		return this.addressCollection;
