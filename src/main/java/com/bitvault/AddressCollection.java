@@ -67,7 +67,7 @@ public AddressCollection(String url)  {
 		System.out.println( Addresses.ACCEPT);
 		
 	
-		String response = Client.getHttpClient().get(this.url, Addresses.ACCEPT);
+		String response = Client.getHttpClient().post(this.url, Addresses.ACCEPT,null,null);
 		System.out.println(response);
 		Addresses addr1 = new Addresses();
 		addr1.parse(response);
