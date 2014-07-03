@@ -24,7 +24,7 @@ public class AccountCollection {
 		this.url = url;
 	
 		// Fetch accounts resource
-		String account= Client.getHttpClient().post(this.url, ACCEPT, null, null);
+		String account= Client.getHttpClient().get(this.url, ACCEPT);
 	    System.out.println(account);
 		this.parse(account);
 		

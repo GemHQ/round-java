@@ -32,7 +32,7 @@ public class Account {
 		   float pending_balance = jobject.get("pending_balance").getAsFloat();
 		   
 		   JsonObject jobj = jobject.getAsJsonObject("addresses");
-		   String addrurl = jobj.get("url").toString();
+		   String addrurl = jobj.get("url").getAsString();
 		   
 		   
 		   System.out.println("-----------------------");
