@@ -2,10 +2,13 @@ package com.bitvault;
 
 import java.util.ArrayList;
 
-public abstract class BaseCollection {
+public class BaseCollection {
 	
-	private ArrayList<Base> collection;
+	public  String url;
+	public static String ACCEPT;
 	
-	public abstract void parse(String json);
+	/*private ArrayList<Base> collection;
+	
+	public abstract void parse(String json);*/
 	
 }

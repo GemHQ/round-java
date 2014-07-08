@@ -9,12 +9,6 @@ import com.google.gson.JsonArray;
 
 public class WalletsCollection {
 	
-	public String key;
-	public String name;
-	public String network;
-	public String backup_public_seed;
-	public String primary_public_seed;
-	public String cosigner_public_seed;
 	public String url;
 	
 public String AccountsUrl;

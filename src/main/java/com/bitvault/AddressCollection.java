@@ -9,7 +9,7 @@ import com.google.gson.JsonParser;
 
 public class AddressCollection {
 
-	public String key;
+	
 	public String url;
 	
 	public static final String ACCEPT = "application/vnd.bitvault.address_list+json;version=1.0";
