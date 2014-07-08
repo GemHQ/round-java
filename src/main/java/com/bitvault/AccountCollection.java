@@ -13,7 +13,7 @@ public class AccountCollection extends BaseCollection {
 	
 	
 	//BaseCollection.ACCEPT = "application/vnd.bitvault.account_list+json;version=1.0";
-	public ArrayList<Account> accounts = new ArrayList<Account>();
+	//public ArrayList<Account> accounts = new ArrayList<Account>();
 	
 	public AccountCollection(String urlt)  {
 		BaseCollection.ACCEPT = "application/vnd.bitvault.account_list+json;version=1.0";
@@ -45,7 +45,7 @@ public class AccountCollection extends BaseCollection {
             
             
           //Add to accounts collection 
-            this.accounts.add(accountt);
+            this.add(accountt);
 	    	
 	    	
 	    	
@@ -90,7 +90,7 @@ public class AccountCollection extends BaseCollection {
 		System.out.println(response);
 		Account account = new Account();
 		account.parse(response);
-		accounts.add(account);
+		this.add(account);
 		return account;
 		
 	}

@@ -18,14 +18,14 @@ public class AddressCollectionTest {
 		/*Wallet wallet = client.getApplication().getWallets().wallets.get(0);
 		AccountCollection collection = wallet.accounts();*/
 		
-		
-		Account acc = client.getApplication().getWallets().wallets.get(0).accounts().accounts.get(0);
+		Wallet wallet = (Wallet)client.getApplication().getWallets().get(0);
+		Account acc = (Account)wallet.accounts().get(0);
 		AddressCollection collection = acc.getAddress();
 		
-		int addressCount = collection.address.size();
+		int addressCount = collection.size();
 		//int random = new Random().nextInt();
 		collection.create();
-		Assert.assertEquals(collection.address.size(), addressCount + 1);
+		Assert.assertEquals(collection.size(), addressCount + 1);
 	}
 
 }

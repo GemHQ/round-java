@@ -18,4 +18,8 @@ public class BaseCollection {
 	public void add(Base element) {
 		this.collection.add(element);
 	}
+	
+	public int size() {
+		return this.collection.size();
+	}
 }

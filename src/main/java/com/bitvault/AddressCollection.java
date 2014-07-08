@@ -13,7 +13,7 @@ public class AddressCollection extends BaseCollection{
 	//public String url;
 	//public static final String ACCEPT = "application/vnd.bitvault.address_list+json;version=1.0";
 	
-	public ArrayList<Addresses> address = new ArrayList<Addresses>();
+	//public ArrayList<Addresses> address = new ArrayList<Addresses>();
 	
 	
    public AddressCollection(String urlh)  {
@@ -46,7 +46,7 @@ public class AddressCollection extends BaseCollection{
             
             
           //Add to accounts collection 
-            this.address.add(address1);
+            this.add(address1);
 	    	
 	    	
 	    	
@@ -71,7 +71,7 @@ public class AddressCollection extends BaseCollection{
 		System.out.println(response);
 		Addresses addr1 = new Addresses();
 		addr1.parse(response);
-		address.add(addr1);
+		this.add(addr1);
 		return addr1;
 		
 	}

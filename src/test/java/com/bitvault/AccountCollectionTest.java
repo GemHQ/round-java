@@ -13,12 +13,14 @@ public class AccountCollectionTest {
 	private static Client client = new Client(appUrl, apiToken);
 	
 	@Test public void createAccountTest() throws IOException {
-		Wallet wallet = client.getApplication().getWallets().wallets.get(0);
+		
+		Wallet wallet = (Wallet)client.getApplication().getWallets().get(0);
+		
 		AccountCollection collection = wallet.accounts();
 		
-		int accountsCount = collection.accounts.size();
+		int accountsCount = collection.size();
 		int random = new Random().nextInt();
 		collection.create("spending" + random);
-		Assert.assertEquals(collection.accounts.size(), accountsCount + 1);
+		Assert.assertEquals(collection.size(), accountsCount + 1);
 	}
 }
