@@ -7,24 +7,22 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonArray;
 
-public class WalletsCollection {
+public class WalletsCollection extends BaseCollection{
 	
-	public String url;
+	//public String url;
 	
 public String AccountsUrl;
 	
 
-	public static final String ACCEPT = "application/vnd.bitvault.wallet_list+json;version=1.0";
+	//public static final String ACCEPT = "application/vnd.bitvault.wallet_list+json;version=1.0";
 	//private String urll;
 	
-	public ArrayList<Wallet> wallets = new ArrayList<Wallet>();
-	
-	public WalletsCollection(String url)  {
-		this.url = url;
+	public WalletsCollection(String urlw)  {
+		this.url = urlw;
 		
-		
+		BaseCollection.ACCEPT = "application/vnd.bitvault.wallet_list+json;version=1.0";
 		// Fetch wallets resource
-		String wallets= Client.getHttpClient().get(this.url, ACCEPT);
+		String wallets= Client.getHttpClient().get(this.url, BaseCollection.ACCEPT);
 		
 		//System.out.println(wallets);
 		
@@ -46,7 +44,7 @@ public String AccountsUrl;
             Wallet wallet = new Wallet();
             wallet.parse(jobject.toString());
 		    
-            this.wallets.add(wallet);
+            this.add(wallet);
             
 		    // below is just to see whether the wallets collection is parsed correctly or not
 		    // this below block can be commented out

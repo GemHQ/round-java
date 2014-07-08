@@ -11,16 +11,17 @@ public class AccountCollection extends BaseCollection {
 	
     //public String url;
 	
-	 
-	public static final String ACCEPT = "application/vnd.bitvault.account_list+json;version=1.0";
+	
+	//BaseCollection.ACCEPT = "application/vnd.bitvault.account_list+json;version=1.0";
 	public ArrayList<Account> accounts = new ArrayList<Account>();
 	
 	public AccountCollection(String urlt)  {
-		
+		BaseCollection.ACCEPT = "application/vnd.bitvault.account_list+json;version=1.0";
+	
 		this.url = urlt;
-		//this.ACCEPT = "application/vnd.bitvault.account_list+json;version=1.0";
+	
 		// Fetch accounts resource
-		String account= Client.getHttpClient().get(this.url,ACCEPT);
+		String account= Client.getHttpClient().get(this.url,BaseCollection.ACCEPT);
 	    System.out.println(account);
 		this.parse(account);
 		
