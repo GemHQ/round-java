@@ -1,5 +1,6 @@
 package com.bitvault;
 
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -8,6 +9,7 @@ public class Wallet extends Base {
 	
 	private AccountCollection accountsCollection;
 	//private String accountsUrl;
+	  private PassphraseBox pb;
 	
 	public Wallet() {
 		
@@ -48,6 +50,7 @@ public class Wallet extends Base {
 	    
 	    
 	    this.url = urla;
+	   pb = new Passphrasebox (salt, iterations, nonce, key, ciphertext);
 	}
 	
 	public AccountCollection accounts() {
