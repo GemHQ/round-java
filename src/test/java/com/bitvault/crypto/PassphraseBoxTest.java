@@ -14,9 +14,8 @@ public class PassphraseBoxTest {
 	private static final int iterations = 100000;
 	
 	@Test public void decryptAddressTest() throws NoSuchAlgorithmException, InvalidKeySpecException {
-		PassphraseBox pass = new PassphraseBox(passphrase,salt,iterations);
-	    pass.initialize(passphrase, salt, iterations);
-		String s=pass.decrypt(passphrase, salt, nonce, iterations, cipherText);
+		String s = PassphraseBox.decrypt(passphrase,salt, nonce, iterations, cipherText);
+	    
 		Assert.assertEquals(s, clearText);
 		
 	}
