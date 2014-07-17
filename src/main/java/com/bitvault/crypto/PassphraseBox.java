@@ -15,20 +15,23 @@ import org.abstractj.kalium.crypto.Random;
 public class PassphraseBox {
 	
     byte[] salt;
-	String nonce;
+	byte[] nonce;
 	int iterations;
 	byte[] key;
 	int iterat = 100000;
-	String ciphertext;
+	byte[] ciphertext;
+	String passphrase;
+	SecretBox  box;
 
-	/*public PassphraseBox(String s, String i, String n, String c)
+	public PassphraseBox(String p, byte[] s, int i)
 	{
+		this.passphrase=p;
 		this.salt= s;
-		this.nonce = n;
+		//this.nonce = n;
 		this.iterations =i;
-        this.ciphertext =c;
+        //this.ciphertext =c;
 		
-	}*/
+	}
 	
 	public void initialize (String passphrase, byte[] salt, int iterations)throws NoSuchAlgorithmException , InvalidKeySpecException
 	{
@@ -49,18 +52,18 @@ public class PassphraseBox {
 		else 
 			this.iterations=iterations;
 		
-		
+		box = new SecretBox(key);
 	}
 	
-	public static void decrypt (String passphrase, String ciphertext)
+	public void decrypt(String passphrase, byte[] salt, byte[] nonce, int iterations, byte[] ciphertext)
 	{
-		PassphraseBox box = new PassphraseBox(passphrase, this.salt, this.iterations);
-		box.decrypt(passphrase,ciphertext);
+		PassphraseBox box = new PassphraseBox(passphrase, salt, iterations);
+		box.decrypt(nonce, ciphertext);
 	}
 	
-	public void decrypt(String nonce, String ciphertext)
+	public void decrypt(byte[] nonce, byte[] ciphertext)
 	{
-		
+		box.decrypt(nonce, ciphertext);
 	}
 	
 	
