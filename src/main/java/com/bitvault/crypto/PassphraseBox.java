@@ -41,7 +41,7 @@ public class PassphraseBox {
 		this.passphrase = p;
 	}
 	
-	private static String toHex(byte[] array) throws NoSuchAlgorithmException
+/*	private static String toHex(byte[] array) throws NoSuchAlgorithmException
     {
         BigInteger bi = new BigInteger(1, array);
         String hex = bi.toString(16);
@@ -52,7 +52,7 @@ public class PassphraseBox {
         }else{
             return hex;
         }
-    }
+    }*/
 	
 	public void initialize (String passphrase, byte[] salt, int iterations)throws NoSuchAlgorithmException , InvalidKeySpecException
 	{
@@ -84,21 +84,20 @@ public class PassphraseBox {
 	
 	public void decrypt(byte[] nonce, String ciphertext)
 	{
-		box.decrypt(nonce, ciphertext);
+		box.decrypt(nonce, ciphertext.getBytes());
 	}
 	
-	public void encrypt(byte[] plaintext, String passphrase)
+	public void encrypt(String plaintext, String passphrase)
 	{
 		PassphraseBox box = new PassphraseBox(passphrase);
 		box.encrypt(plaintext);
 	}
-	public void encrypt(byte[] plaintext)
+	public void encrypt(String plaintext)
 	{
 		Random r = new Random();
 		this.nonce = r.randomBytes(XSALSA20_POLY1305_SECRETBOX_NONCEBYTES);
-		this.ciphertext = box.encrypt(nonce, plaintext);
+		this.ciphertext = (box.encrypt(nonce, plaintext.getBytes())).toString();
 		
-		this.salt = toHex(salt);
 		
 	}
 	
