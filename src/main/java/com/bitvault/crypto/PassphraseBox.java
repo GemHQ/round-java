@@ -14,9 +14,10 @@ import static org.abstractj.kalium.NaCl.sodium;
 import org.abstractj.kalium.crypto.Random;
 
 import static org.abstractj.kalium.NaCl.Sodium.XSALSA20_POLY1305_SECRETBOX_NONCEBYTES;
+
 public class PassphraseBox {
 	
-    byte[] salt;
+    String salt;
 	byte[] nonce;
 	int iterations;
 	byte[] key;
@@ -26,7 +27,7 @@ public class PassphraseBox {
 	SecretBox  box;
 	String plaintext;
 
-	public PassphraseBox(String p, byte[] s, int i)
+	public PassphraseBox(String p, String s, int i)
 	{
 		this.passphrase=p;
 		this.salt= s;
@@ -54,17 +55,17 @@ public class PassphraseBox {
         }
     }*/
 	
-	public void initialize (String passphrase, byte[] salt, int iterations)throws NoSuchAlgorithmException , InvalidKeySpecException
+	public void initialize (String passphrase, String salt, int iterations)throws NoSuchAlgorithmException , InvalidKeySpecException
 	{
 	
 		Random r = new Random();
 		
-		PBEKeySpec spec = new PBEKeySpec(null, this.salt, this.iterations, 64 * 8);
+		PBEKeySpec spec = new PBEKeySpec(passphrase.toCharArray(), salt.getBytes(), iterations, (64 * 8));
 	    SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 	    this.key = skf.generateSecret(spec).getEncoded();
 	     
 		if(salt==null)
-			this.salt=r.randomBytes(16);
+			this.salt=(r.randomBytes(16)).toString();
 		else
 			this.salt=salt;
 		
@@ -73,18 +74,20 @@ public class PassphraseBox {
 		else 
 			this.iterations=iterations;
 		
-		box = new SecretBox(key);
+		box = new SecretBox(this.key);
 	}
 	
-	public void decrypt(String passphrase, byte[] salt, byte[] nonce, int iterations, String ciphertext)
+	public String decrypt(String passphrase, String salt, String nonce, int iterations, String ciphertext)
 	{
 		PassphraseBox box = new PassphraseBox(passphrase, salt, iterations);
-		box.decrypt(nonce, ciphertext);
+		String s=box.decrypt(nonce, ciphertext);
+		return s;
 	}
 	
-	public void decrypt(byte[] nonce, String ciphertext)
+	public String decrypt(String nonce, String ciphertext)
 	{
-		box.decrypt(nonce, ciphertext.getBytes());
+		String s= (box.decrypt(nonce.getBytes(), ciphertext.getBytes())).toString();
+		return s;
 	}
 	
 	public void encrypt(String plaintext, String passphrase)
