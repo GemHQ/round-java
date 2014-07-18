@@ -1,25 +1,18 @@
 package com.bitvault.crypto;
-import java.io.*;
-import java.math.BigInteger;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 import org.abstractj.kalium.crypto.SecretBox;
 
-import static org.abstractj.kalium.NaCl.sodium;
-
 import org.abstractj.kalium.crypto.Random;
-
-import static org.abstractj.kalium.NaCl.Sodium.XSALSA20_POLY1305_SECRETBOX_NONCEBYTES;
-import static org.abstractj.kalium.NaCl.Sodium.XSALSA20_POLY1305_SECRETBOX_KEYBYTES;
 
 public class PassphraseBox {
 	
-    String salt;
+    byte[] salt;
 	byte[] nonce;
 	int iterations;
 	byte[] key;
@@ -31,17 +24,12 @@ public class PassphraseBox {
 
 	public PassphraseBox(String p, String s, int i) throws NoSuchAlgorithmException, InvalidKeySpecException
 	{
-		this.passphrase=p;
-		this.salt= s;
+		this.passphrase= p;
+		this.salt= hexStringToByteArray(s);
 		//this.nonce = n;
 		this.iterations =i;
         //this.ciphertext =c;
-		this.initialize(p, s, i);
-	}
-	
-	public PassphraseBox(String p)
-	{
-		this.passphrase = p;
+		this.initialize(p, this.salt, i);
 	}
 	
 /*	private static String toHex(byte[] array) throws NoSuchAlgorithmException
@@ -57,20 +45,18 @@ public class PassphraseBox {
         }
     }*/
 	
-	public void initialize (String passphrase, String salt, int iterations)throws NoSuchAlgorithmException , InvalidKeySpecException
+	public void initialize (String passphrase, byte[] salt, int iterations)throws NoSuchAlgorithmException , InvalidKeySpecException
 	{
 	
 		Random r = new Random();
 		
-		PBEKeySpec spec = new PBEKeySpec(passphrase.toCharArray(), salt.getBytes(), iterations, 255);
+		PBEKeySpec spec = new PBEKeySpec(passphrase.toCharArray(), salt, iterations, 32 * 8);
 	    SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-	    SecretKey secret = skf.generateSecret(spec);
-	    String keyString = secret.toString();
 	    
-	    this.key = secret.getEncoded();
+	    this.key = skf.generateSecret(spec).getEncoded();
 	     
 		if(salt==null)
-			this.salt=(r.randomBytes(16)).toString();
+			this.salt=r.randomBytes(16);
 		else
 			this.salt=salt;
 		
@@ -94,24 +80,29 @@ public class PassphraseBox {
 	
 	public String decrypt(String nonce, String ciphertext)
 	{
-		System.out.println("box:"+this.box);
-		String s= (this.box.decrypt(nonce.getBytes(), ciphertext.getBytes())).toString();
+		byte[] nonceBytes = hexStringToByteArray(nonce);
+		byte[] ciphertextBytes = hexStringToByteArray(ciphertext);
+		String s= (this.box.decrypt(nonceBytes, ciphertextBytes)).toString();
 	
 		return s;
 	}
 	
 	public void encrypt(String plaintext, String passphrase)
 	{
-		PassphraseBox box = new PassphraseBox(passphrase);
-		box.encrypt(plaintext);
+		
 	}
 	public void encrypt(String plaintext)
 	{
-		Random r = new Random();
-		this.nonce = r.randomBytes(XSALSA20_POLY1305_SECRETBOX_NONCEBYTES);
-		this.ciphertext = (box.encrypt(nonce, plaintext.getBytes())).toString();
-		
-		
+
 	}
 	
+	public static byte[] hexStringToByteArray(String s) {
+	    int len = s.length();
+	    byte[] data = new byte[len / 2];
+	    for (int i = 0; i < len; i += 2) {
+	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+	                             + Character.digit(s.charAt(i+1), 16));
+	    }
+	    return data;
+	}
 }
