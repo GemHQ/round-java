@@ -15,6 +15,7 @@ public class PassphraseBoxTest {
 	
 	@Test public void decryptAddressTest() throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String s = PassphraseBox.decrypt(passphrase,salt, nonce, iterations, cipherText);
+	  
 	    
 		Assert.assertEquals(s, clearText);
 		

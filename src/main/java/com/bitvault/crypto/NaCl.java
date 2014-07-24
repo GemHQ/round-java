@@ -40,6 +40,12 @@ public class NaCl
 	static final int crypto_secretbox_BEFORENMBYTES = 32;
 
 	private byte[] precomputed = new byte[crypto_secretbox_BEFORENMBYTES];
+	private byte[] sharedkey;
+	
+	public NaCl(byte[] key)
+	{
+		this.sharedkey=key;
+	}
 	
 	public NaCl(byte[] privatekey, byte[] publickey) throws Exception
 	{
@@ -87,10 +93,11 @@ public class NaCl
 	{
 		byte[] paddedoutput = new byte[input.length];
 		byte[] output = new byte[input.length - crypto_secretbox_ZEROBYTES];
-		
-		curve25519xsalsa20poly1305.crypto_box_afternm(paddedoutput, input, input.length, nonce, this.precomputed);
+		System.out.println(nonce);
+		System.out.println(input);
+		xsalsa20poly1305.crypto_secretbox_open(paddedoutput, input, input.length, nonce, this.sharedkey);
 		System.arraycopy(paddedoutput, crypto_secretbox_ZEROBYTES, output, 0, paddedoutput.length - crypto_secretbox_ZEROBYTES);
-		
+		 System.out.println("hii");
 		return output;
 	}
 	

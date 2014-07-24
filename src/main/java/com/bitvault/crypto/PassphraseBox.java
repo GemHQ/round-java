@@ -19,7 +19,7 @@ public class PassphraseBox {
 	int iterat = 100000;
 	String ciphertext;
 	String passphrase;
-	SecretBox  box;
+	NaCl box;
 	String plaintext;
 
 	public PassphraseBox(String p, String s, int i) throws NoSuchAlgorithmException, InvalidKeySpecException
@@ -54,6 +54,8 @@ public class PassphraseBox {
 	    SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 	    
 	    this.key = skf.generateSecret(spec).getEncoded();
+	    
+	   // NaCl obj = new NaCl(this.key);
 	     
 		if(salt==null)
 			this.salt=r.randomBytes(16);
@@ -66,9 +68,9 @@ public class PassphraseBox {
 			this.iterations=iterations;
 		
 		//TODO Use NaCl to do this
-		this.box = new SecretBox(this.key);
+		 this.box = new NaCl(this.key);
 		
-		System.out.println(this.box.toString());
+		//System.out.println(this.box.toString());
 	}
 	
 	public static String decrypt(String passphrase, String salt, String nonce, int iterations, String ciphertext) throws NoSuchAlgorithmException, InvalidKeySpecException
@@ -83,7 +85,7 @@ public class PassphraseBox {
 	{
 		byte[] nonceBytes = hexStringToByteArray(nonce);
 		byte[] ciphertextBytes = hexStringToByteArray(ciphertext);
-		String s= (this.box.decrypt(nonceBytes, ciphertextBytes)).toString();
+		String s= (this.box.decrypt(ciphertextBytes, nonceBytes)).toString();
 	
 		return s;
 	}
