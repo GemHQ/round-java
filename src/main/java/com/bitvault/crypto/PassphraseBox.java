@@ -65,6 +65,7 @@ public class PassphraseBox {
 		else 
 			this.iterations=iterations;
 		
+		//TODO Use NaCl to do this
 		this.box = new SecretBox(this.key);
 		
 		System.out.println(this.box.toString());
