@@ -6,10 +6,15 @@
  * user guide available at http://gradle.org/docs/1.12/userguide/tutorial_java_projects.html
  */
 
+apply plugin: 'java'
 apply plugin: 'eclipse'
 
-// Apply the java plugin to add support for Java
-apply plugin: 'java'
+eclipse {
+  jdt {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+  }
+}
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -20,6 +25,7 @@ repositories {
 dependencies {
   compile 'com.github.kevinsawicki:http-request:5.6'
   compile 'com.google.code.gson:gson:2.2.4'
+  compile 'com.google:bitcoinj:0.11.3'
   
   compile fileTree(dir: 'libs', include: '*.jar')
   

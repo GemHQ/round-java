@@ -1,33 +1,26 @@
 package com.bitvault;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import com.bitvault.net.HttpClient;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 public class Client {
   private String appUrl;
-  private static String apiToken;
+  private String apiToken;
   private Application application;
  
-  public static HttpClient httpClient;
+  private HttpClient httpClient;
   
-  public static HttpClient getHttpClient() {
-	  if (httpClient == null) {
-		  httpClient = new HttpClient(apiToken);
+  public HttpClient getHttpClient() {
+	  if (this.httpClient == null) {
+		  this.httpClient = new HttpClient(this.apiToken);
 	  }
 	  return httpClient;
   }
   
   public Client(String appUrl, String apiToken) {
     this.appUrl = appUrl;
-    Client.apiToken = apiToken;
+    this.apiToken = apiToken;
   }
 
   public String getAppUrl() {
@@ -42,7 +35,7 @@ public class Client {
     if (application == null) {
     	
       // GET application from API
-    	application = new Application(this.appUrl);
+    	application = new Application(this.appUrl, this);
     
     }
   

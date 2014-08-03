@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 public class ResourceCollection extends Resource {
 
-	private ArrayList<Resource> collection = new ArrayList<Resource>();
+	protected ArrayList<Resource> collection = new ArrayList<Resource>();
 	
-	// public abstract void parse(String json);
+	public ResourceCollection(String url, Client client) {
+		super(url, client);
+	}
 	
 	public Resource get(int index) {
 		return this.collection.get(index);

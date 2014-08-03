@@ -3,9 +3,7 @@ package com.bitvault;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.neilalexander.jnacl.EncryptedMessage;
 import com.neilalexander.jnacl.PassphraseBox;
 
@@ -15,8 +13,8 @@ public class Wallet extends Resource {
 
 	private String primarySeed;
 	
-	public Wallet() {
-		
+	public Wallet(String url, Client client) {
+		super(url, client);
 	}
 	
 	public String unlock(String passphrase) {
@@ -41,14 +39,9 @@ public class Wallet extends Resource {
 		return this.primarySeed;
 	}
 	
-	public void parse(String json) {
-		JsonElement resource = new JsonParser().parse(json);
-		this.resource = resource.getAsJsonObject();
-	}
-	
 	public AccountCollection accounts() {
 		if (this.accountsCollection == null) {
-			this.accountsCollection = new AccountCollection(this.url);
+			this.accountsCollection = new AccountCollection(this.getUrl(), this.client);
 		}
 		
 		return this.accountsCollection;
