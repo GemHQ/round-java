@@ -19,8 +19,8 @@ public class Resource {
 	}
 	
 	private void parse(String response) {
-		JsonElement jelement = new JsonParser().parse(response);
-	    this.resource = jelement.getAsJsonObject();
+		JsonElement element = new JsonParser().parse(response);
+	    this.resource = element.getAsJsonObject();
 	}
 	
 	public String getUrl() {
