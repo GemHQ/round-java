@@ -10,8 +10,6 @@ import com.bitvault.net.HttpClient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
- 
-
 
 public class Client {
   private String appUrl;
@@ -48,6 +46,6 @@ public class Client {
     
     }
   
-  return this.application;
+    return this.application;
   }
 }

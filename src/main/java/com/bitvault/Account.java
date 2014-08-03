@@ -8,7 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class Account extends Base{
+public class Account extends Resource{
 	
 	private AddressCollection addressCollection;
 	//private String url;

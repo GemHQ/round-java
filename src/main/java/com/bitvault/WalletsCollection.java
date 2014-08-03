@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonArray;
 
-public class WalletsCollection extends BaseCollection{
+public class WalletsCollection extends ResourceCollection{
 	
 	//public String url;
 	
@@ -20,9 +20,9 @@ public String AccountsUrl;
 	public WalletsCollection(String urlw)  {
 		this.url = urlw;
 		
-		BaseCollection.ACCEPT = "application/vnd.bitvault.wallet_list+json;version=1.0";
+		ResourceCollection.ACCEPT = "application/vnd.bitvault.wallet_list+json;version=1.0";
 		// Fetch wallets resource
-		String wallets= Client.getHttpClient().get(this.url, BaseCollection.ACCEPT);
+		String wallets= Client.getHttpClient().get(this.url, ResourceCollection.ACCEPT);
 		
 		//System.out.println(wallets);
 		
