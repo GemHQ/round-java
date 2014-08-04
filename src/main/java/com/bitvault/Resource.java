@@ -1,8 +1,8 @@
 package com.bitvault;
 
-import com.google.gson.JsonElement;
+import java.io.IOException;
+
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 public class Resource {
 
@@ -10,17 +10,20 @@ public class Resource {
 	private String key;
 	protected JsonObject resource;
 	protected Client client;
+	protected String defaultAction = "get";
 	
 	public Resource(String url, Client client) {
 		this.url = url;
 		this.client = client;
-		String response = this.client.getHttpClient().get(this.url, null);
-		this.parse(response);
-	}
-	
-	private void parse(String response) {
-		JsonElement element = new JsonParser().parse(response);
-	    this.resource = element.getAsJsonObject();
+		
+		String resourceName = this.getClass().getSimpleName().toLowerCase();
+		try {
+			this.resource = this.client.performRequest(this.url, resourceName, this.defaultAction, null);
+		} catch(Client.UnexpectedStatusCodeException exception) {
+			System.out.println(exception.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public String getUrl() {

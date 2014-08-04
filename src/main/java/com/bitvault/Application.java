@@ -1,8 +1,6 @@
 package com.bitvault;
 
 public class Application extends Resource{
-
-	public static final String ACCEPT = "application/vnd.bitvault.application+json;version=1.0";
 	
 	public String name;
 	public String api_token;

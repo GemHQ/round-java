@@ -6,8 +6,8 @@ import org.junit.*;
 
 public class ClientTest {
 
-	private static final String appUrl = "http://bitvault.pandastrike.com/apps/68qdgkyBFqXu_ixydaru0Q";
-	private static final String apiToken = "GSku1WNZXF59TA1eSE21qoDpu3lOJghoK1eafOhixtA";
+	private static final String appUrl = "http://bitvault-api.dev:8999/apps/h51G8o1ZNTOwkUh0waBryQ";
+	private static final String apiToken = "PfyzNzRlv6AgV3P32a87MTXSMZhuCAG7dVIZBbZS0lc";
 
 	private static Client client = new Client(appUrl, apiToken);
 
@@ -15,11 +15,6 @@ public class ClientTest {
 	public void constructorTest() {
 		Assert.assertEquals(appUrl, client.getAppUrl());
 		Assert.assertEquals(apiToken, client.getApiToken());
-	}
-
-	@Test
-	public void testGetHttpClient() throws IOException {
-		Assert.assertNotNull(client.getHttpClient());
 	}
 	
 	@Test
@@ -29,22 +24,9 @@ public class ClientTest {
 		Assert.assertNotNull(client.getSchemas());
 	}
 	
-	@Test 
-	public void testAcceptHeaderForResourceAndAction() {
-		String accept = client.acceptHeaderForResource("application", "get");
-		Assert.assertEquals("application/vnd.bitvault.application+json;version=1.0", accept);
-	}
-	
 	@Test
-	public void testContentTypeHeaderForResourceAndAction() {
-		String contentType = client.contentTypeHeaderForResource("applications", "create");
-		Assert.assertEquals("application/vnd.bitvault.application+json;version=1.0", contentType);
-	}
-	
-	@Test
-	public void testNoContentTypeHeader() {
-		String contentType = client.contentTypeHeaderForResource("applications", "list");
-		Assert.assertNull(contentType);
+	public void testGetApplication() throws IOException {
+		Assert.assertNotNull(client.getApplication());
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class ResourceCollection extends Resource {
 
+	protected String defaultAction = "list";
 	protected ArrayList<Resource> collection = new ArrayList<Resource>();
 	
 	public ResourceCollection(String url, Client client) {
