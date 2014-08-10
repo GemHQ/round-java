@@ -2,20 +2,15 @@ package com.bitvault;
 
 import java.io.IOException;
 
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.http.json.JsonHttpContent;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 public class Client {
 
@@ -24,9 +19,9 @@ public class Client {
 	static final String MAPPINGS_KEY = "mappings";
 	static final String SCHEMAS_KEY = "schemas";
 	
-	static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-	static final JsonFactory JSON_FACTORY = new GsonFactory();
+	private OkHttpClient httpClient;
 	
+	private String appKey;
 	private String appUrl;
 	private String apiToken;
 	private Application application;
@@ -35,9 +30,10 @@ public class Client {
 	private JsonObject resources;
 	private JsonArray schemas;
 
-	public Client(String appUrl, String apiToken) {
-		this.appUrl = appUrl;
+	public Client(String appKey, String apiToken) {
+		this.appKey = appKey;
 		this.apiToken = apiToken;
+		this.httpClient = new OkHttpClient();
 		
 		try {
 			JsonObject discovery = this.performRequest(API_HOST, "application/json");
@@ -47,9 +43,10 @@ public class Client {
 		}
 	}
 	
-	public JsonObject performRequest(String urlString, 
+	public JsonObject performRequest(String url, 
 			String resourceName, String actionName, 
-			JsonObject requestBody) throws UnexpectedStatusCodeException, IOException {
+			JsonObject requestBody) 
+					throws UnexpectedStatusCodeException, IOException {
 		JsonObject resource = this.resources.get(resourceName).getAsJsonObject();
 		JsonObject action = resource.get("actions").getAsJsonObject()
 				.get(actionName).getAsJsonObject();
@@ -70,33 +67,35 @@ public class Client {
 			authorizationType = authorizationTypeElement.getAsString();
 		
 		String method = action.get("method").getAsString();
-		GenericUrl url = new GenericUrl(urlString);
 		return this.performRequest(method, url, authorizationType,
 				accept, contentType, requestBody, expectedStatus);
 	}
 
-	public JsonObject performRequest(String method, GenericUrl url,
+	public JsonObject performRequest(String method, String url,
 			String authorizationType, String accept, String contentType,
-			JsonObject requestBody, int expectedStatus) throws UnexpectedStatusCodeException, IOException {
-		HttpRequestFactory requestFactory = 
-				HTTP_TRANSPORT.createRequestFactory();
+			JsonObject requestBody, int expectedStatus) 
+					throws UnexpectedStatusCodeException, IOException {
 		
-		HttpRequest request = requestFactory.buildRequest(method, url, null);
+		Request.Builder builder = new Request.Builder().url(url);
 		
-		HttpHeaders headers = new HttpHeaders();
+		RequestBody body = null;
+		if (requestBody != null) {
+			MediaType mediaType = MediaType.parse(contentType);
+			body = RequestBody.create(mediaType, requestBody.getAsString());
+		}
+		
+		builder.method(method, body);
+		
 		if (authorizationType != null)
-			headers.setAuthorization(this.authorizationForType(authorizationType));
+			builder.header("Authorization", this.authorizationForType(authorizationType));
 		if (accept != null)
-			headers.setAccept(accept);
-		if (contentType != null)
-			headers.setContentType(contentType);
-		if (requestBody != null)
-			request.setContent(new JsonHttpContent(new GsonFactory(), requestBody));
-		request.setHeaders(headers);
+			builder.header("Accept", accept);
 		
-		HttpResponse response = request.execute();
-		int statusCode = response.getStatusCode();
-		String responseContent = response.parseAsString();
+		Request request = builder.build();
+		Response response = this.httpClient.newCall(request).execute();
+		
+		int statusCode = response.code();
+		String responseContent = response.body().string();
 		if (statusCode != expectedStatus)
 			throw new UnexpectedStatusCodeException(responseContent, statusCode);
 		
@@ -104,8 +103,8 @@ public class Client {
 		return element.getAsJsonObject();
 	}
 	
-	public JsonObject performRequest(String urlString, String accept) throws UnexpectedStatusCodeException, IOException {
-		GenericUrl url = new GenericUrl(urlString);
+	public JsonObject performRequest(String url, String accept) 
+			throws UnexpectedStatusCodeException, IOException {
 		return this.performRequest("GET", url, null, accept, null, null, 200);
 	}
 	
@@ -121,13 +120,18 @@ public class Client {
 	
 	public Application getApplication() throws IOException {
 		if (application == null) {
-			application = new Application(this.appUrl, this);
+			application = new Application(this.getAppUrl(), this);
 		}
 
 		return this.application;
 	}
 	
 	public String getAppUrl() {
+		if (this.appUrl == null) {
+			String template = this.mappings.get("application").getAsJsonObject()
+					.get("template").getAsString();
+			this.appUrl = template.replaceAll(":key", this.appKey);
+		}
 		return this.appUrl;
 	}
 

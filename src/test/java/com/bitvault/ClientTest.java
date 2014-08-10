@@ -8,8 +8,9 @@ public class ClientTest {
 
 	private static final String appUrl = "http://bitvault-api.dev:8999/apps/h51G8o1ZNTOwkUh0waBryQ";
 	private static final String apiToken = "PfyzNzRlv6AgV3P32a87MTXSMZhuCAG7dVIZBbZS0lc";
+	private static final String appKey = "h51G8o1ZNTOwkUh0waBryQ";
 
-	private static Client client = new Client(appUrl, apiToken);
+	private static Client client = new Client(appKey, apiToken);
 
 	@Test
 	public void constructorTest() {
@@ -26,7 +27,9 @@ public class ClientTest {
 	
 	@Test
 	public void testGetApplication() throws IOException {
-		Assert.assertNotNull(client.getApplication());
+		Application app = client.getApplication();
+		Assert.assertNotNull(app);
+		Assert.assertEquals(appKey, app.getKey());
 	}
 
 }

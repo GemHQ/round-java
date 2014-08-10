@@ -23,9 +23,7 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-  compile 'com.google.http-client:google-http-client:1.19.0'
-  compile 'com.google.http-client:google-http-client-gson:1.19.0'
-  compile 'com.google.http-client:google-http-client-android:1.19.0'
+  compile 'com.squareup.okhttp:okhttp:2.0.0'
   compile 'com.google.code.gson:gson:2.2.4'
   compile 'com.google:bitcoinj:0.11.3'
   
