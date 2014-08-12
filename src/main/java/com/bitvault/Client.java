@@ -45,14 +45,14 @@ public class Client {
 		this.httpClient = new OkHttpClient();
 		
 		try {
-			JsonObject discovery = this.performRequest(API_HOST, "application/json");
+			JsonObject discovery = this.performRequest(API_HOST, "application/json").getAsJsonObject();
 			this.parseDiscovery(discovery);
 		} catch(Exception exception) {
 			System.out.println(exception.getMessage());
 		}
 	}
 	
-	public JsonObject performRequest(String url, 
+	public JsonElement performRequest(String url, 
 			String resourceName, String actionName, 
 			JsonObject requestBody) 
 					throws UnexpectedStatusCodeException, IOException {
@@ -80,7 +80,7 @@ public class Client {
 				accept, contentType, requestBody, expectedStatus);
 	}
 
-	public JsonObject performRequest(String method, String url,
+	public JsonElement performRequest(String method, String url,
 			String authorizationType, String accept, String contentType,
 			JsonObject requestBody, int expectedStatus) 
 					throws UnexpectedStatusCodeException, IOException {
@@ -90,7 +90,7 @@ public class Client {
 		RequestBody body = null;
 		if (requestBody != null) {
 			MediaType mediaType = MediaType.parse(contentType);
-			body = RequestBody.create(mediaType, requestBody.getAsString());
+			body = RequestBody.create(mediaType, requestBody.toString());
 		}
 		
 		builder.method(method, body);
@@ -108,11 +108,10 @@ public class Client {
 		if (statusCode != expectedStatus)
 			throw new UnexpectedStatusCodeException(responseContent, statusCode);
 		
-		JsonElement element = new JsonParser().parse(responseContent);
-		return element.getAsJsonObject();
+		return new JsonParser().parse(responseContent);
 	}
 	
-	public JsonObject performRequest(String url, String accept) 
+	public JsonElement performRequest(String url, String accept) 
 			throws UnexpectedStatusCodeException, IOException {
 		return this.performRequest("GET", url, null, accept, null, null, 200);
 	}

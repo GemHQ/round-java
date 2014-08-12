@@ -9,12 +9,20 @@ import com.neilalexander.jnacl.PassphraseBox;
 
 public class Wallet extends Resource {
 	
+	protected String resourceName;
+	
 	private AccountCollection accountsCollection;
 
 	private String primarySeed;
 	
+	public static final String RESOURCE_NAME = "wallet";
+	
 	public Wallet(String url, Client client) {
-		super(url, client);
+		super(url, client, RESOURCE_NAME);
+	}
+	
+	public Wallet(JsonObject resource, Client client) {
+		super(resource, client, RESOURCE_NAME);
 	}
 	
 	public String unlock(String passphrase) {
@@ -41,7 +49,7 @@ public class Wallet extends Resource {
 	
 	public AccountCollection accounts() {
 		if (this.accountsCollection == null) {
-			this.accountsCollection = new AccountCollection(this.getUrl(), this.client);
+			this.accountsCollection = new AccountCollection(this.url, this.client);
 		}
 		
 		return this.accountsCollection;

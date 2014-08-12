@@ -2,17 +2,19 @@ package com.bitvault;
 
 public class Application extends Resource{
 	
+	public static final String RESOURCE_NAME = "application";
+	
 	public String walletsUrl;
 	
-	private WalletsCollection walletsCollection;
+	private WalletCollection walletsCollection;
 	
 	public Application(String url, Client client) {
-		super(url, client);
+		super(url, client, RESOURCE_NAME);
 	}
 	
-	public WalletsCollection getWallets() {
+	public WalletCollection wallets() {
 		if (this.walletsCollection == null) {
-			this.walletsCollection = new WalletsCollection(this.getWalletsUrl(), this.client);
+			this.walletsCollection = new WalletCollection(this.getWalletsUrl(), this.client);
 		}
 		
 		return this.walletsCollection;

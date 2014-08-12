@@ -1,13 +1,17 @@
 package com.bitvault;
 
-
+import com.google.gson.JsonObject;
 
 public class Account extends Resource{
 	
-	public static final String CONTENT_TYPE = "application/vnd.bitvault.account+json;version=1.0";
+	public static final String RESOURCE_NAME = "account";
 	
 	public Account(String url, Client client){
-		super(url, client);
+		super(url, client, RESOURCE_NAME);
+	}
+	
+	public Account(JsonObject resource, Client client){
+		super(resource, client, RESOURCE_NAME);
 	}
 
 }

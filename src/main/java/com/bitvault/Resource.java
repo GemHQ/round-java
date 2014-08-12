@@ -6,19 +6,22 @@ import com.google.gson.JsonObject;
 
 public class Resource {
 
-	private String url;
 	private String key;
+	
+	protected String url;
 	protected JsonObject resource;
 	protected Client client;
-	protected String defaultAction = "get";
+	protected String resourceName;
 	
-	public Resource(String url, Client client) {
+	public static final String DEFAULT_ACTION = "get";
+	
+	public Resource(String url, Client client, String resourceName) {
 		this.url = url;
 		this.client = client;
+		this.resourceName = resourceName;
 		
-		String resourceName = this.getClass().getSimpleName().toLowerCase();
 		try {
-			this.resource = this.client.performRequest(this.url, resourceName, this.defaultAction, null);
+			this.resource = this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
 		} catch(Client.UnexpectedStatusCodeException exception) {
 			System.out.println(exception.getMessage());
 		} catch (IOException e) {
@@ -26,8 +29,12 @@ public class Resource {
 		}
 	}
 	
-	public String getUrl() {
-		return this.url;
+	public Resource(JsonObject resource, Client client, String resourceName) {
+		this.resource = resource;
+		this.client = client;
+		this.resourceName = resourceName;
+		
+		this.url = this.resource.get("url").getAsString();
 	}
 	
 	public String getKey() {
