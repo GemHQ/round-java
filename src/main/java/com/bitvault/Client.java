@@ -89,8 +89,7 @@ public class Client {
 		
 		RequestBody body = null;
 		if (requestBody != null) {
-			MediaType mediaType = MediaType.parse(contentType);
-			body = RequestBody.create(mediaType, requestBody.toString());
+			body = RequestBody.create(null, requestBody.toString());
 		}
 		
 		builder.method(method, body);
@@ -99,6 +98,8 @@ public class Client {
 			builder.header("Authorization", this.authorizationForType(authorizationType));
 		if (accept != null)
 			builder.header("Accept", accept);
+		if (contentType != null)
+			builder.header("Content-Type", contentType);
 		
 		Request request = builder.build();
 		Response response = this.httpClient.newCall(request).execute();

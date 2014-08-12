@@ -3,6 +3,7 @@ package com.bitvault;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.logging.Logger;
 
 import com.bitvault.Client.UnexpectedStatusCodeException;
 import com.bitvault.multiwallet.MultiWallet;

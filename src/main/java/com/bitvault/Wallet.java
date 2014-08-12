@@ -3,19 +3,18 @@ package com.bitvault;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+import com.bitvault.multiwallet.MultiWallet;
 import com.google.gson.JsonObject;
 import com.neilalexander.jnacl.EncryptedMessage;
 import com.neilalexander.jnacl.PassphraseBox;
 
 public class Wallet extends Resource {
 	
-	protected String resourceName;
+	public static final String RESOURCE_NAME = "wallet";
 	
 	private AccountCollection accountsCollection;
-
-	private String primarySeed;
-	
-	public static final String RESOURCE_NAME = "wallet";
+	private EncryptedMessage encryptedSeed;
+	private String accountsUrl;
 	
 	public Wallet(String url, Client client) {
 		super(url, client, RESOURCE_NAME);
@@ -25,8 +24,42 @@ public class Wallet extends Resource {
 		super(resource, client, RESOURCE_NAME);
 	}
 	
-	public String unlock(String passphrase) {
-		if (this.primarySeed ==  null) {
+	public void unlock(String passphrase, UnlockedWalletCallback callback) {
+		
+		String decryptedSeed = null;
+		try {
+			decryptedSeed = PassphraseBox.decrypt(passphrase, this.encryptedSeed);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return;
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		MultiWallet wallet = new MultiWallet(decryptedSeed);
+		callback.execute(wallet);
+	}
+	
+	public AccountCollection accounts() {
+		if (this.accountsCollection == null) {
+			this.accountsCollection = new AccountCollection(this.getAccountsUrl(), this.client, this);
+		}
+		
+		return this.accountsCollection;
+	}
+	
+	public String getAccountsUrl() {
+		if (this.accountsUrl == null) {
+			this.accountsUrl = this.resource.getAsJsonObject("account")
+					.get("url").getAsString();
+		}
+		
+		return this.accountsUrl;
+	}
+	
+	public EncryptedMessage getEncryptedSeed() {
+		if (this.encryptedSeed ==  null) {
 		    JsonObject seedObject = this.resource.getAsJsonObject("primary_private_seed");
 		    
 		    EncryptedMessage encryptedMessage = new EncryptedMessage();
@@ -34,25 +67,9 @@ public class Wallet extends Resource {
 		    encryptedMessage.salt = seedObject.get("salt").toString();
 		    encryptedMessage.nonce = seedObject.get("nonce").toString();
 		    encryptedMessage.iterations = Integer.parseInt(seedObject.get("iterations").toString());
-		    
-		    try {
-				this.primarySeed = PassphraseBox.decrypt(passphrase, encryptedMessage);
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			} catch (InvalidKeySpecException e) {
-				e.printStackTrace();
-			}
+		    this.encryptedSeed = encryptedMessage;
 		}
 		
-		return this.primarySeed;
+		return this.encryptedSeed;
 	}
-	
-	public AccountCollection accounts() {
-		if (this.accountsCollection == null) {
-			this.accountsCollection = new AccountCollection(this.url, this.client);
-		}
-		
-		return this.accountsCollection;
-	}
-	
 }

@@ -8,8 +8,12 @@ import com.google.gson.JsonObject;
 public class AccountCollection extends ResourceCollection<Account> {
 	public static final String RESOURCE_NAME = "accounts";
 	
-	public AccountCollection(String url, Client client)  {
+	private Wallet wallet;
+	
+	public AccountCollection(String url, Client client, Wallet wallet)  {
 		super(url, client, RESOURCE_NAME);	
+		
+		this.wallet = wallet;
 	}
 	
 	@Override
@@ -19,5 +23,16 @@ public class AccountCollection extends ResourceCollection<Account> {
 			Account account = new Account(resource, this.client);
 			this.add(account);
 		}
+	}
+	
+	@Override
+	public Account get(int index) {
+		Account account = super.get(index);
+		account.setWallet(this.wallet);
+		return account;
+	}
+
+	public void create(String name) {
+		
 	}
 }
