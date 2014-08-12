@@ -51,7 +51,7 @@ public class Wallet extends Resource {
 	
 	public String getAccountsUrl() {
 		if (this.accountsUrl == null) {
-			this.accountsUrl = this.resource.getAsJsonObject("account")
+			this.accountsUrl = this.resource.getAsJsonObject("accounts")
 					.get("url").getAsString();
 		}
 		

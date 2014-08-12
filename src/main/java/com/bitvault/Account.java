@@ -19,4 +19,5 @@ public class Account extends Resource{
 	public void setWallet(Wallet wallet) {
 		this.wallet = wallet;
 	}
+	
 }
