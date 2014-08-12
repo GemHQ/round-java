@@ -16,16 +16,21 @@ eclipse {
   }
 }
 
-// In this section you declare where to find the dependencies of your project
+buildscript {
+    repositories {
+       	jcenter()
+    }
+}
+
 repositories {
-  mavenCentral()
+	jcenter()
 }
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
   compile 'com.squareup.okhttp:okhttp:2.0.0'
   compile 'com.google.code.gson:gson:2.2.4'
-  compile 'com.google:bitcoinj:0.11.3'
+  compile 'com.google.guava:guava:18.0-rc1'
   
   compile fileTree(dir: 'libs', include: '*.jar')
   

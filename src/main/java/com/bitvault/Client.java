@@ -26,10 +26,19 @@ public class Client {
 	private String apiToken;
 	private Application application;
 	
+	private String walletKey;
+	private Wallet wallet;
+	
 	private JsonObject mappings;
 	private JsonObject resources;
 	private JsonArray schemas;
 
+	public Client(String appKey, String apiToken, String walletKey) {
+		this(appKey, apiToken);
+		
+		this.walletKey = walletKey;
+	}
+	
 	public Client(String appKey, String apiToken) {
 		this.appKey = appKey;
 		this.apiToken = apiToken;
@@ -118,12 +127,20 @@ public class Client {
 		this.schemas = discovery.get(SCHEMAS_KEY).getAsJsonArray();
 	}
 	
-	public Application getApplication() throws IOException {
+	public Application application() throws IOException {
 		if (application == null) {
 			application = new Application(this.getAppUrl(), this);
 		}
 
 		return this.application;
+	}
+	
+	public Wallet wallet() {
+		if (this.wallet == null) {
+			this.wallet = new Wallet(this.walletKey, this);
+		}
+		
+		return this.wallet;
 	}
 	
 	public String getAppUrl() {

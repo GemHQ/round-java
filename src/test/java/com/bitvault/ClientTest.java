@@ -27,9 +27,16 @@ public class ClientTest {
 	
 	@Test
 	public void testGetApplication() throws IOException {
-		Application app = client.getApplication();
+		Application app = client.application();
 		Assert.assertNotNull(app);
 		Assert.assertEquals(appKey, app.getKey());
 	}
+	
+//	@Test
+//	public void testGetWallet() {
+//		Wallet wallet = client.wallet();
+//		Assert.assertNotNull(wallet);
+//		AssertEquals()
+//	}
 
 }
