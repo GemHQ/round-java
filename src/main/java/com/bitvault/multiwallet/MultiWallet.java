@@ -2,12 +2,10 @@ package com.bitvault.multiwallet;
 
 import java.security.SecureRandom;
 
-import com.google.bitcoin.crypto.ChildNumber;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.wallet.DeterministicKeyChain;
 import com.google.bitcoin.wallet.DeterministicSeed;
-import com.google.common.collect.ImmutableList;
 
 public class MultiWallet {
 
