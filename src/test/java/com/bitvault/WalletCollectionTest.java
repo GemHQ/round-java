@@ -7,11 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WalletCollectionTest {
-	private static final String apiToken = "PfyzNzRlv6AgV3P32a87MTXSMZhuCAG7dVIZBbZS0lc";
-	private static final String appKey = "h51G8o1ZNTOwkUh0waBryQ";
+import static com.bitvault.ClientTest.client;
 
-	private static Client client = new Client(appKey, apiToken);
+public class WalletCollectionTest {
 	private static WalletCollection wallets = null;
 	
 	@Before

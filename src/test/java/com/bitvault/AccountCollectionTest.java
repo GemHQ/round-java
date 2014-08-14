@@ -6,12 +6,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.bitvault.ClientTest.client;
+
 public class AccountCollectionTest {
 	
-	private static final String apiToken = "PfyzNzRlv6AgV3P32a87MTXSMZhuCAG7dVIZBbZS0lc";
-	private static final String appKey = "h51G8o1ZNTOwkUh0waBryQ";
-
-	private static Client client = new Client(appKey, apiToken);
 	private static AccountCollection accounts = null;
 	
 	@Before

@@ -1,0 +1,54 @@
+{
+  "key": "NKB6h2TrEXocmmt12Ra8Ew",
+  "status": "unsigned",
+  "version": 1,
+  "lock_time": 0,
+  "hash": "c137cfd3be758b465c8817b81eaeed29dce4c34db318a255c33465c177c4ccbf",
+  "inputs": [
+    {
+      "output": {
+        "transaction_hash": "21d303e1590fa2025e9f9e74dcca5405e37540d4e4c9a131e674336a8826241f",
+        "index": 1,
+        "value": 50000000,
+        "script": {
+          "type": "script_hash",
+          "string": "OP_HASH160 eeb475b2acb2a8d1bf6ff65cfc56dc09f4f4fb82 OP_EQUAL"
+        },
+        "address": "2NF1NzW9aX4YkVZTTqeheWMehMcSsyk1biJ",
+        "metadata": {
+          "wallet_path": "m/0/0/0"
+        }
+      },
+      "signatures": [],
+      "sig_hash": "c98f1242d3bbbcfc50ce7cca6299d49137d00ac7e5dd68c6a4d17ea37b427e80",
+      "script_sig": ""
+    }
+  ],
+  "outputs": [
+    {
+      "transaction_hash": "c137cfd3be758b465c8817b81eaeed29dce4c34db318a255c33465c177c4ccbf",
+      "index": 0,
+      "value": 1000,
+      "script": {
+        "type": "pubkey_hash",
+        "string": "OP_DUP OP_HASH160 f1172690c637aa8e9efdc289b91397d33bb6d0bf OP_EQUALVERIFY OP_CHECKSIG"
+      },
+      "address": null,
+      "metadata": {}
+    },
+    {
+      "transaction_hash": "c137cfd3be758b465c8817b81eaeed29dce4c34db318a255c33465c177c4ccbf",
+      "index": 1,
+      "value": 49989000,
+      "script": {
+        "type": "script_hash",
+        "string": "OP_HASH160 eb2fc4d03375fabbafae64a31c9b89abe1120ce2 OP_EQUAL"
+      },
+      "address": "2NEgn1Q5HjPjPX8i7kyNPZrRQuecoJRiHf5",
+      "metadata": {
+        "wallet_path": "m/0/1/0"
+      }
+    }
+  ],
+  "url": "http://bitvault-api.dev:8999/transactions/NKB6h2TrEXocmmt12Ra8Ew"
+}

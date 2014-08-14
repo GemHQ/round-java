@@ -15,6 +15,8 @@ public class Wallet extends Resource {
 	private AccountCollection accountsCollection;
 	private EncryptedMessage encryptedSeed;
 	private String accountsUrl;
+	private String backupPublicSeed;
+	private String cosignerPublicSeed;
 	
 	public Wallet(String url, Client client) {
 		super(url, client, RESOURCE_NAME);
@@ -28,7 +30,7 @@ public class Wallet extends Resource {
 		
 		String decryptedSeed = null;
 		try {
-			decryptedSeed = PassphraseBox.decrypt(passphrase, this.encryptedSeed);
+			decryptedSeed = PassphraseBox.decrypt(passphrase, this.getEncryptedSeed());
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return;
@@ -37,7 +39,7 @@ public class Wallet extends Resource {
 			return;
 		}
 		
-		MultiWallet wallet = new MultiWallet(decryptedSeed);
+		MultiWallet wallet = new MultiWallet(decryptedSeed, this.getBackupPublicSeed(), this.getCosignerPublicSeed());
 		callback.execute(wallet);
 	}
 	
@@ -71,5 +73,21 @@ public class Wallet extends Resource {
 		}
 		
 		return this.encryptedSeed;
+	}
+	
+	public String getBackupPublicSeed() {
+		if (this.backupPublicSeed == null) {
+			this.backupPublicSeed = this.resource.get("backup_public_seed").getAsString();
+		}
+		
+		return this.backupPublicSeed;
+	}
+	
+	public String getCosignerPublicSeed() {
+		if (this.cosignerPublicSeed == null) {
+			this.cosignerPublicSeed = this.resource.get("cosigner_public_seed").getAsString();
+		}
+		
+		return this.cosignerPublicSeed;
 	}
 }

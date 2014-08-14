@@ -13,7 +13,7 @@ import com.squareup.okhttp.Response;
 
 public class Client {
 
-	static final String API_HOST = "http://bitvault-api.dev/";
+	static final String API_HOST = "http://bitvault-api.dev";
 	static final String RESOURCES_KEY = "resources";
 	static final String MAPPINGS_KEY = "mappings";
 	static final String SCHEMAS_KEY = "schemas";

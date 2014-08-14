@@ -6,15 +6,16 @@ import org.junit.*;
 
 public class ClientTest {
 
-	private static final String appUrl = "http://bitvault-api.dev:8999/apps/h51G8o1ZNTOwkUh0waBryQ";
-	private static final String apiToken = "PfyzNzRlv6AgV3P32a87MTXSMZhuCAG7dVIZBbZS0lc";
-	private static final String appKey = "h51G8o1ZNTOwkUh0waBryQ";
+//	private static final String apiToken = "WbqH1DmXp9NOUZM65BoO2VUyqtwOHwLVPOXXGP81bqo";
+//	private static final String appKey = "gYjLBM7BZBV9_7VJ7u58ew";
+	
+	private static final String appKey = "sSV74p47VHhgkRbL2JlRxw";
+	private static final String apiToken = "7gMwSOAQI6vW8TZP2PdsoIhB5sy540v8DVRg69pmL9Q";
 
-	private static Client client = new Client(appKey, apiToken);
+	public static final Client client = new Client(appKey, apiToken);
 
 	@Test
 	public void constructorTest() {
-		Assert.assertEquals(appUrl, client.getAppUrl());
 		Assert.assertEquals(apiToken, client.getApiToken());
 	}
 	
