@@ -2,9 +2,9 @@ package com.bitvault;
 
 public class Recipient {
 	public String address;
-	public int amount;
+	public long amount;
 	
-	public static Recipient recipientWithAddress(String address, int amount) {
+	public static Recipient recipientWithAddress(String address, long amount) {
 		Recipient recipient = new Recipient();
 		recipient.address = address;
 		recipient.amount = amount;

@@ -27,7 +27,7 @@ public class Account extends Resource{
 		this.wallet = wallet;
 	}
 	
-	public Payment pay(String passphrase, String address, int amount) {
+	public Payment pay(String passphrase, String address, long amount) {
 		return this.pay(passphrase, Recipient.recipientWithAddress(address, amount));
 	}
 	

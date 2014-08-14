@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.gson.JsonObject;
@@ -37,19 +38,17 @@ public class PaymentTest {
 	@Test
 	public void testGetNativeTransaction() {
 		Transaction transaction = unsigned.getNativeTransaction();
-		
 		Assert.assertEquals(unsigned.getHash(), transaction.getHashAsString());
-	}
-	
-	@Test
-	public void testGetInputs() {
-		List<TransactionOutput> outputs = unsigned.getInputs();
-		Assert.assertEquals(1, outputs.size());
 	}
 	
 	@Test
 	public void testGetOutputs() {
 		List<TransactionOutput> outputs = unsigned.getOutputs();
 		Assert.assertEquals(2, outputs.size());
+	}
+	
+	@Test
+	public void testHexSignatureForWalletPath() {
+		
 	}
 }

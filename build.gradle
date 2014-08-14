@@ -31,6 +31,7 @@ dependencies {
   compile 'com.squareup.okhttp:okhttp:2.0.0'
   compile 'com.google.code.gson:gson:2.2.4'
   compile 'com.google.guava:guava:18.0-rc1'
+  compile 'com.madgag.spongycastle:prov:1.51.0.0'
   
   compile fileTree(dir: 'libs', include: '*.jar')
   

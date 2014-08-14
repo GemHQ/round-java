@@ -1,9 +1,20 @@
 package com.bitvault.multiwallet;
 
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
 
+import org.spongycastle.util.encoders.Hex;
+
+import com.google.bitcoin.core.ECKey;
+import com.google.bitcoin.core.Sha256Hash;
+import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
+import com.google.bitcoin.crypto.TransactionSignature;
+import com.google.bitcoin.script.Script;
+import com.google.bitcoin.script.ScriptBuilder;
 import com.google.bitcoin.wallet.DeterministicKeyChain;
 import com.google.bitcoin.wallet.DeterministicSeed;
 
@@ -62,6 +73,10 @@ public class MultiWallet {
 		return this.childKeyFromPath(path, this.primaryPrivateKey);
 	}
 	
+	public DeterministicKey childPrimaryPublicKeyFromPath(String path) {
+		return this.childKeyFromPath(path, this.primaryPrivateKey.getPubOnly());
+	}
+	
 	public DeterministicKey childBackupPublicKeyFromPath(String path) {
 		return this.childKeyFromPath(path, this.backupPublicKey);
 	}
@@ -78,5 +93,22 @@ public class MultiWallet {
 			currentKey = HDKeyDerivation.deriveChildKey(currentKey, childNumber);
 		}
 		return currentKey;
+	}
+	
+	public Script redeemScriptForPath(String path) {
+		DeterministicKey primaryPublicKey = this.childPrimaryPublicKeyFromPath(path);
+		DeterministicKey backupPublicKey = this.childBackupPublicKeyFromPath(path);
+		DeterministicKey cosignerPublicKey = this.childCosignerPublicKeyFromPath(path);
+		
+		List<ECKey> pubKeys = Arrays.asList(new ECKey[] {
+				backupPublicKey, cosignerPublicKey, primaryPublicKey });
+
+		return ScriptBuilder.createMultiSigOutputScript(2, pubKeys);
+	}
+	
+	public String hexSignatureForPath(String walletPath, Sha256Hash sigHash) {
+		DeterministicKey primaryPrivateKey = this.childPrimaryPrivateKeyFromPath(walletPath);
+		TransactionSignature signature = new TransactionSignature(primaryPrivateKey.sign(sigHash), SigHash.ALL, false);
+		return Hex.toHexString(signature.encodeToBitcoin());
 	}
 }
