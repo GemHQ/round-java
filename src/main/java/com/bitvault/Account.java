@@ -41,6 +41,14 @@ public class Account extends Resource{
 		return this.transactions;
 	}
 	
+	public String name() {
+		return this.resource.get("name").getAsString();
+	}
+	
+	public long balance() {
+		return this.resource.get("balance").getAsLong();
+	}
+	
 	public String getAccountsUrl() {
 		return this.resource.get("addresses")
 				.getAsJsonObject().get("url").getAsString();
