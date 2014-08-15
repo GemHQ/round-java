@@ -15,6 +15,7 @@ public class Account extends Resource{
 	
 	private Wallet wallet;
 	private AddressCollection addresses;
+	private TransactionCollection transactions;
 	
 	public Account(String url, Client client){
 		super(url, client, RESOURCE_NAME);
@@ -32,8 +33,21 @@ public class Account extends Resource{
 		return this.addresses;
 	}
 	
+	public TransactionCollection transactions() {
+		if (this.transactions == null) {
+			this.transactions = new TransactionCollection(this.getTransactionsUrl(), this.client);
+		}
+		
+		return this.transactions;
+	}
+	
 	public String getAccountsUrl() {
 		return this.resource.get("addresses")
+				.getAsJsonObject().get("url").getAsString();
+	}
+	
+	public String getTransactionsUrl() {
+		return this.resource.get("transactions")
 				.getAsJsonObject().get("url").getAsString();
 	}
 	
