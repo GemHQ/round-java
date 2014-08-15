@@ -25,10 +25,10 @@ public class Client {
 	private String appKey;
 	private String apiToken;
 	private String appUrl;
-	private String walletUrl;
 	private Application application;
 	
 	private String walletKey;
+	private String walletUrl;
 	private Wallet wallet;
 	
 	private JsonObject mappings;
@@ -161,6 +161,10 @@ public class Client {
 			this.appUrl = this.urlTemplate("application", this.appKey);
 		}
 		return this.appUrl;
+	}
+	
+	public void setWalletKey(String walletKey) {
+		this.walletKey = walletKey;
 	}
 	
 	public String getWalletUrl() {
