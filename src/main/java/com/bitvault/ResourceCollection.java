@@ -2,6 +2,7 @@ package com.bitvault;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.JsonArray;
 
@@ -42,6 +43,10 @@ public abstract class ResourceCollection<T> {
 	
 	public int size() {
 		return this.collection.size();
+	}
+	
+	public List<T> asList() {
+		return collection;
 	}
 	
 	public abstract void populateCollection(JsonArray array);
