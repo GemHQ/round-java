@@ -12,12 +12,15 @@ import com.bitvault.multiwallet.MultiWallet;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
 import com.google.bitcoin.core.Coin;
+import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutPoint;
+import com.google.bitcoin.crypto.DeterministicKey.NetworkMode;
 import com.google.bitcoin.params.MainNetParams;
+import com.google.bitcoin.params.TestNet3Params;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
 import com.google.bitcoin.script.ScriptOpCodes;
@@ -28,13 +31,18 @@ import com.google.gson.JsonObject;
 public class Payment extends Resource{
 
 	public static final String RESOURCE_NAME = "payment";
+	private NetworkParameters networkParams;
 	
 	public Payment(JsonObject resource, Client client) {
 		super(resource, client, RESOURCE_NAME);
+		this.networkParams = this.client.networkMode == NetworkMode.TESTNET ?
+				TestNet3Params.get() : MainNetParams.get();
 	}
 
 	public Payment(String url, Client client) {
 		super(url, client, RESOURCE_NAME);
+		this.networkParams = this.client.networkMode == NetworkMode.TESTNET ?
+				TestNet3Params.get() : MainNetParams.get();
 	}
 	
 	public Payment sign(MultiWallet wallet) {
@@ -78,7 +86,7 @@ public class Payment extends Resource{
 	}
 	
 	public Transaction getNativeTransaction() {
-		Transaction transaction = new Transaction(MainNetParams.get());
+		Transaction transaction = new Transaction(this.networkParams);
 		for (TransactionInput input : this.getInputs(transaction)) {
 			transaction.addInput(input);
 		}
@@ -121,8 +129,8 @@ public class Payment extends Resource{
 			Script outputScript = ScriptBuilder.createOutputScript(address);
 			long outputIndex = outputJson.get("index").getAsLong();
 			Coin value = Coin.valueOf(outputJson.get("value").getAsLong());
-			TransactionInput input = new TransactionInput(MainNetParams.get(), parent, outputScript.getProgram(), 
-					new TransactionOutPoint(MainNetParams.get(), outputIndex, txHash), value);
+			TransactionInput input = new TransactionInput(this.networkParams, parent, outputScript.getProgram(), 
+					new TransactionOutPoint(this.networkParams, outputIndex, txHash), value);
 			inputs.add(input);
 		}
 		return inputs;

@@ -21,7 +21,7 @@ public class WalletCollection extends ResourceCollection<Wallet>{
 	}	
 
 	public Wallet create(String name, String passphrase) {
-		MultiWallet multiWallet = MultiWallet.generate();
+		MultiWallet multiWallet = MultiWallet.generate(this.client.networkMode);
 		
 		EncryptedMessage primaryPrivateSeed = null;
 		try {

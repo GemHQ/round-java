@@ -20,6 +20,7 @@ import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.DeterministicKey.NetworkMode;
 import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.gson.JsonObject;
@@ -50,7 +51,7 @@ public class MultiWalletTest {
 	
 	@Test
 	public void testWalletGeneration() {
-		MultiWallet wallet = MultiWallet.generate();
+		MultiWallet wallet = MultiWallet.generate(NetworkMode.TESTNET);
 		
 		MultiWallet primary = new MultiWallet(wallet.serializedPrimaryPrivateSeed(), null, null);
 		MultiWallet backup = new MultiWallet(wallet.serializedBackupPrivateSeed(), null, null);

@@ -2,6 +2,7 @@ package com.bitvault;
 
 import java.io.IOException;
 
+import com.google.bitcoin.crypto.DeterministicKey.NetworkMode;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -31,6 +32,8 @@ public class Client {
 	private JsonObject mappings;
 	private JsonObject resources;
 	private JsonArray schemas;
+	
+	public NetworkMode networkMode = NetworkMode.TESTNET;
 
 	public Client(String appKey, String apiToken, String walletKey) {
 		this(appKey, apiToken);

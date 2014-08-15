@@ -9,6 +9,7 @@ import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Sha256Hash;
 import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.DeterministicKey.NetworkMode;
 import com.google.bitcoin.crypto.HDKeyDerivation;
 import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
@@ -24,7 +25,7 @@ public class MultiWallet {
 	private DeterministicKey backupPublicKey;
 	private DeterministicKey cosignerPublicKey;
 	
-	public MultiWallet() {
+	public MultiWallet(NetworkMode networkMode) {
 		SecureRandom random1 = new SecureRandom();
 		SecureRandom random2 = new SecureRandom();
 		DeterministicSeed primarySeed = new DeterministicKeyChain(random1).getSeed();
@@ -33,6 +34,10 @@ public class MultiWallet {
 		this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(primarySeed.getSeedBytes());
 		this.backupPrivateKey = HDKeyDerivation.createMasterPrivateKey(backupSeed.getSeedBytes());
 		this.backupPublicKey = this.backupPrivateKey.getPubOnly();
+		
+		this.primaryPrivateKey.networkMode = networkMode;
+		this.backupPrivateKey.networkMode = networkMode;
+		this.backupPublicKey.networkMode = networkMode;
 	}
 	
 	public MultiWallet(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
@@ -43,8 +48,8 @@ public class MultiWallet {
 			this.cosignerPublicKey = DeterministicKey.deserializeB58(null, cosignerPublicSeed);
 	}
 	
-	public static MultiWallet generate() {
-		return new MultiWallet();
+	public static MultiWallet generate(NetworkMode networkMode) {
+		return new MultiWallet(networkMode);
 	}
 	
 	public String serializedPrimaryPrivateSeed() {
