@@ -4,11 +4,9 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 
-import org.spongycastle.util.encoders.Hex;
-
+import com.google.bitcoin.core.Base58;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.Sha256Hash;
-import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.crypto.DeterministicKey;
 import com.google.bitcoin.crypto.HDKeyDerivation;
@@ -106,9 +104,9 @@ public class MultiWallet {
 		return ScriptBuilder.createMultiSigOutputScript(2, pubKeys);
 	}
 	
-	public String hexSignatureForPath(String walletPath, Sha256Hash sigHash) {
+	public String base58SignatureForPath(String walletPath, Sha256Hash sigHash) {
 		DeterministicKey primaryPrivateKey = this.childPrimaryPrivateKeyFromPath(walletPath);
 		TransactionSignature signature = new TransactionSignature(primaryPrivateKey.sign(sigHash), SigHash.ALL, false);
-		return Hex.toHexString(signature.encodeToBitcoin());
+		return Base58.encode(signature.encodeToBitcoin());
 	}
 }

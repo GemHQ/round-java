@@ -1,10 +1,13 @@
 package com.bitvault;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.spongycastle.util.encoders.Hex;
 
+import com.bitvault.Client.UnexpectedStatusCodeException;
 import com.bitvault.multiwallet.MultiWallet;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.AddressFormatException;
@@ -14,12 +17,10 @@ import com.google.bitcoin.core.Transaction;
 import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutPoint;
-import com.google.bitcoin.core.TransactionOutput;
-import com.google.bitcoin.crypto.DeterministicKey;
-import com.google.bitcoin.crypto.TransactionSignature;
-import com.google.bitcoin.params.TestNet3Params;
+import com.google.bitcoin.params.MainNetParams;
 import com.google.bitcoin.script.Script;
 import com.google.bitcoin.script.ScriptBuilder;
+import com.google.bitcoin.script.ScriptOpCodes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -38,42 +39,51 @@ public class Payment extends Resource{
 	
 	public Payment sign(MultiWallet wallet) {
 		Transaction transaction = this.getNativeTransaction();
-		
-		JsonArray signatures = new JsonArray();
-		int inputIndex = 0;
-		for (JsonElement element : this.getInputsJson()) {
-			JsonObject inputJson = element.getAsJsonObject();
-			String walletPath = inputJson.getAsJsonObject("metadata")
-					.get("wallet_path").getAsString();
-			
-			Script redeemScript = wallet.redeemScriptForPath(walletPath);
-			Sha256Hash sigHash = transaction.hashForSignature(inputIndex, redeemScript, SigHash.ALL, false);
-			String hexSignature = wallet.hexSignatureForPath(walletPath, sigHash);
-			JsonObject signatureJson = new JsonObject();
-			signatureJson.addProperty("primary", hexSignature);
-			signatures.add(signatureJson);
-			
-			inputIndex++;
-		}
+		JsonArray signatures = this.getSignatures(wallet, transaction);
 		
 		JsonObject body = new JsonObject();
 		body.addProperty("transaction_hash", transaction.getHashAsString());
 		body.add("inputs", signatures);
 		
-		return null;
+		JsonElement response = null;
+		try {
+			response = this.client.performRequest(this.url, "unsigned_payment", "sign", body);
+		} catch (UnexpectedStatusCodeException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return new Payment(response.getAsJsonObject(), this.client);
 	}
 	
-
+	public JsonArray getSignatures(MultiWallet wallet, Transaction transaction) {
+		JsonArray signatures = new JsonArray();
+		int inputIndex = 0;
+		for (JsonElement element : this.getInputsJson()) {
+			JsonObject inputJson = element.getAsJsonObject().get("output").getAsJsonObject();
+			String walletPath = inputJson.getAsJsonObject("metadata")
+					.get("wallet_path").getAsString();
+			
+			Script redeemScript = wallet.redeemScriptForPath(walletPath);
+			Sha256Hash sigHash = transaction.hashForSignature(inputIndex, redeemScript, SigHash.ALL, false);
+			String base58Signature = wallet.base58SignatureForPath(walletPath, sigHash);
+			JsonObject signatureJson = new JsonObject();
+			signatureJson.addProperty("primary", base58Signature);
+			signatures.add(signatureJson);
+			
+			inputIndex++;
+		}
+		return signatures;
+	}
 	
 	public Transaction getNativeTransaction() {
-		Transaction transaction = new Transaction(TestNet3Params.get());
+		Transaction transaction = new Transaction(MainNetParams.get());
 		for (TransactionInput input : this.getInputs(transaction)) {
 			transaction.addInput(input);
 		}
 		
-		for (TransactionOutput output : this.getOutputs()) {
-			transaction.addOutput(output);
-		}
+		this.setupOutputs(transaction);
 		
 		return transaction;
 	}
@@ -88,6 +98,10 @@ public class Payment extends Resource{
 	
 	public JsonArray getOutputsJson() {
 		return this.resource.get("outputs").getAsJsonArray();
+	}
+	
+	public String getStatus() {
+		return this.resource.get("status").getAsString();
 	}
 	
 	public List<TransactionInput> getInputs(Transaction parent) {
@@ -106,26 +120,48 @@ public class Payment extends Resource{
 			}
 			Script outputScript = ScriptBuilder.createOutputScript(address);
 			long outputIndex = outputJson.get("index").getAsLong();
-			TransactionInput input = new TransactionInput(TestNet3Params.get(), parent, outputScript.getProgram(), 
-					new TransactionOutPoint(TestNet3Params.get(), outputIndex, txHash));
+			Coin value = Coin.valueOf(outputJson.get("value").getAsLong());
+			TransactionInput input = new TransactionInput(MainNetParams.get(), parent, outputScript.getProgram(), 
+					new TransactionOutPoint(MainNetParams.get(), outputIndex, txHash), value);
 			inputs.add(input);
 		}
 		return inputs;
 	}
 	
-	public List<TransactionOutput> getOutputs() {
-		ArrayList<TransactionOutput> outputs = new ArrayList<TransactionOutput>();
+	public void setupOutputs(Transaction parent) {
 		for (JsonElement element : this.getOutputsJson()) {
 			JsonObject outputJson = element.getAsJsonObject();
-			outputs.add(outputFromJson(outputJson));
+			Coin value = Coin.valueOf(outputJson.get("value").getAsLong());
+			Script script = this.parseScript(outputJson.get("script").getAsJsonObject()
+					.get("string").getAsString());
+			parent.addOutput(value, script);
 		}
-		
-		return outputs;
 	}
 	
-	private TransactionOutput outputFromJson(JsonObject json) {
-		Coin value = Coin.valueOf(json.get("value").getAsLong());
-		byte[] scriptBytes = json.get("script").getAsJsonObject().get("string").getAsString().getBytes();
-		return new TransactionOutput(TestNet3Params.get(), null, value, scriptBytes);
+	public Script parseScript(String scriptString) {
+		StringTokenizer tokenizer = new StringTokenizer(scriptString);
+		ScriptBuilder builder = new ScriptBuilder();
+		while(tokenizer.hasMoreTokens()) {
+			String token = tokenizer.nextToken();
+			token = token.replace("OP_", "");
+			Integer opCode = ScriptOpCodes.getOpCode(token);
+			if(opCode != ScriptOpCodes.OP_INVALIDOPCODE) {
+				builder.op(opCode);
+				continue;
+			}
+			Integer smallNum = null;
+			try {
+				smallNum = Integer.parseInt(token);
+				if (smallNum <= 16) {
+					builder.smallNum(smallNum);
+					continue;
+				}
+			} catch(NumberFormatException e) {
+				
+			}
+
+			builder.data(Hex.decode(token));
+		}
+		return builder.build();
 	}
 }

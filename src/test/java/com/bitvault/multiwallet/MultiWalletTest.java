@@ -1,5 +1,7 @@
 package com.bitvault.multiwallet;
 
+import static com.bitvault.ClientTest.client;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -12,7 +14,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.spongycastle.util.encoders.Hex;
 
+import com.bitvault.Payment;
+import com.google.bitcoin.core.Base58;
+import com.google.bitcoin.core.Sha256Hash;
+import com.google.bitcoin.core.Transaction;
+import com.google.bitcoin.core.Transaction.SigHash;
 import com.google.bitcoin.crypto.DeterministicKey;
+import com.google.bitcoin.crypto.TransactionSignature;
 import com.google.bitcoin.script.Script;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -109,5 +117,29 @@ public class MultiWalletTest {
 		Script redeemScript = redeemScriptMultiWallet.redeemScriptForPath(redeemScriptPath);
 		
 		Assert.assertEquals(expectedScriptHex, Hex.toHexString(redeemScript.getProgram()));
+	}
+	
+	@Test
+	public void testHexSignatureForPath() {
+		Payment payment = new Payment(transactionJson, client);
+		Transaction transaction = payment.getNativeTransaction();
+		Script redeemScript = redeemScriptMultiWallet.redeemScriptForPath(redeemScriptPath);
+		Sha256Hash sigHash = transaction.hashForSignature(0, redeemScript, SigHash.ALL, false);
+		
+		String expectedSigHash = transactionJson.getAsJsonArray("inputs").get(0).getAsJsonObject().get("sig_hash").getAsString();
+		Assert.assertEquals(expectedSigHash, sigHash.toString());
+		
+		String hexSignature = redeemScriptMultiWallet.base58SignatureForPath(redeemScriptPath, sigHash);
+		
+		DeterministicKey primaryPubKey = redeemScriptMultiWallet.childPrimaryPublicKeyFromPath(redeemScriptPath);
+		TransactionSignature signature = null;
+		try {
+			signature = TransactionSignature.decodeFromBitcoin(Base58.decode(hexSignature), false);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Assert.assertTrue(primaryPubKey.verify(sigHash, signature));
 	}
 }
