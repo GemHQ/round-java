@@ -13,6 +13,10 @@ public class Address extends Resource {
 	public Address(JsonObject resource, Client client) {
 		super(resource, client, RESOURCE_NAME);
 	}
+	
+	public String getAddressString() {
+		return this.resource.get("string").getAsString();
+	}
 }
 
 

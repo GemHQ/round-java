@@ -14,6 +14,7 @@ public class Account extends Resource{
 	public static final String RESOURCE_NAME = "account";
 	
 	private Wallet wallet;
+	private AddressCollection addresses;
 	
 	public Account(String url, Client client){
 		super(url, client, RESOURCE_NAME);
@@ -23,6 +24,19 @@ public class Account extends Resource{
 		super(resource, client, RESOURCE_NAME);
 	}
 
+	public AddressCollection addresses() {
+		if (this.addresses == null) {
+			this.addresses = new AddressCollection(this.getAccountsUrl(), this.client);
+		}
+		
+		return this.addresses;
+	}
+	
+	public String getAccountsUrl() {
+		return this.resource.get("addresses")
+				.getAsJsonObject().get("url").getAsString();
+	}
+	
 	public void setWallet(Wallet wallet) {
 		this.wallet = wallet;
 	}
