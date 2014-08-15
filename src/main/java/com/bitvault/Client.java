@@ -177,7 +177,7 @@ public class Client {
 	public String urlTemplate(String entity, String key) {
 		String template = this.mappings.get(entity).getAsJsonObject()
 				.get("template").getAsString();
-		return template.replaceAll(":key", this.appKey);
+		return template.replaceAll(":key", key);
 	}
 
 	public String getApiToken() {

@@ -1,13 +1,11 @@
 package com.bitvault.multiwallet;
 
-import static com.bitvault.ClientTest.client;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,6 +24,8 @@ import com.google.bitcoin.script.Script;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import static com.bitvault.ClientTest.client;
+
 public class MultiWalletTest {
 	private static final String serializedPrivateSeed = "tprv8ZgxMBicQKsPczvp9b9Pw2RstFcTvUhankrVkw7b2XPZ5kfrAFFvFeCuouqvYHJzVBP51AAE89t9k55jvUBSAoBN4MNtbMsAbDYNLUE7axP";
 	private static final String serializedPublicSeed = "tpubD6NzVbkrYhZ4WTxc3EozLS5zTH8Q5otVN4TH3T9tSoBwvEvcne5WS8pmz2yW8S9LA17uygnSaAhhh1nniGD32FaNHX9dRWe9Nbc4sxgjZpg";
@@ -38,9 +38,22 @@ public class MultiWalletTest {
 	public void setUp() throws URISyntaxException, IOException {
 		URL url = this.getClass().getResource("/transaction.json");
 		Assert.assertNotNull(url);
-		Path path = Paths.get(url.toURI());
+		String payload = null;
+		BufferedReader br = new BufferedReader(new FileReader(new File(url.toURI())));
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
+
+	        while (line != null) {
+	            sb.append(line);
+	            sb.append("\n");
+	            line = br.readLine();
+	        }
+	        payload = sb.toString();
+	    } finally {
+	        br.close();
+	    }
 		
-		String payload = new String(Files.readAllBytes(path));
 		transactionJson = new JsonParser().parse(payload).getAsJsonObject();
 	}
 	
