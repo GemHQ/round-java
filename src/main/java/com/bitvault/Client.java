@@ -21,9 +21,11 @@ public class Client {
 	
 	private OkHttpClient httpClient;
 	
+	private String baseUrl;
 	private String appKey;
-	private String appUrl;
 	private String apiToken;
+	private String appUrl;
+	private String walletUrl;
 	private Application application;
 	
 	private String walletKey;
@@ -34,20 +36,29 @@ public class Client {
 	private JsonArray schemas;
 	
 	public NetworkMode networkMode = NetworkMode.TESTNET;
-
-	public Client(String appKey, String apiToken, String walletKey) {
-		this(appKey, apiToken);
+	
+	public Client(String baseUrl, String appKey, String apiToken, String walletKey) {
+		this(baseUrl, appKey, apiToken);
 		
 		this.walletKey = walletKey;
 	}
 	
-	public Client(String appKey, String apiToken) {
+	public Client(String baseUrl, String appKey, String apiToken) {
+		this(baseUrl);
 		this.appKey = appKey;
 		this.apiToken = apiToken;
+	}
+	
+	public Client(String appKey, String appToken) {
+		this(null, appKey, appToken);
+	}
+	
+	public Client(String baseUrl) {
+		this.baseUrl = baseUrl == null ? API_HOST : baseUrl;
 		this.httpClient = new OkHttpClient();
 		
 		try {
-			JsonObject discovery = this.performRequest(API_HOST, "application/json").getAsJsonObject();
+			JsonObject discovery = this.performRequest(this.baseUrl, "application/json").getAsJsonObject();
 			this.parseDiscovery(discovery);
 		} catch(Exception exception) {
 			System.out.println(exception.getMessage());
@@ -139,7 +150,7 @@ public class Client {
 	
 	public Wallet wallet() {
 		if (this.wallet == null) {
-			this.wallet = new Wallet(this.walletKey, this);
+			this.wallet = new Wallet(this.getWalletUrl(), this);
 		}
 		
 		return this.wallet;
@@ -147,11 +158,22 @@ public class Client {
 	
 	public String getAppUrl() {
 		if (this.appUrl == null) {
-			String template = this.mappings.get("application").getAsJsonObject()
-					.get("template").getAsString();
-			this.appUrl = template.replaceAll(":key", this.appKey);
+			this.appUrl = this.urlTemplate("application", this.appKey);
 		}
 		return this.appUrl;
+	}
+	
+	public String getWalletUrl() {
+		if (this.walletUrl == null) {
+			this.walletUrl = this.urlTemplate("wallet", this.walletKey);
+		}
+		return this.walletUrl;
+	}
+	
+	public String urlTemplate(String entity, String key) {
+		String template = this.mappings.get(entity).getAsJsonObject()
+				.get("template").getAsString();
+		return template.replaceAll(":key", this.appKey);
 	}
 
 	public String getApiToken() {
