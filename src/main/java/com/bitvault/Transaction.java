@@ -14,4 +14,7 @@ public class Transaction extends Resource {
 		super(url, client, RESOURCE_NAME);
 	}
 	
+	public String getType() {
+		return this.resource.get("type").getAsString();
+	}
 }

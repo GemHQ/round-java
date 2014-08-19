@@ -34,7 +34,8 @@ public class Resource {
 		this.client = client;
 		this.resourceName = resourceName;
 		
-		this.url = this.resource.get("url").getAsString();
+		if (this.resource.has("url")) 
+			this.url = this.resource.get("url").getAsString();
 	}
 	
 	public String getKey() {
