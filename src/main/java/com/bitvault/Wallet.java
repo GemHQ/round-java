@@ -65,10 +65,10 @@ public class Wallet extends Resource {
 		    JsonObject seedObject = this.resource.getAsJsonObject("primary_private_seed");
 		    
 		    EncryptedMessage encryptedMessage = new EncryptedMessage();
-		    encryptedMessage.ciphertext = seedObject.get("ciphertext").toString();
-		    encryptedMessage.salt = seedObject.get("salt").toString();
-		    encryptedMessage.nonce = seedObject.get("nonce").toString();
-		    encryptedMessage.iterations = Integer.parseInt(seedObject.get("iterations").toString());
+		    encryptedMessage.ciphertext = seedObject.get("ciphertext").getAsString();
+		    encryptedMessage.salt = seedObject.get("salt").getAsString();
+		    encryptedMessage.nonce = seedObject.get("nonce").getAsString();
+		    encryptedMessage.iterations = Integer.parseInt(seedObject.get("iterations").getAsString());
 		    this.encryptedSeed = encryptedMessage;
 		}
 		
