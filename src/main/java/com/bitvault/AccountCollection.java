@@ -24,6 +24,7 @@ public class AccountCollection extends ResourceCollection<Account> {
 		for (JsonElement element : array) {
 			JsonObject resource = element.getAsJsonObject();
 			Account account = new Account(resource, this.client);
+			account.setWallet(wallet);
 			this.add(account);
 		}
 	}
@@ -31,7 +32,6 @@ public class AccountCollection extends ResourceCollection<Account> {
 	@Override
 	public Account get(int index) {
 		Account account = super.get(index);
-		account.setWallet(this.wallet);
 		return account;
 	}
 

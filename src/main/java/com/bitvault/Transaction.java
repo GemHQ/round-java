@@ -17,4 +17,9 @@ public class Transaction extends Resource {
 	public String getType() {
 		return this.resource.get("type").getAsString();
 	}
+	
+	public String getTransactionHash() {
+		JsonObject bitcoinTransaction = this.resource.getAsJsonObject("data");
+		return bitcoinTransaction.get("hash").getAsString();
+	}
 }
