@@ -17,6 +17,13 @@ public class AccountCollection extends ResourceCollection<Account> {
 		super(url, client, RESOURCE_NAME);	
 		
 		this.wallet = wallet;
+		setWallets();
+	}
+	
+	private void setWallets() {
+		for (Account account : collection) {
+			account.setWallet(wallet);
+		}
 	}
 	
 	@Override
