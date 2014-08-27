@@ -18,7 +18,7 @@ public class AccountCollectionTest {
 	}
 	
 	@Test 
-	public void testCreateAccount() throws IOException {
+	public void testCreateAccount() throws IOException, Client.UnexpectedStatusCodeException {
 		int count = accounts.size();
 		
 		String name = "Account-" + System.currentTimeMillis();

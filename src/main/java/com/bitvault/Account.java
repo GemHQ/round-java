@@ -26,17 +26,9 @@ public class Account extends Resource{
 		super(resource, client, RESOURCE_NAME);
 	}
 
-    public Address createAddress() {
-        JsonElement response = null;
-        try {
-            response = this.client.performRequest(getAddressesUrl(), "addresses", "create", null);
-        } catch (UnexpectedStatusCodeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public Address createAddress()
+            throws IOException, UnexpectedStatusCodeException {
+        JsonElement response = this.client.performRequest(getAddressesUrl(), "addresses", "create", null);
 
         return new Address(response.getAsJsonObject(), this.client);
     }
@@ -95,7 +87,8 @@ public class Account extends Resource{
 		return payment;
 	}
 	
-	public Payment createUnsignedPayment(List<Recipient> recipients) {
+	public Payment createUnsignedPayment(List<Recipient> recipients)
+            throws IOException, UnexpectedStatusCodeException {
 		JsonArray recipientsJson = new JsonArray();
 		for (Recipient recipient : recipients) {
 			JsonObject payeeJson = new JsonObject();
@@ -111,15 +104,8 @@ public class Account extends Resource{
 		JsonObject body = new JsonObject();
 		body.add("outputs", recipientsJson);
 		
-		String url = this.resource.getAsJsonObject("payments").get("url").getAsString();
-		JsonObject resource = null;
-		try {
-			resource = this.client.performRequest(url, "payments", "create", body).getAsJsonObject();
-		} catch(IOException e) {
-			return null;
-		} catch(UnexpectedStatusCodeException e) {
-			return null;
-		}
+		String url = resource.getAsJsonObject("payments").get("url").getAsString();
+		resource = this.client.performRequest(url, "payments", "create", body).getAsJsonObject();
 		
 		return new Payment(resource, this.client);
 	}

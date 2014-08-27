@@ -42,18 +42,13 @@ public class AccountCollection extends ResourceCollection<Account> {
 		return account;
 	}
 
-	public Account create(String name) {
+	public Account create(String name)
+            throws IOException, UnexpectedStatusCodeException {
 		JsonObject body = new JsonObject();
 		body.addProperty("name", name);
 		
-		JsonObject resource = null;
-		try {
-			resource = this.client.performRequest(this.url, RESOURCE_NAME, "create", body).getAsJsonObject();
-		} catch(IOException e) {
-			return null;
-		} catch(UnexpectedStatusCodeException e) {
-			return null;
-		}
+		JsonObject resource =
+                this.client.performRequest(this.url, RESOURCE_NAME, "create", body).getAsJsonObject();
 		
 		Account account = new Account(resource, this.client);
 		this.add(account.getKey(), account);

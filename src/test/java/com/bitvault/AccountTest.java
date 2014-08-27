@@ -21,7 +21,7 @@ public class AccountTest {
 	private static final String payAddress = "n3VispXfNCS7rgLpmXcYnUqT7WQKyavPXG";
 	
 	@Test
-	public void testCreateUnsignedPayment() {
+	public void testCreateUnsignedPayment() throws IOException, Client.UnexpectedStatusCodeException {
 		List<Recipient> recipients = new ArrayList<Recipient>();
         recipients.add(Recipient.recipientWithAddress(payAddress, 1000));
 		Payment payment = account.createUnsignedPayment(recipients);
@@ -30,7 +30,7 @@ public class AccountTest {
 	}
 
     @Test
-    public void testCreateAddress() {
+    public void testCreateAddress() throws IOException, Client.UnexpectedStatusCodeException {
         Address address = account.createAddress();
         Assert.assertNotNull(address);
     }
