@@ -52,7 +52,7 @@ public class PaymentTest {
 	private static final MultiWallet wallet = new MultiWallet(primaryPrivSeed, backupPubSeed, cosignerPubSeed);
 	
 	@Test
-	public void testSign() {
+	public void testSign() throws IOException, Client.UnexpectedStatusCodeException {
 		Payment signed = unsignedPayment.sign(wallet);
 		
 		Assert.assertEquals("unconfirmed", signed.getStatus());

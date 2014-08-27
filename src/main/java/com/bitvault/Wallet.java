@@ -1,5 +1,6 @@
 package com.bitvault;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -18,15 +19,17 @@ public class Wallet extends Resource {
 	private String backupPublicSeed;
 	private String cosignerPublicSeed;
 	
-	public Wallet(String url, Client client) {
+	public Wallet(String url, Client client)
+            throws Client.UnexpectedStatusCodeException, IOException{
 		super(url, client, RESOURCE_NAME);
 	}
 	
 	public Wallet(JsonObject resource, Client client) {
 		super(resource, client, RESOURCE_NAME);
 	}
-	
-	public void unlock(String passphrase, UnlockedWalletCallback callback) {
+
+	public void unlock(String passphrase, UnlockedWalletCallback callback)
+            throws IOException, Client.UnexpectedStatusCodeException {
 		
 		String decryptedSeed = null;
 		try {
@@ -43,7 +46,7 @@ public class Wallet extends Resource {
 		callback.execute(wallet);
 	}
 	
-	public AccountCollection accounts() {
+	public AccountCollection accounts() throws Client.UnexpectedStatusCodeException, IOException {
 		if (this.accountsCollection == null) {
 			this.accountsCollection = new AccountCollection(this.getAccountsUrl(), this.client, this);
 		}

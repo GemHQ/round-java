@@ -13,8 +13,8 @@ public class AccountCollectionTest {
 	private static AccountCollection accounts = null;
 	
 	@Before
-	public void setUp() throws IOException {
-		accounts = client.application().wallets().get(0).accounts();
+	public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
+		accounts = client.wallet().accounts();
 	}
 	
 	@Test 

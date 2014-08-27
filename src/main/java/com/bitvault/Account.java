@@ -7,6 +7,7 @@ import java.util.List;
 import com.bitvault.Client.UnexpectedStatusCodeException;
 import com.bitvault.multiwallet.MultiWallet;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class Account extends Resource{
@@ -14,10 +15,10 @@ public class Account extends Resource{
 	public static final String RESOURCE_NAME = "account";
 	
 	private Wallet wallet;
-	private AddressCollection addresses;
 	private TransactionCollection transactions;
 	
-	public Account(String url, Client client){
+	public Account(String url, Client client)
+            throws UnexpectedStatusCodeException, IOException {
 		super(url, client, RESOURCE_NAME);
 	}
 	
@@ -25,15 +26,23 @@ public class Account extends Resource{
 		super(resource, client, RESOURCE_NAME);
 	}
 
-	public AddressCollection addresses() {
-		if (this.addresses == null) {
-			this.addresses = new AddressCollection(this.getAccountsUrl(), this.client);
-		}
-		
-		return this.addresses;
-	}
-	
-	public TransactionCollection transactions() {
+    public Address createAddress() {
+        JsonElement response = null;
+        try {
+            response = this.client.performRequest(getAddressesUrl(), "addresses", "create", null);
+        } catch (UnexpectedStatusCodeException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return new Address(response.getAsJsonObject(), this.client);
+    }
+
+	public TransactionCollection transactions()
+            throws IOException, UnexpectedStatusCodeException {
 		if (this.transactions == null) {
 			this.transactions = new TransactionCollection(this.getTransactionsUrl(), this.client);
 		}
@@ -49,7 +58,7 @@ public class Account extends Resource{
 		return this.resource.get("balance").getAsLong();
 	}
 	
-	public String getAccountsUrl() {
+	public String getAddressesUrl() {
 		return this.resource.get("addresses")
 				.getAsJsonObject().get("url").getAsString();
 	}
@@ -63,20 +72,23 @@ public class Account extends Resource{
 		this.wallet = wallet;
 	}
 	
-	public Payment pay(String passphrase, String address, long amount) {
+	public Payment pay(String passphrase, String address, long amount)
+            throws IOException, UnexpectedStatusCodeException {
 		return this.pay(passphrase, Recipient.recipientWithAddress(address, amount));
 	}
 	
-	public Payment pay(String passphrase, Recipient recipient) {
+	public Payment pay(String passphrase, Recipient recipient)
+            throws IOException, UnexpectedStatusCodeException {
 		List<Recipient> recipients = Arrays.asList(new Recipient[] {recipient});
 		return this.pay(passphrase, recipients);
 	}
 	
-	public Payment pay(String passphrase, List<Recipient> recipients) {
+	public Payment pay(String passphrase, List<Recipient> recipients)
+            throws IOException, UnexpectedStatusCodeException {
 		final Payment payment = this.createUnsignedPayment(recipients);
 		this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
 			@Override
-			public void execute(MultiWallet wallet) {
+			public void execute(MultiWallet wallet) throws IOException, UnexpectedStatusCodeException {
 				payment.sign(wallet);
 			}
 		});

@@ -13,7 +13,8 @@ public class AccountCollection extends ResourceCollection<Account> {
 	
 	private Wallet wallet;
 	
-	public AccountCollection(String url, Client client, Wallet wallet)  {
+	public AccountCollection(String url, Client client, Wallet wallet)
+            throws UnexpectedStatusCodeException, IOException {
 		super(url, client, RESOURCE_NAME);	
 		
 		this.wallet = wallet;
@@ -31,8 +32,7 @@ public class AccountCollection extends ResourceCollection<Account> {
 		for (JsonElement element : array) {
 			JsonObject resource = element.getAsJsonObject();
 			Account account = new Account(resource, this.client);
-			account.setWallet(wallet);
-			this.add(account);
+			this.add(account.getKey(), account);
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class AccountCollection extends ResourceCollection<Account> {
 		}
 		
 		Account account = new Account(resource, this.client);
-		this.add(account);
+		this.add(account.getKey(), account);
 		return account;
 	}
 }

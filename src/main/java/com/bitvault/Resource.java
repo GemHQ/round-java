@@ -15,18 +15,13 @@ public class Resource {
 	
 	public static final String DEFAULT_ACTION = "get";
 	
-	public Resource(String url, Client client, String resourceName) {
+	public Resource(String url, Client client, String resourceName)
+            throws Client.UnexpectedStatusCodeException, IOException {
 		this.url = url;
 		this.client = client;
 		this.resourceName = resourceName;
-		
-		try {
-			this.resource = this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
-		} catch(Client.UnexpectedStatusCodeException exception) {
-			System.out.println(exception.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		this.resource = this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
 	}
 	
 	public Resource(JsonObject resource, Client client, String resourceName) {

@@ -1,6 +1,10 @@
 package com.bitvault;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.google.bitcoin.crypto.DeterministicKey.NetworkMode;
 import com.google.gson.JsonArray;
@@ -25,11 +29,11 @@ public class Client {
 	private String appKey;
 	private String apiToken;
 	private String appUrl;
-	private Application application;
 	
-	private String walletKey;
-	private String walletUrl;
+    private String email;
 	private Wallet wallet;
+
+    private Authorizer authorizer;
 	
 	private JsonObject mappings;
 	private JsonObject resources;
@@ -37,32 +41,34 @@ public class Client {
 	
 	public NetworkMode networkMode = NetworkMode.TESTNET;
 	
-	public Client(String baseUrl, String appKey, String apiToken, String walletKey) {
+	public Client(String baseUrl, String appKey, String apiToken, String email)
+            throws UnexpectedStatusCodeException, IOException {
 		this(baseUrl, appKey, apiToken);
 		
-		this.walletKey = walletKey;
+		this.email = email;
 	}
 	
-	public Client(String baseUrl, String appKey, String apiToken) {
+	public Client(String baseUrl, String appKey, String apiToken)
+            throws UnexpectedStatusCodeException, IOException {
 		this(baseUrl);
 		this.appKey = appKey;
 		this.apiToken = apiToken;
 	}
 	
-	public Client(String appKey, String appToken) {
+	public Client(String appKey, String appToken)
+            throws UnexpectedStatusCodeException, IOException {
 		this(null, appKey, appToken);
 	}
 	
-	public Client(String baseUrl) {
+	public Client(String baseUrl)
+            throws UnexpectedStatusCodeException, IOException {
 		this.baseUrl = baseUrl == null ? API_HOST : baseUrl;
-		this.httpClient = new OkHttpClient();
+		httpClient = new OkHttpClient();
+        authorizer = new Authorizer();
 		
-		try {
-			JsonObject discovery = this.performRequest(this.baseUrl, "application/json").getAsJsonObject();
-			this.parseDiscovery(discovery);
-		} catch(Exception exception) {
-			System.out.println(exception.getMessage());
-		}
+
+		JsonObject discovery = this.performRequest(this.baseUrl, "application/json").getAsJsonObject();
+		this.parseDiscovery(discovery);
 	}
 	
 	public JsonElement performRequest(String url, 
@@ -85,9 +91,21 @@ public class Client {
 			contentType = contentTypeElement.getAsString();
 		JsonElement authorizationTypeElement = requestSpec.get("authorization");
 		String authorizationType = null;
-		if (authorizationTypeElement != null)
-			authorizationType = authorizationTypeElement.getAsString();
-		
+		if (authorizationTypeElement != null) {
+            if (authorizationTypeElement.isJsonArray()) {
+                JsonArray authorizationTypes = authorizationTypeElement.getAsJsonArray();
+                for (JsonElement element : authorizationTypes) {
+                    String scheme = element.getAsString();
+                    if (authorizer.isAuthorized(scheme)) {
+                        authorizationType = scheme;
+                        break;
+                    }
+                }
+            } else {
+                authorizationType = authorizationTypeElement.getAsString();
+            }
+        }
+
 		String method = action.get("method").getAsString();
 		return this.performRequest(method, url, authorizationType,
 				accept, contentType, requestBody, expectedStatus);
@@ -108,7 +126,7 @@ public class Client {
 		builder.method(method, body);
 		
 		if (authorizationType != null)
-			builder.header("Authorization", this.authorizationForType(authorizationType));
+			builder.header("Authorization", authorizer.getCredentials(authorizationType));
 		if (accept != null)
 			builder.header("Accept", accept);
 		if (contentType != null)
@@ -120,7 +138,7 @@ public class Client {
 		int statusCode = response.code();
 		String responseContent = response.body().string();
 		if (statusCode != expectedStatus)
-			throw new UnexpectedStatusCodeException(responseContent, statusCode);
+			throw new UnexpectedStatusCodeException(responseContent, statusCode, response);
 		
 		return new JsonParser().parse(responseContent);
 	}
@@ -129,55 +147,66 @@ public class Client {
 			throws UnexpectedStatusCodeException, IOException {
 		return this.performRequest("GET", url, null, accept, null, null, 200);
 	}
-	
-	private String authorizationForType(String type) {
-		return type + " " + this.apiToken;
-	}
-	
+
+    public void authorizeApplication(String userToken, String deviceId) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("user_token", userToken);
+        params.put("device_id", deviceId);
+        params.put("api_token", getApiToken());
+
+        authorizer.authorize("Gem-Application", params);
+    }
+
+    public void authorizeDevice(String deviceId) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("device_id", deviceId);
+        params.put("api_token", getApiToken());
+
+        authorizer.authorize("Gem-Device", params);
+    }
+
+    public void authorizeOTP(String key, String secret) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("key", key);
+        params.put("secret", secret);
+        params.put("api_token", getApiToken());
+
+        authorizer.authorize("Gem-OOB-OTP", params);
+    }
+
 	private void parseDiscovery(JsonObject discovery) {
 		this.mappings = discovery.get(MAPPINGS_KEY).getAsJsonObject();
 		this.resources = discovery.get(RESOURCES_KEY).getAsJsonObject();
 		this.schemas = discovery.get(SCHEMAS_KEY).getAsJsonArray();
 	}
 	
-	public Application application() throws IOException {
-		if (application == null) {
-			application = new Application(this.getAppUrl(), this);
-		}
+	public Wallet wallet() throws UnexpectedStatusCodeException, IOException {
+        if (wallet == null) {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("email", email);
+            String url = getUrl("wallet_query", params);
 
-		return this.application;
-	}
-	
-	public Wallet wallet() {
-		if (this.wallet == null) {
-			this.wallet = new Wallet(this.getWalletUrl(), this);
-		}
-		
-		return this.wallet;
-	}
-	
-	public String getAppUrl() {
-		if (this.appUrl == null) {
-			this.appUrl = this.urlTemplate("application", this.appKey);
-		}
-		return this.appUrl;
-	}
-	
-	public void setWalletKey(String walletKey) {
-		this.walletKey = walletKey;
-	}
-	
-	public String getWalletUrl() {
-		if (this.walletUrl == null) {
-			this.walletUrl = this.urlTemplate("wallet", this.walletKey);
-		}
-		return this.walletUrl;
-	}
-	
-	public String urlTemplate(String entity, String key) {
-		String template = this.mappings.get(entity).getAsJsonObject()
-				.get("template").getAsString();
-		return template.replaceAll(":key", key);
+            JsonElement walletResource = performRequest(url, "wallet_query", "get", null);
+            wallet = new Wallet(walletResource.getAsJsonObject(), this);
+        }
+
+        return wallet;
+    }
+
+	public String getUrl(String entity, Map<String, String> params) {
+        JsonObject urlSpec = this.mappings.get(entity).getAsJsonObject();
+		String url = urlSpec.get("url").getAsString();
+
+        if (params != null) {
+            List<String> paramsList = new ArrayList<String>();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                paramsList.add(entry.getKey() + "=" + entry.getValue());
+            }
+            String paramsString = Util.join(paramsList, "&");
+            url = url + "?" + paramsString;
+        }
+
+		return url;
 	}
 
 	public String getApiToken() {
@@ -198,10 +227,12 @@ public class Client {
 	
 	public class UnexpectedStatusCodeException extends Exception {
 		private static final long serialVersionUID = 1L;
-		private int statusCode;
-		public UnexpectedStatusCodeException(String message, int statusCode) {
+		public int statusCode;
+        public Response response;
+		public UnexpectedStatusCodeException(String message, int statusCode, Response response) {
 			super(message);
 			this.statusCode = statusCode;
+            this.response = response;
 		}
 		
 		public String getMessage() {

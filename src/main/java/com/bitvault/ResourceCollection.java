@@ -2,7 +2,9 @@ package com.bitvault;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonArray;
 
@@ -12,23 +14,19 @@ public abstract class ResourceCollection<T> {
 	protected Client client;
 	protected String resourceName;
 	
-	protected ArrayList<T> collection = new ArrayList<T>();
+	protected List<T> collection = new ArrayList<T>();
+    protected Map<String, T> map = new HashMap<String, T>();
 	
 	public static final String DEFAULT_ACTION = "list";
 	
-	public ResourceCollection(String url, Client client, String resourceName) {
+	public ResourceCollection(String url, Client client, String resourceName)
+            throws Client.UnexpectedStatusCodeException, IOException {
 		this.url = url;
 		this.client = client;
 		this.resourceName = resourceName;
 		
-		JsonArray objects = null;
-		try {
-			objects = this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
-		} catch(Client.UnexpectedStatusCodeException exception) {
-			System.out.println(exception.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JsonArray objects =
+                this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
 		
 		this.populateCollection(objects);
 	}
@@ -36,9 +34,12 @@ public abstract class ResourceCollection<T> {
 	public T get(int index) {
 		return this.collection.get(index);
 	}
+
+    public T get(String key) { return this.map.get(key); }
 	
-	public void add(T element) {
-		this.collection.add(element);
+	public void add(String key, T element) {
+        this.collection.add(element);
+        this.map.put(key, element);
 	}
 	
 	public int size() {

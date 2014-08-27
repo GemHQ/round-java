@@ -39,13 +39,15 @@ public class Payment extends Resource{
 				TestNet3Params.get() : MainNetParams.get();
 	}
 
-	public Payment(String url, Client client) {
+	public Payment(String url, Client client)
+            throws UnexpectedStatusCodeException, IOException {
 		super(url, client, RESOURCE_NAME);
 		this.networkParams = this.client.networkMode == NetworkMode.TESTNET ?
 				TestNet3Params.get() : MainNetParams.get();
 	}
 	
-	public Payment sign(MultiWallet wallet) {
+	public Payment sign(MultiWallet wallet)
+            throws IOException, UnexpectedStatusCodeException {
 		Transaction transaction = this.getNativeTransaction();
 		JsonArray signatures = this.getSignatures(wallet, transaction);
 		
@@ -53,14 +55,7 @@ public class Payment extends Resource{
 		body.addProperty("transaction_hash", transaction.getHashAsString());
 		body.add("inputs", signatures);
 		
-		JsonElement response = null;
-		try {
-			response = this.client.performRequest(this.url, "unsigned_payment", "sign", body);
-		} catch (UnexpectedStatusCodeException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JsonElement response = this.client.performRequest(this.url, "unsigned_payment", "sign", body);
 		
 		return new Payment(response.getAsJsonObject(), this.client);
 	}

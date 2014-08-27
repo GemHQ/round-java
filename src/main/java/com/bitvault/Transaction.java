@@ -2,6 +2,8 @@ package com.bitvault;
 
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
+
 public class Transaction extends Resource {
 	
 	public static final String RESOURCE_NAME = "transaction";
@@ -10,7 +12,8 @@ public class Transaction extends Resource {
 		super(resource, client, RESOURCE_NAME);
 	}
 
-	public Transaction(String url, Client client) {
+	public Transaction(String url, Client client)
+            throws Client.UnexpectedStatusCodeException, IOException {
 		super(url, client, RESOURCE_NAME);
 	}
 	
