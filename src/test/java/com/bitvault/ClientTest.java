@@ -16,14 +16,15 @@ public class ClientTest {
 	public static Client client;
     static {
         try {
-            client = new Client(baseUrl, appKey, apiToken, email);
+            client = new Client(baseUrl, appKey, apiToken);
         } catch (Client.UnexpectedStatusCodeException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        client.authorizeDevice(deviceId);
-        client.authorizeApplication(userToken, deviceId);
+        client.setEmail(email);
+        client.addDeviceAuthorization(deviceId);
+        client.addAppAuthorization(userToken, deviceId);
     }
 
 	@Test

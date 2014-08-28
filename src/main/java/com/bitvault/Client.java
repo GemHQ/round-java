@@ -41,13 +41,6 @@ public class Client {
 	
 	public NetworkMode networkMode = NetworkMode.TESTNET;
 	
-	public Client(String baseUrl, String appKey, String apiToken, String email)
-            throws UnexpectedStatusCodeException, IOException {
-		this(baseUrl, appKey, apiToken);
-		
-		this.email = email;
-	}
-	
 	public Client(String baseUrl, String appKey, String apiToken)
             throws UnexpectedStatusCodeException, IOException {
 		this(baseUrl);
@@ -94,12 +87,16 @@ public class Client {
 		if (authorizationTypeElement != null) {
             if (authorizationTypeElement.isJsonArray()) {
                 JsonArray authorizationTypes = authorizationTypeElement.getAsJsonArray();
+                String scheme = null;
                 for (JsonElement element : authorizationTypes) {
-                    String scheme = element.getAsString();
+                    scheme = element.getAsString();
                     if (authorizer.isAuthorized(scheme)) {
                         authorizationType = scheme;
                         break;
                     }
+                }
+                if (authorizationType == null) {
+                    authorizationType = scheme;
                 }
             } else {
                 authorizationType = authorizationTypeElement.getAsString();
@@ -148,7 +145,22 @@ public class Client {
 		return this.performRequest("GET", url, null, accept, null, null, 200);
 	}
 
-    public void authorizeApplication(String userToken, String deviceId) {
+    public String authorizeDevice(String name, String deviceId)
+            throws IOException, UnexpectedStatusCodeException {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+        String authUrl = getUrl("user_query", params);
+
+        JsonObject body = new JsonObject();
+        body.addProperty("name", name);
+        body.addProperty("device_id", deviceId);
+
+        JsonObject response = performRequest(authUrl, "user", "authorize_device", body).getAsJsonObject();
+
+        return response.get("auth_token").getAsString();
+    }
+
+    public void addAppAuthorization(String userToken, String deviceId) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("user_token", userToken);
         params.put("device_id", deviceId);
@@ -157,7 +169,7 @@ public class Client {
         authorizer.authorize("Gem-Application", params);
     }
 
-    public void authorizeDevice(String deviceId) {
+    public void addDeviceAuthorization(String deviceId) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("device_id", deviceId);
         params.put("api_token", getApiToken());
@@ -165,13 +177,17 @@ public class Client {
         authorizer.authorize("Gem-Device", params);
     }
 
-    public void authorizeOTP(String key, String secret) {
+    public void addOTPAuthorization(String key, String secret) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("key", key);
         params.put("secret", secret);
         params.put("api_token", getApiToken());
 
         authorizer.authorize("Gem-OOB-OTP", params);
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 	private void parseDiscovery(JsonObject discovery) {

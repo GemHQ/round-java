@@ -35,12 +35,6 @@ public class AccountCollection extends ResourceCollection<Account> {
 			this.add(account.getKey(), account);
 		}
 	}
-	
-	@Override
-	public Account get(int index) {
-		Account account = super.get(index);
-		return account;
-	}
 
 	public Account create(String name)
             throws IOException, UnexpectedStatusCodeException {
