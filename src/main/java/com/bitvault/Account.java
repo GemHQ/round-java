@@ -86,13 +86,23 @@ public class Account extends Resource{
 		});
 		return payment;
 	}
-	
+
+    public Payment payToEmail(String passphrase, String email, long amount)
+            throws IOException, UnexpectedStatusCodeException {
+        Recipient recipient = Recipient.recipientWithEmail(email, amount);
+        return this.pay(passphrase, recipient);
+    }
+
 	public Payment createUnsignedPayment(List<Recipient> recipients)
             throws IOException, UnexpectedStatusCodeException {
 		JsonArray recipientsJson = new JsonArray();
 		for (Recipient recipient : recipients) {
 			JsonObject payeeJson = new JsonObject();
-			payeeJson.addProperty("address", recipient.address);
+            if (recipient.email != null) {
+                payeeJson.addProperty("email", recipient.email);
+            } else if(recipient.address != null) {
+                payeeJson.addProperty("address", recipient.address);
+            }
 			
 			JsonObject recipientJson = new JsonObject();
 			recipientJson.add("payee", payeeJson);
@@ -105,7 +115,7 @@ public class Account extends Resource{
 		body.add("outputs", recipientsJson);
 		
 		String url = resource.getAsJsonObject("payments").get("url").getAsString();
-		resource = this.client.performRequest(url, "payments", "create", body).getAsJsonObject();
+		JsonObject resource = this.client.performRequest(url, "payments", "create", body).getAsJsonObject();
 		
 		return new Payment(resource, this.client);
 	}
