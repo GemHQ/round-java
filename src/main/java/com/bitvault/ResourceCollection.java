@@ -25,10 +25,7 @@ public abstract class ResourceCollection<T> {
 		this.client = client;
 		this.resourceName = resourceName;
 		
-		JsonArray objects =
-                this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
-		
-		this.populateCollection(objects);
+        refresh();
 	}
 	
 	public T get(int index) {
@@ -41,7 +38,17 @@ public abstract class ResourceCollection<T> {
         this.collection.add(element);
         this.map.put(key, element);
 	}
-	
+
+    public void refresh() throws Client.UnexpectedStatusCodeException, IOException {
+        this.collection.clear();
+        this.map.clear();
+
+        JsonArray objects =
+                this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
+
+        populateCollection(objects);
+    }
+
 	public int size() {
 		return this.collection.size();
 	}

@@ -21,7 +21,7 @@ public class Resource {
 		this.client = client;
 		this.resourceName = resourceName;
 
-		this.resource = this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
+		refresh();
 	}
 	
 	public Resource(JsonObject resource, Client client, String resourceName) {
@@ -32,7 +32,11 @@ public class Resource {
 		if (this.resource.has("url")) 
 			this.url = this.resource.get("url").getAsString();
 	}
-	
+
+    public void refresh() throws Client.UnexpectedStatusCodeException, IOException {
+        resource = this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
+    }
+
 	public String getKey() {
 		if (this.key == null)
 			this.key = this.resource.get("key").getAsString();
