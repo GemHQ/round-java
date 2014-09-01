@@ -2,6 +2,8 @@ package com.bitvault;
 
 import java.util.*;
 
+import com.google.common.io.BaseEncoding;
+
 /**
  * Created by Julian on 8/27/14.
  */
@@ -14,7 +16,8 @@ public class Authorizer {
             String email = params.get("email");
             String password = params.get("password");
             credential = email + ":" + password;
-            credential = Base64.getEncoder().encodeToString(credential.getBytes());
+            //credential = Base64.getEncoder().encodeToString(credential.getBytes());
+            credential = BaseEncoding.base64().encode(credential.getBytes());
         } else {
             credential = compileParams(params);
         }
