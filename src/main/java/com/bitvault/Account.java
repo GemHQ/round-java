@@ -49,6 +49,8 @@ public class Account extends Resource{
 	public long balance() {
 		return this.resource.get("balance").getAsLong();
 	}
+
+    public long pendingBalance() { return resource.get("pending_balance").getAsLong(); }
 	
 	public String getAddressesUrl() {
 		return this.resource.get("addresses")

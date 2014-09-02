@@ -7,8 +7,8 @@ import org.junit.*;
 public class ClientTest {
 
     private static final String baseUrl = "http://bitvault-api.dev";
-	private static final String appKey = "nZ16B3awE8QGTmrSkTkCDg";
-	private static final String apiToken = "7yZmdvTpaG-AvaHo8C8RSBwnC1Swef7ELxGcObt38Ac";
+	private static final String appKey = "Pu8mHhWtzbK2OT3jFvI_Cw";
+	private static final String apiToken = "QPvLMWq-jD4WdWzzoCwyD0RCuX2sGe7gF2BDbkeYPUg";
     private static final String email = "test@gem.co";
     private static final String userToken = "krdJA1vA11bK-7PmyDoH8n6ayfj-7e4jSgndYUUAXMo";
     private static final String deviceId = "9f0db767-82a9-4563-89b4-20bff123f473";
