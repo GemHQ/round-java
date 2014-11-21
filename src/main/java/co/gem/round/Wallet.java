@@ -33,8 +33,16 @@ public class Wallet extends Resource {
 		
 		String decryptedSeed = null;
 
-		decryptedSeed = PassphraseBox.decrypt(passphrase, this.getEncryptedSeed());
-		
+		try {
+			decryptedSeed = PassphraseBox.decrypt(passphrase, this.getEncryptedSeed());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return;
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+			return;
+		}
+
 		MultiWallet wallet = new MultiWallet(decryptedSeed, this.getBackupPublicSeed(), this.getCosignerPublicSeed());
 		callback.execute(wallet);
 	}
