@@ -46,10 +46,13 @@ public class PaymentTest {
 		unsignedPayment = new Payment(resource, client);
 	}
 	
-	private static final String primaryPrivSeed = "xprv9s21ZrQH143K2u1Ce1XfLCXFGXya1oXStg6uDns8tY4LVUH7TJuhwh9aTgidA4YmsgoEUpjY8rncY4CyUdiG5rPF1sG8o2x1JEavgWcVrmy";
-	private static final String backupPubSeed = "xpub661MyMwAqRbcEwppdfPSA76Ean7apVUSuvYaXNMdoPLsBSZnRMj6A575qXHEDhPaiaqoNoADHXBcPxXBdfPgijQLFRr6PFb354rU5A7A6Ty";
-	private static final String cosignerPubSeed = "tpubD6NzVbkrYhZ4WktZmRfVsUF1ZqPLirFiuaTom2W6dp9W6DuPzefqHR83ALqyRBNVSoScLwwnHQjj95xzTsqxJP2RuopfVmp7Yd7aSyTZoZp";
-	private static final MultiWallet wallet = new MultiWallet(primaryPrivSeed, backupPubSeed, cosignerPubSeed);
+	private static final String primaryPrivSeed =
+			"xprv9s21ZrQH143K2u1Ce1XfLCXFGXya1oXStg6uDns8tY4LVUH7TJuhwh9aTgidA4YmsgoEUpjY8rncY4CyUdiG5rPF1sG8o2x1JEavgWcVrmy";
+	private static final String backupPubSeed =
+			"xpub661MyMwAqRbcEwppdfPSA76Ean7apVUSuvYaXNMdoPLsBSZnRMj6A575qXHEDhPaiaqoNoADHXBcPxXBdfPgijQLFRr6PFb354rU5A7A6Ty";
+	private static final String cosignerPubSeed =
+			"xpub661MyMwAqRbcFbKuGUZ9Ju81FUff3FfyafeUqyjgDzVdZBwGfTfUETz6c6ivKJtrG4WDJV3XJV1wXY8Rc2J4v9k2bSpSLKV9rRkVsh14uZU";
+	private static final MultiWallet wallet = MultiWallet.importSeeds(primaryPrivSeed, backupPubSeed, cosignerPubSeed);
 	
 	@Test
 	public void testSign() throws IOException, Client.UnexpectedStatusCodeException {

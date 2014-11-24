@@ -2,6 +2,7 @@ package co.gem.round.multiwallet;
 
 
 
+import co.gem.round.encoding.Base58;
 import org.bitcoinj.core.*;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -10,12 +11,18 @@ import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
 import org.bitcoinj.wallet.DeterministicKeyChain;
 import org.bitcoinj.wallet.DeterministicSeed;
+import sun.nio.ch.Net;
 
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 
 public class MultiWallet {
+
+	public static enum Blockchain {
+		TESTNET, MAINNET
+	}
 
 	private DeterministicKey primaryPrivateKey;
 	private DeterministicKey backupPrivateKey;
@@ -23,9 +30,11 @@ public class MultiWallet {
 	private DeterministicKey backupPublicKey;
 	private DeterministicKey cosignerPublicKey;
 
-	private static NetworkParameters networkParameters = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+	private NetworkParameters networkParameters;
 	
-	public MultiWallet() {
+	private MultiWallet(NetworkParameters networkParameters) {
+		this.networkParameters = networkParameters;
+
 		SecureRandom random1 = new SecureRandom();
 		SecureRandom random2 = new SecureRandom();
 		DeterministicSeed primarySeed = new DeterministicKeyChain(random1).getSeed();
@@ -36,16 +45,50 @@ public class MultiWallet {
 		this.backupPublicKey = this.backupPrivateKey.getPubOnly();
 	}
 	
-	public MultiWallet(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
+	private MultiWallet(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
+		byte[] decoded = new byte[0];
+		try {
+			decoded = Base58.decode(primaryPrivateSeed);
+		} catch (AddressFormatException e) {
+			e.printStackTrace();
+		}
+		ByteBuffer buffer = ByteBuffer.wrap(decoded);
+		this.networkParameters = networkParametersFromHeaderBytes(buffer.getInt());
+
 		this.primaryPrivateKey = DeterministicKey.deserializeB58(primaryPrivateSeed, networkParameters);
 		if (backupPublicSeed != null)
 			this.backupPublicKey = DeterministicKey.deserializeB58(backupPublicSeed, networkParameters);
 		if (cosignerPublicSeed != null)
 			this.cosignerPublicKey = DeterministicKey.deserializeB58(cosignerPublicSeed, networkParameters);
 	}
-	
-	public static MultiWallet generate() {
-		return new MultiWallet();
+
+	public static NetworkParameters networkParametersFromBlockchain(Blockchain blockchain) {
+		switch(blockchain) {
+			case MAINNET:
+				return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+			case TESTNET:
+				return NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
+		}
+
+		return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+	}
+
+	public static NetworkParameters networkParametersFromHeaderBytes(int headerBytes) {
+		if (headerBytes == 0x043587CF || headerBytes == 0x04358394)
+			return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+		if (headerBytes == 0x0488B21E || headerBytes == 0x0488ADE4)
+			return NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
+
+		return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+	}
+
+	public static MultiWallet generate(Blockchain blockchain) {
+		NetworkParameters networkParameters = networkParametersFromBlockchain(blockchain);
+		return new MultiWallet(networkParameters);
+	}
+
+	public static MultiWallet importSeeds(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
+		return new MultiWallet(primaryPrivateSeed, backupPublicSeed, cosignerPublicSeed);
 	}
 	
 	public String serializedPrimaryPrivateSeed() {
@@ -109,5 +152,9 @@ public class MultiWallet {
 		DeterministicKey primaryPrivateKey = this.childPrimaryPrivateKeyFromPath(walletPath);
 		TransactionSignature signature = new TransactionSignature(primaryPrivateKey.sign(sigHash), Transaction.SigHash.ALL, false);
 		return Base58.encode(signature.encodeToBitcoin());
+	}
+
+	public NetworkParameters networkParameters() {
+		return networkParameters;
 	}
 }

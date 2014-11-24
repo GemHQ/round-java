@@ -43,7 +43,8 @@ public class Wallet extends Resource {
 			return;
 		}
 
-		MultiWallet wallet = new MultiWallet(decryptedSeed, this.getBackupPublicSeed(), this.getCosignerPublicSeed());
+		MultiWallet wallet = MultiWallet.importSeeds(decryptedSeed,
+				this.getBackupPublicSeed(), this.getCosignerPublicSeed());
 		callback.execute(wallet);
 	}
 	
