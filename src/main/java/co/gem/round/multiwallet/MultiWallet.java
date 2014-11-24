@@ -2,10 +2,7 @@ package co.gem.round.multiwallet;
 
 
 
-import org.bitcoinj.core.Base58;
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.Sha256Hash;
-import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.*;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.TransactionSignature;
@@ -25,6 +22,8 @@ public class MultiWallet {
 	
 	private DeterministicKey backupPublicKey;
 	private DeterministicKey cosignerPublicKey;
+
+	private static NetworkParameters networkParameters = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
 	
 	public MultiWallet() {
 		SecureRandom random1 = new SecureRandom();
@@ -38,11 +37,11 @@ public class MultiWallet {
 	}
 	
 	public MultiWallet(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
-		this.primaryPrivateKey = DeterministicKey.deserializeB58(null, primaryPrivateSeed);
+		this.primaryPrivateKey = DeterministicKey.deserializeB58(primaryPrivateSeed, networkParameters);
 		if (backupPublicSeed != null)
-			this.backupPublicKey = DeterministicKey.deserializeB58(null, backupPublicSeed);
+			this.backupPublicKey = DeterministicKey.deserializeB58(backupPublicSeed, networkParameters);
 		if (cosignerPublicSeed != null)
-			this.cosignerPublicKey = DeterministicKey.deserializeB58(null, cosignerPublicSeed);
+			this.cosignerPublicKey = DeterministicKey.deserializeB58(cosignerPublicSeed, networkParameters);
 	}
 	
 	public static MultiWallet generate() {
@@ -50,23 +49,23 @@ public class MultiWallet {
 	}
 	
 	public String serializedPrimaryPrivateSeed() {
-		return this.primaryPrivateKey.serializePrivB58();
+		return this.primaryPrivateKey.serializePrivB58(networkParameters);
 	}
 	
 	public String serializedPrimaryPublicSeed() {
-		return this.primaryPrivateKey.serializePubB58();
+		return this.primaryPrivateKey.serializePubB58(networkParameters);
 	}
 	
 	public String serializedBackupPrivateSeed() {
-		return this.backupPrivateKey.serializePrivB58();
+		return this.backupPrivateKey.serializePrivB58(networkParameters);
 	}
 	
 	public String serializedBackupPublicSeed() {
-		return this.backupPublicKey.serializePubB58();
+		return this.backupPublicKey.serializePubB58(networkParameters);
 	}
 	
 	public String serializedCosignerPublicSeed() {
-		return this.cosignerPublicKey.serializePubB58();
+		return this.cosignerPublicKey.serializePubB58(networkParameters);
 	}
 	
 	public DeterministicKey childPrimaryPrivateKeyFromPath(String path) {

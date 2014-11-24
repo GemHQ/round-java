@@ -11,6 +11,7 @@ import co.gem.round.ClientTest;
 import co.gem.round.Payment;
 import com.google.common.io.BaseEncoding;
 import org.bitcoinj.core.Base58;
+import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -28,6 +29,7 @@ public class MultiWalletTest {
 	private static final String serializedPublicSeed = "tpubD6NzVbkrYhZ4WTxc3EozLS5zTH8Q5otVN4TH3T9tSoBwvEvcne5WS8pmz2yW8S9LA17uygnSaAhhh1nniGD32FaNHX9dRWe9Nbc4sxgjZpg";
 	
 	private static final MultiWallet testWallet = new MultiWallet(serializedPrivateSeed, null, null);
+	private static final NetworkParameters networkParameters = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
 	
 	public static JsonObject transactionJson;
 	
@@ -76,7 +78,7 @@ public class MultiWalletTest {
 	public void testChildKeyDerivationDepth1() {
 		DeterministicKey childKey = testWallet.childPrimaryPrivateKeyFromPath("m/0");
 		
-		Assert.assertEquals(depth1ChildKey, childKey.serializePrivB58());
+		Assert.assertEquals(depth1ChildKey, childKey.serializePrivB58(networkParameters));
 	}
 	
 	private static final String depth2ChildKey = "tprv8eYDSs689L665EDnMVm9zNQQdC4uunbAbhD6pQk1BFcTkFtNXyno64c29iYDhj5TTumkkwmyuopGFfSLmTHGczeaRf7v67CvyvmuQ87HWiG";
@@ -85,7 +87,7 @@ public class MultiWalletTest {
 	public void testChildKeyDerivationDepth2() {
 		DeterministicKey childKey = testWallet.childPrimaryPrivateKeyFromPath("m/1/1");
 		
-		Assert.assertEquals(depth2ChildKey, childKey.serializePrivB58());
+		Assert.assertEquals(depth2ChildKey, childKey.serializePrivB58(networkParameters));
 	}
 	
 	private static final String serializedBackupPublicSeed = "tpubD6NzVbkrYhZ4XcCJ7djVayRpnwAyXvHFgFgeqAfZXRVvUiY3vHbXM8jimqTaSXeVshQN7aH5jWZ7YW3L4o5757bZjTLWLnVonG8YC9ZLx8q";
@@ -114,9 +116,9 @@ public class MultiWalletTest {
 		DeterministicKey childCosignerPubKey = redeemScriptMultiWallet.childCosignerPublicKeyFromPath(redeemScriptPath);
 		DeterministicKey childBackupPubKey = redeemScriptMultiWallet.childBackupPublicKeyFromPath(redeemScriptPath);
 		DeterministicKey childPrimaryPubKey = redeemScriptMultiWallet.childPrimaryPublicKeyFromPath(redeemScriptPath);
-		Assert.assertEquals(expectedChildCosignerPubKey, childCosignerPubKey.serializePubB58());
-		Assert.assertEquals(expectedChildBackupPubKey, childBackupPubKey.serializePubB58());
-		Assert.assertEquals(expectedChildPrimaryPubKey, childPrimaryPubKey.serializePubB58());
+		Assert.assertEquals(expectedChildCosignerPubKey, childCosignerPubKey.serializePubB58(networkParameters));
+		Assert.assertEquals(expectedChildBackupPubKey, childBackupPubKey.serializePubB58(networkParameters));
+		Assert.assertEquals(expectedChildPrimaryPubKey, childPrimaryPubKey.serializePubB58(networkParameters));
 	}
 	
 	private static final String expectedScriptHex = "522103b98fd29fddb45e4675c7c60ee6a9fcb4f0e440bab" 
