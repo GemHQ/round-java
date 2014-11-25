@@ -163,7 +163,6 @@ public class MultiWallet {
 		List<String> signatures = new ArrayList<String>();
 		for (InputWrapper inputWrapper : transaction.inputs()) {
 			String walletPath = inputWrapper.walletPath();
-
 			Script redeemScript = this.redeemScriptForPath(walletPath);
 			Sha256Hash sigHash = transaction.transaction()
 					.hashForSignature(inputIndex, redeemScript, Transaction.SigHash.ALL, false);

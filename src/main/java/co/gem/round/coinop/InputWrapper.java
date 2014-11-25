@@ -1,20 +1,36 @@
 package co.gem.round.coinop;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.bitcoinj.core.*;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by julian on 11/24/14.
  */
 public class InputWrapper {
-  private TransactionInput nativeInput;
+  private TransactionInput input;
   private String walletPath;
 
-  private InputWrapper(TransactionInput nativeInput, String walletPath) {
-    this.nativeInput = nativeInput;
+  private InputWrapper(TransactionInput input, String walletPath) {
+    this.input = input;
     this.walletPath = walletPath;
+  }
+
+  public static List<InputWrapper> parseInputs(JsonArray inputsJson, Transaction parent) {
+    List<InputWrapper> inputs = new ArrayList<InputWrapper>();
+    for (JsonElement element : inputsJson) {
+      JsonObject inputJson = element.getAsJsonObject();
+      InputWrapper input = parseInput(inputJson, parent);
+      inputs.add(input);
+      parent.addInput(input.input());
+    }
+    return inputs;
   }
 
   public static InputWrapper parseInput(JsonObject inputJson, Transaction parent) {
@@ -43,6 +59,6 @@ public class InputWrapper {
   }
 
   public TransactionInput input() {
-    return nativeInput;
+    return input;
   }
 }

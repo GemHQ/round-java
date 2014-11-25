@@ -148,8 +148,10 @@ public class MultiWalletTest {
 	
 	@Test
 	public void testHexSignatureForPath() {
-		Payment payment = new Payment(transactionJson, null);
-		Transaction transaction = payment.getNativeTransaction();
+		TransactionWrapper transactionWrapper =
+				TransactionWrapper.parseTransaction(transactionJson,
+						redeemScriptMultiWallet.networkParameters());
+		Transaction transaction = transactionWrapper.transaction();
 		Script redeemScript = redeemScriptMultiWallet.redeemScriptForPath(redeemScriptPath);
 		Sha256Hash sigHash = transaction.hashForSignature(0, redeemScript, Transaction.SigHash.ALL, false);
 		
