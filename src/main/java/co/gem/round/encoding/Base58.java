@@ -1,6 +1,5 @@
 package co.gem.round.encoding;
 
-import com.google.common.io.BaseEncoding;
 import org.bitcoinj.core.AddressFormatException;
 
 /**

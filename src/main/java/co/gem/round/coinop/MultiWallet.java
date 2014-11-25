@@ -1,7 +1,6 @@
 package co.gem.round.coinop;
 
 
-
 import co.gem.round.encoding.Base58;
 import org.bitcoinj.core.*;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -20,156 +19,156 @@ import java.util.List;
 
 public class MultiWallet {
 
-	public static enum Blockchain {
-		TESTNET, MAINNET
-	}
+  public static enum Blockchain {
+    TESTNET, MAINNET
+  }
 
-	private DeterministicKey primaryPrivateKey;
-	private DeterministicKey backupPrivateKey;
-	
-	private DeterministicKey backupPublicKey;
-	private DeterministicKey cosignerPublicKey;
+  private DeterministicKey primaryPrivateKey;
+  private DeterministicKey backupPrivateKey;
 
-	private NetworkParameters networkParameters;
-	
-	private MultiWallet(NetworkParameters networkParameters) {
-		this.networkParameters = networkParameters;
+  private DeterministicKey backupPublicKey;
+  private DeterministicKey cosignerPublicKey;
 
-		SecureRandom random1 = new SecureRandom();
-		SecureRandom random2 = new SecureRandom();
-		DeterministicSeed primarySeed = new DeterministicKeyChain(random1).getSeed();
-		DeterministicSeed backupSeed = new DeterministicKeyChain(random2).getSeed();
-		
-		this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(primarySeed.getSeedBytes());
-		this.backupPrivateKey = HDKeyDerivation.createMasterPrivateKey(backupSeed.getSeedBytes());
-		this.backupPublicKey = this.backupPrivateKey.getPubOnly();
-	}
-	
-	private MultiWallet(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
-		byte[] decoded = new byte[0];
-		try {
-			decoded = Base58.decode(primaryPrivateSeed);
-		} catch (AddressFormatException e) {
-			e.printStackTrace();
-		}
-		ByteBuffer buffer = ByteBuffer.wrap(decoded);
-		this.networkParameters = networkParametersFromHeaderBytes(buffer.getInt());
+  private NetworkParameters networkParameters;
 
-		this.primaryPrivateKey = DeterministicKey.deserializeB58(primaryPrivateSeed, networkParameters);
-		if (backupPublicSeed != null)
-			this.backupPublicKey = DeterministicKey.deserializeB58(backupPublicSeed, networkParameters);
-		if (cosignerPublicSeed != null)
-			this.cosignerPublicKey = DeterministicKey.deserializeB58(cosignerPublicSeed, networkParameters);
-	}
+  private MultiWallet(NetworkParameters networkParameters) {
+    this.networkParameters = networkParameters;
 
-	public static NetworkParameters networkParametersFromBlockchain(Blockchain blockchain) {
-		switch(blockchain) {
-			case MAINNET:
-				return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
-			case TESTNET:
-				return NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
-		}
+    SecureRandom random1 = new SecureRandom();
+    SecureRandom random2 = new SecureRandom();
+    DeterministicSeed primarySeed = new DeterministicKeyChain(random1).getSeed();
+    DeterministicSeed backupSeed = new DeterministicKeyChain(random2).getSeed();
 
-		return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
-	}
+    this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(primarySeed.getSeedBytes());
+    this.backupPrivateKey = HDKeyDerivation.createMasterPrivateKey(backupSeed.getSeedBytes());
+    this.backupPublicKey = this.backupPrivateKey.getPubOnly();
+  }
 
-	public static NetworkParameters networkParametersFromHeaderBytes(int headerBytes) {
-		if (headerBytes == 0x043587CF || headerBytes == 0x04358394)
-			return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
-		if (headerBytes == 0x0488B21E || headerBytes == 0x0488ADE4)
-			return NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
+  private MultiWallet(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
+    byte[] decoded = new byte[0];
+    try {
+      decoded = Base58.decode(primaryPrivateSeed);
+    } catch (AddressFormatException e) {
+      e.printStackTrace();
+    }
+    ByteBuffer buffer = ByteBuffer.wrap(decoded);
+    this.networkParameters = networkParametersFromHeaderBytes(buffer.getInt());
 
-		return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
-	}
+    this.primaryPrivateKey = DeterministicKey.deserializeB58(primaryPrivateSeed, networkParameters);
+    if (backupPublicSeed != null)
+      this.backupPublicKey = DeterministicKey.deserializeB58(backupPublicSeed, networkParameters);
+    if (cosignerPublicSeed != null)
+      this.cosignerPublicKey = DeterministicKey.deserializeB58(cosignerPublicSeed, networkParameters);
+  }
 
-	public static MultiWallet generate(Blockchain blockchain) {
-		NetworkParameters networkParameters = networkParametersFromBlockchain(blockchain);
-		return new MultiWallet(networkParameters);
-	}
+  public static NetworkParameters networkParametersFromBlockchain(Blockchain blockchain) {
+    switch (blockchain) {
+      case MAINNET:
+        return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+      case TESTNET:
+        return NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
+    }
 
-	public static MultiWallet importSeeds(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
-		return new MultiWallet(primaryPrivateSeed, backupPublicSeed, cosignerPublicSeed);
-	}
-	
-	public String serializedPrimaryPrivateSeed() {
-		return this.primaryPrivateKey.serializePrivB58(networkParameters);
-	}
-	
-	public String serializedPrimaryPublicSeed() {
-		return this.primaryPrivateKey.serializePubB58(networkParameters);
-	}
-	
-	public String serializedBackupPrivateSeed() {
-		return this.backupPrivateKey.serializePrivB58(networkParameters);
-	}
-	
-	public String serializedBackupPublicSeed() {
-		return this.backupPublicKey.serializePubB58(networkParameters);
-	}
-	
-	public String serializedCosignerPublicSeed() {
-		return this.cosignerPublicKey.serializePubB58(networkParameters);
-	}
-	
-	public DeterministicKey childPrimaryPrivateKeyFromPath(String path) {
-		return this.childKeyFromPath(path, this.primaryPrivateKey);
-	}
-	
-	public DeterministicKey childPrimaryPublicKeyFromPath(String path) {
-		return this.childKeyFromPath(path, this.primaryPrivateKey.getPubOnly());
-	}
-	
-	public DeterministicKey childBackupPublicKeyFromPath(String path) {
-		return this.childKeyFromPath(path, this.backupPublicKey);
-	}
-	
-	public DeterministicKey childCosignerPublicKeyFromPath(String path) {
-		return this.childKeyFromPath(path, this.cosignerPublicKey);
-	}
-	
-	public DeterministicKey childKeyFromPath(String path, DeterministicKey parentKey) {
-		String[] segments = path.split("/");
-		DeterministicKey currentKey = parentKey;	
-		for (int i = 1; i < segments.length; i++) {
-			int childNumber = Integer.parseInt(segments[i]);
-			currentKey = HDKeyDerivation.deriveChildKey(currentKey, childNumber);
-		}
-		return currentKey;
-	}
-	
-	public Script redeemScriptForPath(String path) {
-		DeterministicKey primaryPublicKey = this.childPrimaryPublicKeyFromPath(path);
-		DeterministicKey backupPublicKey = this.childBackupPublicKeyFromPath(path);
-		DeterministicKey cosignerPublicKey = this.childCosignerPublicKeyFromPath(path);
-		
-		List<ECKey> pubKeys = Arrays.asList(new ECKey[] {
-				backupPublicKey, cosignerPublicKey, primaryPublicKey });
+    return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+  }
 
-		return ScriptBuilder.createMultiSigOutputScript(2, pubKeys);
-	}
-	
-	public String base58SignatureForPath(String walletPath, Sha256Hash sigHash) {
-		DeterministicKey primaryPrivateKey = this.childPrimaryPrivateKeyFromPath(walletPath);
-		TransactionSignature signature = new TransactionSignature(primaryPrivateKey.sign(sigHash), Transaction.SigHash.ALL, false);
-		return Base58.encode(signature.encodeToBitcoin());
-	}
+  public static NetworkParameters networkParametersFromHeaderBytes(int headerBytes) {
+    if (headerBytes == 0x043587CF || headerBytes == 0x04358394)
+      return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+    if (headerBytes == 0x0488B21E || headerBytes == 0x0488ADE4)
+      return NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
 
-	public NetworkParameters networkParameters() {
-		return networkParameters;
-	}
+    return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
+  }
 
-	public List<String> signaturesForTransaction(TransactionWrapper transaction) {
-		int inputIndex = 0;
-		List<String> signatures = new ArrayList<String>();
-		for (InputWrapper inputWrapper : transaction.inputs()) {
-			String walletPath = inputWrapper.walletPath();
-			Script redeemScript = this.redeemScriptForPath(walletPath);
-			Sha256Hash sigHash = transaction.transaction()
-					.hashForSignature(inputIndex, redeemScript, Transaction.SigHash.ALL, false);
-			String base58Signature = base58SignatureForPath(walletPath, sigHash);
-			signatures.add(base58Signature);
-			inputIndex++;
-		}
-		return signatures;
-	}
+  public static MultiWallet generate(Blockchain blockchain) {
+    NetworkParameters networkParameters = networkParametersFromBlockchain(blockchain);
+    return new MultiWallet(networkParameters);
+  }
+
+  public static MultiWallet importSeeds(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
+    return new MultiWallet(primaryPrivateSeed, backupPublicSeed, cosignerPublicSeed);
+  }
+
+  public String serializedPrimaryPrivateSeed() {
+    return this.primaryPrivateKey.serializePrivB58(networkParameters);
+  }
+
+  public String serializedPrimaryPublicSeed() {
+    return this.primaryPrivateKey.serializePubB58(networkParameters);
+  }
+
+  public String serializedBackupPrivateSeed() {
+    return this.backupPrivateKey.serializePrivB58(networkParameters);
+  }
+
+  public String serializedBackupPublicSeed() {
+    return this.backupPublicKey.serializePubB58(networkParameters);
+  }
+
+  public String serializedCosignerPublicSeed() {
+    return this.cosignerPublicKey.serializePubB58(networkParameters);
+  }
+
+  public DeterministicKey childPrimaryPrivateKeyFromPath(String path) {
+    return this.childKeyFromPath(path, this.primaryPrivateKey);
+  }
+
+  public DeterministicKey childPrimaryPublicKeyFromPath(String path) {
+    return this.childKeyFromPath(path, this.primaryPrivateKey.getPubOnly());
+  }
+
+  public DeterministicKey childBackupPublicKeyFromPath(String path) {
+    return this.childKeyFromPath(path, this.backupPublicKey);
+  }
+
+  public DeterministicKey childCosignerPublicKeyFromPath(String path) {
+    return this.childKeyFromPath(path, this.cosignerPublicKey);
+  }
+
+  public DeterministicKey childKeyFromPath(String path, DeterministicKey parentKey) {
+    String[] segments = path.split("/");
+    DeterministicKey currentKey = parentKey;
+    for (int i = 1; i < segments.length; i++) {
+      int childNumber = Integer.parseInt(segments[i]);
+      currentKey = HDKeyDerivation.deriveChildKey(currentKey, childNumber);
+    }
+    return currentKey;
+  }
+
+  public Script redeemScriptForPath(String path) {
+    DeterministicKey primaryPublicKey = this.childPrimaryPublicKeyFromPath(path);
+    DeterministicKey backupPublicKey = this.childBackupPublicKeyFromPath(path);
+    DeterministicKey cosignerPublicKey = this.childCosignerPublicKeyFromPath(path);
+
+    List<ECKey> pubKeys = Arrays.asList(new ECKey[]{
+        backupPublicKey, cosignerPublicKey, primaryPublicKey});
+
+    return ScriptBuilder.createMultiSigOutputScript(2, pubKeys);
+  }
+
+  public String base58SignatureForPath(String walletPath, Sha256Hash sigHash) {
+    DeterministicKey primaryPrivateKey = this.childPrimaryPrivateKeyFromPath(walletPath);
+    TransactionSignature signature = new TransactionSignature(primaryPrivateKey.sign(sigHash), Transaction.SigHash.ALL, false);
+    return Base58.encode(signature.encodeToBitcoin());
+  }
+
+  public NetworkParameters networkParameters() {
+    return networkParameters;
+  }
+
+  public List<String> signaturesForTransaction(TransactionWrapper transaction) {
+    int inputIndex = 0;
+    List<String> signatures = new ArrayList<String>();
+    for (InputWrapper inputWrapper : transaction.inputs()) {
+      String walletPath = inputWrapper.walletPath();
+      Script redeemScript = this.redeemScriptForPath(walletPath);
+      Sha256Hash sigHash = transaction.transaction()
+          .hashForSignature(inputIndex, redeemScript, Transaction.SigHash.ALL, false);
+      String base58Signature = base58SignatureForPath(walletPath, sigHash);
+      signatures.add(base58Signature);
+      inputIndex++;
+    }
+    return signatures;
+  }
 }

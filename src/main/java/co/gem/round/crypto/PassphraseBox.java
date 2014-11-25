@@ -1,15 +1,13 @@
 package co.gem.round.crypto;
 
 import co.gem.round.encoding.Hex;
-
 import org.abstractj.kalium.crypto.SecretBox;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * Created by Julian on 7/30/14.
@@ -38,7 +36,7 @@ public class PassphraseBox {
       this.salt = Hex.decode(salt);
     }
 
-    PBEKeySpec spec = new PBEKeySpec(passphrase.toCharArray(), this.salt , iterations, 32 * 8);
+    PBEKeySpec spec = new PBEKeySpec(passphrase.toCharArray(), this.salt, iterations, 32 * 8);
     SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 
     byte[] key = skf.generateSecret(spec).getEncoded();

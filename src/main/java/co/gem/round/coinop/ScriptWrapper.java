@@ -14,11 +14,11 @@ public class ScriptWrapper {
   public static Script parseScript(String script) {
     StringTokenizer tokenizer = new StringTokenizer(script);
     ScriptBuilder builder = new ScriptBuilder();
-    while(tokenizer.hasMoreTokens()) {
+    while (tokenizer.hasMoreTokens()) {
       String token = tokenizer.nextToken();
       token = token.replace("OP_", "");
       Integer opCode = ScriptOpCodes.getOpCode(token);
-      if(opCode != ScriptOpCodes.OP_INVALIDOPCODE) {
+      if (opCode != ScriptOpCodes.OP_INVALIDOPCODE) {
         builder.op(opCode);
         continue;
       }
@@ -29,7 +29,7 @@ public class ScriptWrapper {
           builder.smallNum(smallNum);
           continue;
         }
-      } catch(NumberFormatException e) {
+      } catch (NumberFormatException e) {
 
       }
 

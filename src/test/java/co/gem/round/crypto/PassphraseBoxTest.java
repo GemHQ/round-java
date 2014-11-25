@@ -1,7 +1,7 @@
 package co.gem.round.crypto;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -13,7 +13,8 @@ public class PassphraseBoxTest {
   private static String passphrase = "passphrase";
   private static String clearText = "Hello there!";
 
-  @Test public void testEncryptAndDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException {
+  @Test
+  public void testEncryptAndDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException {
     EncryptedMessage encrypted = PassphraseBox.encrypt(passphrase, clearText);
     String decrypted = PassphraseBox.decrypt(passphrase, encrypted);
 
@@ -31,7 +32,8 @@ public class PassphraseBoxTest {
       "b0f8d3877960ba37c3da225cc23463b9623fb4292be3834a60ca8c79f237560670" +
       "0fd09cdbcbcd885fd";
 
-  @Test public void testWalletDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException {
+  @Test
+  public void testWalletDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException {
     EncryptedMessage encrypted = new EncryptedMessage();
     encrypted.ciphertext = ciphertext;
     encrypted.nonce = nonce;
