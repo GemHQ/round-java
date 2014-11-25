@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import co.gem.round.multiwallet.MultiWallet;
+import co.gem.round.coinop.MultiWallet;
 import co.gem.round.Client.UnexpectedStatusCodeException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

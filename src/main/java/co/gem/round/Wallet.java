@@ -6,7 +6,7 @@ import java.security.spec.InvalidKeySpecException;
 
 import co.gem.round.crypto.EncryptedMessage;
 import co.gem.round.crypto.PassphraseBox;
-import co.gem.round.multiwallet.MultiWallet;
+import co.gem.round.coinop.MultiWallet;
 import com.google.gson.JsonObject;
 
 public class Wallet extends Resource {

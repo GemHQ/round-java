@@ -1,4 +1,4 @@
-package co.gem.round.multiwallet;
+package co.gem.round.coinop;
 
 import java.io.BufferedReader;
 import java.io.File;

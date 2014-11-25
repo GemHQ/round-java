@@ -13,7 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import co.gem.round.multiwallet.MultiWallet;
+import co.gem.round.coinop.MultiWallet;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 

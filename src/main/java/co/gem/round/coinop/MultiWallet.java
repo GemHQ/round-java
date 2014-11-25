@@ -1,4 +1,4 @@
-package co.gem.round.multiwallet;
+package co.gem.round.coinop;
 
 
 
@@ -11,10 +11,10 @@ import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
 import org.bitcoinj.wallet.DeterministicKeyChain;
 import org.bitcoinj.wallet.DeterministicSeed;
-import sun.nio.ch.Net;
 
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -156,5 +156,21 @@ public class MultiWallet {
 
 	public NetworkParameters networkParameters() {
 		return networkParameters;
+	}
+
+	public List<String> signaturesForTransaction(TransactionWrapper transaction) {
+		int inputIndex = 0;
+		List<String> signatures = new ArrayList<String>();
+		for (InputWrapper inputWrapper : transaction.inputs()) {
+			String walletPath = inputWrapper.walletPath();
+
+			Script redeemScript = this.redeemScriptForPath(walletPath);
+			Sha256Hash sigHash = transaction.transaction()
+					.hashForSignature(inputIndex, redeemScript, Transaction.SigHash.ALL, false);
+			String base58Signature = base58SignatureForPath(walletPath, sigHash);
+			signatures.add(base58Signature);
+			inputIndex++;
+		}
+		return signatures;
 	}
 }

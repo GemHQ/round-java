@@ -1,6 +1,6 @@
 package co.gem.round;
 
-import co.gem.round.multiwallet.MultiWallet;
+import co.gem.round.coinop.MultiWallet;
 
 import java.io.IOException;
 
