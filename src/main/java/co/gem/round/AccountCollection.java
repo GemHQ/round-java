@@ -1,5 +1,6 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.Client;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,9 +13,9 @@ public class AccountCollection extends ResourceCollection<Account> {
 
   private Wallet wallet;
 
-  public AccountCollection(String url, Client client, Wallet wallet)
+  public AccountCollection(String url, Round round, Wallet wallet)
       throws Client.UnexpectedStatusCodeException, IOException {
-    super(url, client, RESOURCE_NAME);
+    super(url, round, RESOURCE_NAME);
 
     this.wallet = wallet;
     setWallets();
@@ -30,7 +31,7 @@ public class AccountCollection extends ResourceCollection<Account> {
   public void populateCollection(JsonArray array) {
     for (JsonElement element : array) {
       JsonObject resource = element.getAsJsonObject();
-      Account account = new Account(resource, this.client);
+      Account account = new Account(resource, this.round);
       this.add(account.getKey(), account);
     }
   }
@@ -41,9 +42,9 @@ public class AccountCollection extends ResourceCollection<Account> {
     body.addProperty("name", name);
 
     JsonObject resource =
-        this.client.performRequest(this.url, RESOURCE_NAME, "create", body).getAsJsonObject();
+        this.round.performRequest(this.url, RESOURCE_NAME, "create", body).getAsJsonObject();
 
-    Account account = new Account(resource, this.client);
+    Account account = new Account(resource, this.round);
     this.add(account.getKey(), account);
     return account;
   }

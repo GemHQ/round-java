@@ -1,5 +1,6 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.AuthorizerInterface;
 import co.gem.round.util.Strings;
 import com.google.common.io.BaseEncoding;
 
@@ -11,9 +12,10 @@ import java.util.Map;
 /**
  * Created by Julian on 8/27/14.
  */
-public class Authorizer {
+public class Authorizer implements AuthorizerInterface {
   private Map<String, String> schemes = new HashMap<String, String>();
 
+  @Override
   public void authorize(String scheme, Map<String, String> params) {
     String credential = null;
     if (scheme.equals("Basic")) {
@@ -29,6 +31,7 @@ public class Authorizer {
     schemes.put(scheme, credential);
   }
 
+  @Override
   public String getCredentials(String scheme) {
     String credential = schemes.get(scheme);
 
@@ -37,6 +40,7 @@ public class Authorizer {
     return scheme + " " + credential;
   }
 
+  @Override
   public boolean isAuthorized(String scheme) {
     return schemes.containsKey(scheme);
   }

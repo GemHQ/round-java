@@ -1,7 +1,7 @@
 package co.gem.round;
 
-import co.gem.round.Client.UnexpectedStatusCodeException;
 import co.gem.round.coinop.MultiWallet;
+import co.gem.round.patchboard.Client;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,26 +17,26 @@ public class Account extends Resource {
   private Wallet wallet;
   private TransactionCollection transactions;
 
-  public Account(String url, Client client)
-      throws UnexpectedStatusCodeException, IOException {
-    super(url, client, RESOURCE_NAME);
+  public Account(String url, Round round)
+      throws Client.UnexpectedStatusCodeException, IOException {
+    super(url, round, RESOURCE_NAME);
   }
 
-  public Account(JsonObject resource, Client client) {
-    super(resource, client, RESOURCE_NAME);
+  public Account(JsonObject resource, Round round) {
+    super(resource, round, RESOURCE_NAME);
   }
 
   public Address createAddress()
-      throws IOException, UnexpectedStatusCodeException {
-    JsonElement response = this.client.performRequest(getAddressesUrl(), "addresses", "create", null);
+      throws IOException, Client.UnexpectedStatusCodeException {
+    JsonElement response = this.round.performRequest(getAddressesUrl(), "addresses", "create", null);
 
-    return new Address(response.getAsJsonObject(), this.client);
+    return new Address(response.getAsJsonObject(), this.round);
   }
 
   public TransactionCollection transactions()
-      throws IOException, UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException {
     if (this.transactions == null) {
-      this.transactions = new TransactionCollection(this.getTransactionsUrl(), this.client);
+      this.transactions = new TransactionCollection(this.getTransactionsUrl(), this.round);
     }
 
     return this.transactions;
@@ -69,28 +69,28 @@ public class Account extends Resource {
   }
 
   public Payment payToEmail(String passphrase, String email, long amount)
-      throws IOException, UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException {
     Recipient recipient = Recipient.recipientWithEmail(email, amount);
     return this.pay(passphrase, recipient);
   }
 
   public Payment payToAddress(String passphrase, String address, long amount)
-      throws IOException, UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException {
     return this.pay(passphrase, Recipient.recipientWithAddress(address, amount));
   }
 
   public Payment pay(String passphrase, Recipient recipient)
-      throws IOException, UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
     return this.pay(passphrase, recipients);
   }
 
   public Payment pay(String passphrase, List<Recipient> recipients)
-      throws IOException, UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException {
     final Payment payment = this.createUnsignedPayment(recipients);
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override
-      public void execute(MultiWallet wallet) throws IOException, UnexpectedStatusCodeException {
+      public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
         payment.sign(wallet);
       }
     });
@@ -98,7 +98,7 @@ public class Account extends Resource {
   }
 
   public Payment createUnsignedPayment(List<Recipient> recipients)
-      throws IOException, UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException {
     JsonArray recipientsJson = new JsonArray();
     for (Recipient recipient : recipients) {
       JsonObject payeeJson = new JsonObject();
@@ -119,9 +119,9 @@ public class Account extends Resource {
     body.add("outputs", recipientsJson);
 
     String url = resource.getAsJsonObject("payments").get("url").getAsString();
-    JsonObject resource = this.client.performRequest(url, "payments", "create", body).getAsJsonObject();
+    JsonObject resource = this.round.performRequest(url, "payments", "create", body).getAsJsonObject();
 
-    return new Payment(resource, this.client);
+    return new Payment(resource, this.round);
   }
 
 }

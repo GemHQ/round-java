@@ -1,5 +1,6 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.Client;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -10,23 +11,23 @@ public class Resource {
 
   protected String url;
   protected JsonObject resource;
-  protected Client client;
+  protected Round round;
   protected String resourceName;
 
   public static final String DEFAULT_ACTION = "get";
 
-  public Resource(String url, Client client, String resourceName)
+  public Resource(String url, Round round, String resourceName)
       throws Client.UnexpectedStatusCodeException, IOException {
     this.url = url;
-    this.client = client;
+    this.round = round;
     this.resourceName = resourceName;
 
     refresh();
   }
 
-  public Resource(JsonObject resource, Client client, String resourceName) {
+  public Resource(JsonObject resource, Round round, String resourceName) {
     this.resource = resource;
-    this.client = client;
+    this.round = round;
     this.resourceName = resourceName;
 
     if (this.resource.has("url"))
@@ -34,7 +35,7 @@ public class Resource {
   }
 
   public void refresh() throws Client.UnexpectedStatusCodeException, IOException {
-    resource = this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
+    resource = this.round.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
   }
 
   public String getKey() {

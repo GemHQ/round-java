@@ -1,5 +1,6 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.Client;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -13,13 +14,13 @@ public class Transaction extends Resource {
   public static final String RESOURCE_NAME = "transaction";
   public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
-  public Transaction(JsonObject resource, Client client) {
-    super(resource, client, RESOURCE_NAME);
+  public Transaction(JsonObject resource, Round round) {
+    super(resource, round, RESOURCE_NAME);
   }
 
-  public Transaction(String url, Client client)
+  public Transaction(String url, Round round)
       throws Client.UnexpectedStatusCodeException, IOException {
-    super(url, client, RESOURCE_NAME);
+    super(url, round, RESOURCE_NAME);
   }
 
   public String getType() {

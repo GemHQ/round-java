@@ -3,6 +3,7 @@ package co.gem.round;
 import co.gem.round.coinop.MultiWallet;
 import co.gem.round.crypto.EncryptedMessage;
 import co.gem.round.crypto.PassphraseBox;
+import co.gem.round.patchboard.Client;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -19,13 +20,13 @@ public class Wallet extends Resource {
   private String backupPublicSeed;
   private String cosignerPublicSeed;
 
-  public Wallet(String url, Client client)
+  public Wallet(String url, Round round)
       throws Client.UnexpectedStatusCodeException, IOException {
-    super(url, client, RESOURCE_NAME);
+    super(url, round, RESOURCE_NAME);
   }
 
-  public Wallet(JsonObject resource, Client client) {
-    super(resource, client, RESOURCE_NAME);
+  public Wallet(JsonObject resource, Round round) {
+    super(resource, round, RESOURCE_NAME);
   }
 
   public void unlock(String passphrase, UnlockedWalletCallback callback)
@@ -50,7 +51,7 @@ public class Wallet extends Resource {
 
   public AccountCollection accounts() throws Client.UnexpectedStatusCodeException, IOException {
     if (this.accountsCollection == null) {
-      this.accountsCollection = new AccountCollection(this.getAccountsUrl(), this.client, this);
+      this.accountsCollection = new AccountCollection(this.getAccountsUrl(), this.round, this);
     }
 
     return this.accountsCollection;

@@ -1,5 +1,6 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.Client;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,14 +9,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static co.gem.round.ClientTest.client;
+import static co.gem.round.RoundTest.round;
 
 public class AccountTest {
   private static Account account = null;
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    account = client.wallet().accounts().get(0);
+//    account = round.wallet().accounts().get(0);
   }
 
   private static final String payAddress = "n3VispXfNCS7rgLpmXcYnUqT7WQKyavPXG";

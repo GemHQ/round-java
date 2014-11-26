@@ -1,6 +1,7 @@
 package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
+import co.gem.round.patchboard.Client;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.Assert;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static co.gem.round.ClientTest.client;
+import static co.gem.round.RoundTest.round;
 
 public class PaymentTest {
 
@@ -42,7 +43,7 @@ public class PaymentTest {
     }
 
     JsonObject resource = new JsonParser().parse(payload).getAsJsonObject();
-    unsignedPayment = new Payment(resource, client);
+    unsignedPayment = new Payment(resource, round);
   }
 
   private static final String primaryPrivSeed =

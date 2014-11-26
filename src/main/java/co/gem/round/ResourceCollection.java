@@ -1,5 +1,6 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.Client;
 import com.google.gson.JsonArray;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.util.Map;
 public abstract class ResourceCollection<T> {
 
   protected String url;
-  protected Client client;
+  protected Round round;
   protected String resourceName;
 
   protected List<T> collection = new ArrayList<T>();
@@ -19,10 +20,10 @@ public abstract class ResourceCollection<T> {
 
   public static final String DEFAULT_ACTION = "list";
 
-  public ResourceCollection(String url, Client client, String resourceName)
+  public ResourceCollection(String url, Round round, String resourceName)
       throws Client.UnexpectedStatusCodeException, IOException {
     this.url = url;
-    this.client = client;
+    this.round = round;
     this.resourceName = resourceName;
 
     refresh();
@@ -46,7 +47,7 @@ public abstract class ResourceCollection<T> {
     this.map.clear();
 
     JsonArray objects =
-        this.client.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
+        this.round.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
 
     populateCollection(objects);
   }

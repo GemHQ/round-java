@@ -1,12 +1,13 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.Client;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static co.gem.round.ClientTest.client;
+import static co.gem.round.RoundTest.round;
 
 public class AccountCollectionTest {
 
@@ -14,7 +15,7 @@ public class AccountCollectionTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    accounts = client.wallet().accounts();
+//    accounts = round.wallet().accounts();
   }
 
   @Test
