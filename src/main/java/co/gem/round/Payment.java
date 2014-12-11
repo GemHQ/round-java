@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class Payment extends Resource {
+public class Payment extends Base {
 
   public static final String RESOURCE_NAME = "payment";
 

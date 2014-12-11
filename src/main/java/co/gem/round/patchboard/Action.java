@@ -11,10 +11,10 @@ public class Action {
   static final String RESPONSE = "response";
 
   private String method;
-  private Request request;
-  private Response response;
+  private RequestSpec request;
+  private ResponseSpec response;
 
-  private Action(String method, Request request, Response response) {
+  private Action(String method, RequestSpec request, ResponseSpec response) {
     this.method = method;
     this.request = request;
     this.response = response;
@@ -22,8 +22,8 @@ public class Action {
 
   public static Action parse(JsonObject actionJson) {
     String method = actionJson.get(METHOD).getAsString();
-    Request request = Request.parse(actionJson.get(REQUEST).getAsJsonObject());
-    Response response = Response.parse(actionJson.get(RESPONSE).getAsJsonObject());
+    RequestSpec request = RequestSpec.parse(actionJson.get(REQUEST).getAsJsonObject());
+    ResponseSpec response = ResponseSpec.parse(actionJson.get(RESPONSE).getAsJsonObject());
     return new Action(method, request, response);
   }
 
@@ -31,11 +31,11 @@ public class Action {
     return method;
   }
 
-  public Request request() {
+  public RequestSpec request() {
     return request;
   }
 
-  public Response response() {
+  public ResponseSpec response() {
     return response;
   }
 }

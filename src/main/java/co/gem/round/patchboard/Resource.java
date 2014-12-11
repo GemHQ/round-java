@@ -1,35 +1,33 @@
 package co.gem.round.patchboard;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Created by julian on 11/25/14.
+ * Created by julian on 11/26/14.
  */
 public class Resource {
-  static final String ACTIONS = "actions";
+  private String url;
+  private Client client;
+  private ResourceSpec spec;
+  private JsonElement attributes;
 
-  private JsonObject actionsJson;
-  private Map<String, Action> actions = new HashMap<String, Action>();
-
-  private Resource(JsonObject actionsJson) {
-    this.actionsJson = actionsJson;
+  protected Resource(String url, ResourceSpec spec, Client client) {
+    this.url = url;
+    this.spec = spec;
+    this.client = client;
   }
 
-  public static Resource parse(JsonObject resourceJson) {
-    JsonObject actionsJson = resourceJson.get(ACTIONS).getAsJsonObject();
-    return new Resource(actionsJson);
+  public Resource subresource(String name) {
+    return null;
   }
 
-  public Action action(String name) {
-    Action action = actions.get(name);
-    if (action != null)
-      return action;
+  public void action(String name) {
 
-    action = Action.parse(actionsJson.get(name).getAsJsonObject());
-    actions.put(name, action);
-    return action;
   }
+
+  public void action(String name, JsonObject payload) {
+
+  }
+
 }

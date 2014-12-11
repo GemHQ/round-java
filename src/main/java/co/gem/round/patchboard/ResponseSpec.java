@@ -5,22 +5,22 @@ import com.google.gson.JsonObject;
 /**
  * Created by julian on 11/25/14.
  */
-public class Response {
+public class ResponseSpec {
   static final String TYPE = "type";
   static final String STATUS = "status";
 
   private String type;
   private int status;
 
-  private Response(String type, int status) {
+  private ResponseSpec(String type, int status) {
     this.type = type;
     this.status = status;
   }
 
-  public static Response parse(JsonObject responseJson) {
+  public static ResponseSpec parse(JsonObject responseJson) {
     String type = responseJson.get(TYPE).getAsString();
     int status = responseJson.get(STATUS).getAsInt();
-    return new Response(type, status);
+    return new ResponseSpec(type, status);
   }
 
   public String type() {

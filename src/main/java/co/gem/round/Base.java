@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
-public class Resource {
+public class Base {
 
   private String key;
 
@@ -16,7 +16,7 @@ public class Resource {
 
   public static final String DEFAULT_ACTION = "get";
 
-  public Resource(String url, Round round, String resourceName)
+  public Base(String url, Round round, String resourceName)
       throws Client.UnexpectedStatusCodeException, IOException {
     this.url = url;
     this.round = round;
@@ -25,7 +25,7 @@ public class Resource {
     refresh();
   }
 
-  public Resource(JsonObject resource, Round round, String resourceName) {
+  public Base(JsonObject resource, Round round, String resourceName) {
     this.resource = resource;
     this.round = round;
     this.resourceName = resourceName;

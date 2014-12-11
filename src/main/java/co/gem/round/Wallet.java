@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-public class Wallet extends Resource {
+public class Wallet extends Base {
 
   public static final String RESOURCE_NAME = "wallet";
 

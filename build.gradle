@@ -7,6 +7,8 @@
  */
 
 apply plugin: 'java'
+apply plugin: 'groovy'
+
 
 buildscript {
   repositories {
@@ -17,6 +19,7 @@ buildscript {
 repositories {
 	mavenCentral()
   mavenLocal()
+  maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -28,7 +31,9 @@ dependencies {
   compile 'org.abstractj.kalium:kalium:0.3.0'
 
   runtime 'com.madgag.spongycastle:prov:1.51.0.0'
-  
+
+  compile "org.codehaus.groovy:groovy-all:2.3.6"
+  testCompile "org.spockframework:spock-core:1.0-groovy-2.3-SNAPSHOT"
   testCompile 'junit:junit:4.11'
 }
 

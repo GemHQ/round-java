@@ -28,9 +28,25 @@ public class Client {
     this.authorizer = authorizer;
   }
 
+  public Resource resources(String name) {
+    return null;
+  }
+
+  public Resource resources(String name, JsonObject query) {
+    return null;
+  }
+
+  public Resource resources(String name, String url) {
+    return null;
+  }
+
+  public Resource resources(String name, String url, JsonObject query) {
+    return null;
+  }
+
   public JsonElement performRequest(String url, String resourceName, String actionName, JsonObject requestBody)
       throws IOException, UnexpectedStatusCodeException {
-    Resource resource = patchboard.definition().resource(resourceName);
+    ResourceSpec resource = patchboard.definition().resource(resourceName);
     Action action = resource.action(actionName);
 
     com.squareup.okhttp.Request.Builder builder = new Request.Builder().url(url);

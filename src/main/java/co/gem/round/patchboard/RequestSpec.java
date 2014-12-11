@@ -10,19 +10,19 @@ import java.util.List;
 /**
  * Created by julian on 11/25/14.
  */
-public class Request {
+public class RequestSpec {
   static final String TYPE = "type";
   static final String AUTHORIZATION = "authorization";
 
   private String type;
   private List<String> authorizations;
 
-  private Request(String type, List<String> authorizations) {
+  private RequestSpec(String type, List<String> authorizations) {
     this.type = type;
     this.authorizations = authorizations;
   }
 
-  public static Request parse(JsonObject requestJson) {
+  public static RequestSpec parse(JsonObject requestJson) {
     String type = requestJson.get(TYPE).getAsString();
     JsonElement authorizationsElement = requestJson.get(AUTHORIZATION);
     List<String> authorizations = new ArrayList<String>();
@@ -38,7 +38,7 @@ public class Request {
         authorizations.add(authorization);
       }
     }
-    return new Request(type, authorizations);
+    return new RequestSpec(type, authorizations);
   }
 
   public String type() {

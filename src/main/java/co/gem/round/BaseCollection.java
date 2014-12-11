@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ResourceCollection<T> {
+public abstract class BaseCollection<T> {
 
   protected String url;
   protected Round round;
@@ -20,7 +20,7 @@ public abstract class ResourceCollection<T> {
 
   public static final String DEFAULT_ACTION = "list";
 
-  public ResourceCollection(String url, Round round, String resourceName)
+  public BaseCollection(String url, Round round, String resourceName)
       throws Client.UnexpectedStatusCodeException, IOException {
     this.url = url;
     this.round = round;

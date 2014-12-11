@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 
 
-public class AccountCollection extends ResourceCollection<Account> {
+public class AccountCollection extends BaseCollection<Account> {
   public static final String RESOURCE_NAME = "accounts";
 
   private Wallet wallet;

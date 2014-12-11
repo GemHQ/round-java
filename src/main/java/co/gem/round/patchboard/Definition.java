@@ -18,7 +18,7 @@ public class Definition {
   private JsonObject resourcesJson;
   private JsonArray schemasJson;
 
-  private Map<String, Resource> resources = new HashMap<String, Resource>();
+  private Map<String, ResourceSpec> resources = new HashMap<String, ResourceSpec>();
 
   private Definition(JsonObject mappingsJson, JsonObject resourcesJson, JsonArray schemasJson) {
     this.mappingsJson = mappingsJson;
@@ -33,12 +33,16 @@ public class Definition {
         discovery.get(SCHEMAS).getAsJsonArray());
   }
 
-  public Resource resource(String name) {
-    Resource resource = resources.get(name);
+  public ResourceSpec resource(String name) {
+    ResourceSpec resource = resources.get(name);
     if (resource != null)
       return resource;
 
-    resource = Resource.parse(resourcesJson.get(name).getAsJsonObject());
+    JsonObject mappingJson = mappingsJson.get(name).getAsJsonObject();
+    JsonObject resourceJson = resourcesJson.get(name).getAsJsonObject();
+    JsonObject temp = schemasJson.get(1).getAsJsonObject();
+    JsonObject schemaJson = temp.get(name).getAsJsonObject();
+    resource = ResourceSpec.parse(mappingJson, resourceJson, schemaJson);
     resources.put(name, resource);
     return resource;
   }

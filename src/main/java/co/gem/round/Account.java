@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class Account extends Resource {
+public class Account extends Base {
 
   public static final String RESOURCE_NAME = "account";
 

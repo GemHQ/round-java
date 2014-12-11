@@ -5,7 +5,9 @@
     <output-test url="file://$MODULE_DIR$/build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/groovy" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
@@ -39,5 +41,7 @@
     <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: com.madgag.spongycastle:prov:1.51.0.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.bitcoinj:bitcoinj-core:0.13-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.bitcoinj:orchid:1.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.codehaus.groovy:groovy-all:2.3.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.spockframework:spock-core:1.0-groovy-2.3-SNAPSHOT" level="project" />
   </component>
 </module>

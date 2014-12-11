@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
-public class TransactionCollection extends ResourceCollection<Transaction> {
+public class TransactionCollection extends BaseCollection<Transaction> {
 
   public static final String RESOURCE_NAME = "transactions";
 
