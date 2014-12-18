@@ -46,4 +46,5 @@ class ResourceSpec extends Specification {
     noExceptionThrown()
     new_resource.url().contains("developers")
   }
+
 }

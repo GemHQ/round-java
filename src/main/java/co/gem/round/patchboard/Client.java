@@ -1,7 +1,7 @@
 package co.gem.round.patchboard;
 
 import co.gem.round.patchboard.definition.*;
-import com.google.gson.JsonArray;
+import co.gem.round.util.Strings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -10,10 +10,10 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by julian on 11/25/14.
@@ -50,7 +50,22 @@ public class Client {
     if (url == null)
       url = mappingSpec.url();
 
+    if (query != null)
+      url = url + "?" + queryStringFromObject(query);
+
     return new Resource(url, mappingSpec.resourceSpec(), this);
+  }
+
+  public String queryStringFromObject(JsonObject query) {
+    List<String> params = new ArrayList<String>();
+    for(Map.Entry<String, JsonElement> entry : query.entrySet()) {
+      String key = entry.getKey();
+      String value = entry.getValue().getAsString();
+      String param = Strings.urlEncode(key) + "=" + Strings.urlEncode(value);
+      params.add(param);
+    }
+
+    return Strings.join("&", params);
   }
 
   public String performRawRequest(String url, ActionSpec actionSpec, JsonObject requestBody)
