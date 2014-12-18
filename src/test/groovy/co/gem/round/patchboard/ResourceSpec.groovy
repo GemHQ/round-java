@@ -20,7 +20,7 @@ class ResourceSpec extends Specification {
     then:
     thrown(Client.UnexpectedStatusCodeException)
   }
-  
+
   def "action with correct body"() {
     setup:
     def pubkey = """
