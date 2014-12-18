@@ -1,6 +1,7 @@
 package co.gem.round;
 
 import co.gem.round.patchboard.Client;
+import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -14,21 +15,20 @@ public class Transaction extends Base {
   public static final String RESOURCE_NAME = "transaction";
   public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
-  public Transaction(JsonObject resource, Round round) {
-    super(resource, round, RESOURCE_NAME);
-  }
-
-  public Transaction(String url, Round round)
-      throws Client.UnexpectedStatusCodeException, IOException {
+  public Transaction(String url, Round round) {
     super(url, round, RESOURCE_NAME);
   }
 
+  public Transaction(Resource resource, Round round) {
+    super(resource, round);
+  }
+
   public String getType() {
-    return resource.get("type").getAsString();
+    return getString("type");
   }
 
   public JsonObject getBitcoinTransaction() {
-    return resource.getAsJsonObject("data");
+    return getObject("data");
   }
 
   public String getTransactionHash() {

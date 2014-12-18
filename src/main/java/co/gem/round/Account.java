@@ -2,6 +2,7 @@ package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
 import co.gem.round.patchboard.Client;
+import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,46 +23,37 @@ public class Account extends Base {
     super(url, round, RESOURCE_NAME);
   }
 
-  public Account(JsonObject resource, Round round) {
-    super(resource, round, RESOURCE_NAME);
+  public Account(Resource resource, Round round) {
+    super(resource, round);
   }
 
   public Address createAddress()
       throws IOException, Client.UnexpectedStatusCodeException {
-    JsonElement response = null; //this.round.performRequest(getAddressesUrl(), "addresses", "create", null);
+    Resource addressResource = resource.subresource("addresses").action("create");
 
-    return new Address(response.getAsJsonObject(), this.round);
+    return new Address(addressResource, this.round);
   }
 
   public TransactionCollection transactions()
       throws IOException, Client.UnexpectedStatusCodeException {
     if (this.transactions == null) {
-      this.transactions = new TransactionCollection(this.getTransactionsUrl(), this.round);
+      Resource transactionsResource = resource.subresource("transactions");
+      this.transactions = new TransactionCollection(transactionsResource, this.round);
     }
 
     return this.transactions;
   }
 
   public String name() {
-    return this.resource.get("name").getAsString();
+    return getString("name");
   }
 
   public long balance() {
-    return this.resource.get("balance").getAsLong();
+    return getLong("balance");
   }
 
   public long pendingBalance() {
-    return resource.get("pending_balance").getAsLong();
-  }
-
-  public String getAddressesUrl() {
-    return this.resource.get("addresses")
-        .getAsJsonObject().get("url").getAsString();
-  }
-
-  public String getTransactionsUrl() {
-    return this.resource.get("transactions")
-        .getAsJsonObject().get("url").getAsString();
+    return getLong("pending_balance");
   }
 
   public void setWallet(Wallet wallet) {
@@ -118,10 +110,9 @@ public class Account extends Base {
     JsonObject body = new JsonObject();
     body.add("outputs", recipientsJson);
 
-    String url = resource.getAsJsonObject("payments").get("url").getAsString();
-    JsonObject resource = null; //this.round.performRequest(url, "payments", "create", body).getAsJsonObject();
+    Resource paymentResource = resource.subresource("payments").action("create", body);
 
-    return new Payment(resource, this.round);
+    return new Payment(paymentResource, this.round);
   }
 
 }

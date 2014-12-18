@@ -4,6 +4,7 @@ import co.gem.round.coinop.MultiWallet;
 import co.gem.round.crypto.EncryptedMessage;
 import co.gem.round.crypto.PassphraseBox;
 import co.gem.round.patchboard.Client;
+import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -16,17 +17,14 @@ public class Wallet extends Base {
 
   private AccountCollection accountsCollection;
   private EncryptedMessage encryptedSeed;
-  private String accountsUrl;
-  private String backupPublicSeed;
-  private String cosignerPublicSeed;
 
   public Wallet(String url, Round round)
       throws Client.UnexpectedStatusCodeException, IOException {
     super(url, round, RESOURCE_NAME);
   }
 
-  public Wallet(JsonObject resource, Round round) {
-    super(resource, round, RESOURCE_NAME);
+  public Wallet(Resource resource, Round round) {
+    super(resource, round);
   }
 
   public void unlock(String passphrase, UnlockedWalletCallback callback)
@@ -51,24 +49,15 @@ public class Wallet extends Base {
 
   public AccountCollection accounts() throws Client.UnexpectedStatusCodeException, IOException {
     if (this.accountsCollection == null) {
-      this.accountsCollection = new AccountCollection(this.getAccountsUrl(), this.round, this);
+      this.accountsCollection = new AccountCollection(resource.subresource("accounts"), this.round, this);
     }
 
     return this.accountsCollection;
   }
 
-  public String getAccountsUrl() {
-    if (this.accountsUrl == null) {
-      this.accountsUrl = this.resource.getAsJsonObject("accounts")
-          .get("url").getAsString();
-    }
-
-    return this.accountsUrl;
-  }
-
   public EncryptedMessage getEncryptedSeed() {
     if (this.encryptedSeed == null) {
-      JsonObject seedObject = this.resource.getAsJsonObject("primary_private_seed");
+      JsonObject seedObject = getObject("primary_private_seed");
 
       EncryptedMessage encryptedMessage = new EncryptedMessage();
       encryptedMessage.ciphertext = seedObject.get("ciphertext").getAsString();
@@ -82,18 +71,10 @@ public class Wallet extends Base {
   }
 
   public String getBackupPublicSeed() {
-    if (this.backupPublicSeed == null) {
-      this.backupPublicSeed = this.resource.get("backup_public_seed").getAsString();
-    }
-
-    return this.backupPublicSeed;
+    return getString("backup_public_seed");
   }
 
   public String getCosignerPublicSeed() {
-    if (this.cosignerPublicSeed == null) {
-      this.cosignerPublicSeed = this.resource.get("cosigner_public_seed").getAsString();
-    }
-
-    return this.cosignerPublicSeed;
+    return getString("cosigner_public_seed");
   }
 }

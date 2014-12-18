@@ -9,12 +9,13 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by julian on 11/26/14.
  */
-public class Resource {
+public class Resource implements Iterable<Resource>{
   static final String URL = "url";
 
   private String url;
@@ -79,4 +80,8 @@ public class Resource {
     return url;
   }
 
+  @Override
+  public Iterator<Resource> iterator() {
+    return resourceList.iterator();
+  }
 }

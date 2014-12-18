@@ -3,6 +3,7 @@ package co.gem.round;
 import co.gem.round.coinop.MultiWallet;
 import co.gem.round.coinop.TransactionWrapper;
 import co.gem.round.patchboard.Client;
+import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,8 +16,8 @@ public class Payment extends Base {
 
   public static final String RESOURCE_NAME = "payment";
 
-  public Payment(JsonObject resource, Round round) {
-    super(resource, round, RESOURCE_NAME);
+  public Payment(Resource resource, Round round) {
+    super(resource, round);
   }
 
   public Payment(String url, Round round)
@@ -26,7 +27,7 @@ public class Payment extends Base {
 
   public Payment sign(MultiWallet wallet)
       throws IOException, Client.UnexpectedStatusCodeException {
-    TransactionWrapper transaction = TransactionWrapper.parseTransaction(this.resource, wallet.networkParameters());
+    TransactionWrapper transaction = TransactionWrapper.parseTransaction(resource.attributes(), wallet.networkParameters());
     List<String> signatures = wallet.signaturesForTransaction(transaction);
 
     JsonArray signaturesJson = new JsonArray();
@@ -39,13 +40,13 @@ public class Payment extends Base {
     body.addProperty("transaction_hash", transaction.getHashAsString());
     body.add("inputs", signaturesJson);
 
-    JsonElement response = null; //this.round.performRequest(this.url, "unsigned_payment", "sign", body);
+    Resource signedPayment = resource.action("sign", body);
 
-    return new Payment(response.getAsJsonObject(), this.round);
+    return new Payment(signedPayment, this.round);
   }
 
   public String getStatus() {
-    return this.resource.get("status").getAsString();
+    return resource.attributes().get("status").getAsString();
   }
 
 }

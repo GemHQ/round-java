@@ -1,7 +1,7 @@
 package co.gem.round;
 
 import co.gem.round.patchboard.Client;
-import com.google.gson.JsonArray;
+import co.gem.round.patchboard.Resource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,28 +9,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseCollection<T> {
+public abstract class BaseCollection<T> extends Base {
 
-  protected String url;
-  protected Round round;
-  protected String resourceName;
-
-  protected List<T> collection = new ArrayList<T>();
+  protected List<T> list = new ArrayList<T>();
   protected Map<String, T> map = new HashMap<String, T>();
 
   public static final String DEFAULT_ACTION = "list";
 
-  public BaseCollection(String url, Round round, String resourceName)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    this.url = url;
-    this.round = round;
-    this.resourceName = resourceName;
+  public BaseCollection(String url, Round round, String resourceName) {
+    super(url, round, resourceName);
+  }
 
-    refresh();
+  public BaseCollection(Resource resource, Round round) {
+    super(resource, round);
   }
 
   public T get(int index) {
-    return this.collection.get(index);
+    return this.list.get(index);
   }
 
   public T get(String key) {
@@ -38,27 +33,26 @@ public abstract class BaseCollection<T> {
   }
 
   public void add(String key, T element) {
-    this.collection.add(element);
-    this.map.put(key, element);
+    list.add(element);
+    map.put(key, element);
   }
 
-  public void refresh() throws Client.UnexpectedStatusCodeException, IOException {
-    this.collection.clear();
-    this.map.clear();
+  public void fetch() throws Client.UnexpectedStatusCodeException, IOException {
+    super.fetch();
 
-    JsonArray objects = null;
-//        this.round.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
-
-    populateCollection(objects);
+    list = new ArrayList<T>();
+    map = new HashMap<String, T>();
+    populateCollection(resource);
   }
 
   public int size() {
-    return this.collection.size();
+    return this.list.size();
   }
 
   public List<T> asList() {
-    return collection;
+    return list;
   }
+  public Map<String, T> asMap() { return map; }
 
-  public abstract void populateCollection(JsonArray array);
+  public abstract void populateCollection(Iterable<Resource> collection);
 }

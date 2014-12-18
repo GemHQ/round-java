@@ -17,18 +17,7 @@ public class Authorizer implements AuthorizerInterface {
 
   @Override
   public void authorize(String scheme, Map<String, String> params) {
-    String credential = null;
-    if (scheme.equals("Basic")) {
-      String email = params.get("email");
-      String password = params.get("password");
-      credential = email + ":" + password;
-      //credential = Base64.getEncoder().encodeToString(credential.getBytes());
-      credential = BaseEncoding.base64().encode(credential.getBytes());
-    } else {
-      credential = compileParams(params);
-    }
-
-    schemes.put(scheme, credential);
+    schemes.put(scheme, compileParams(params));
   }
 
   @Override

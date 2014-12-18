@@ -16,7 +16,7 @@ public class AccountTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-//    account = round.wallet().accounts().get(0);
+//    account = round.wallet().accounts().getAttribute(0);
   }
 
   private static final String payAddress = "n3VispXfNCS7rgLpmXcYnUqT7WQKyavPXG";
