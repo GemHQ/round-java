@@ -11,8 +11,8 @@ class ClientSpec extends Specification {
 
   def "resources"() {
     when:
-    client.resources("users", null)
+    def resource = client.resources("users", null)
     then:
-    noExceptionThrown()
+    resource.url() == "http://localhost:8999/users"
   }
 }

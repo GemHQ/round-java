@@ -1,5 +1,7 @@
 package co.gem.round.patchboard;
 
+import co.gem.round.patchboard.definition.*;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -8,7 +10,10 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by julian on 11/25/14.
@@ -18,9 +23,9 @@ public class Client {
   static final String ACCEPT_HEADER = "Accept";
   static final String CONTENT_TYPE_HEADER = "Content-Type";
 
-  private Patchboard patchboard;
   private OkHttpClient httpClient;
   private AuthorizerInterface authorizer;
+  private Patchboard patchboard;
 
   public Client(Patchboard patchboard, OkHttpClient httpClient, AuthorizerInterface authorizer) {
     this.patchboard = patchboard;
@@ -29,25 +34,27 @@ public class Client {
   }
 
   public Resource resources(String name) {
-    return null;
+    return resources(name, null, null);
   }
 
   public Resource resources(String name, JsonObject query) {
-    return null;
+    return resources(name, null, query);
   }
 
   public Resource resources(String name, String url) {
-    return null;
+    return resources(name, url, null);
   }
 
   public Resource resources(String name, String url, JsonObject query) {
-    return null;
+    MappingSpec mappingSpec = patchboard.definition().mapping(name);
+    if (url == null)
+      url = mappingSpec.url();
+
+    return new Resource(url, mappingSpec.resourceSpec(), this);
   }
 
-  public JsonElement performRequest(String url, String resourceName, String actionName, JsonObject requestBody)
+  public String performRawRequest(String url, ActionSpec actionSpec, JsonObject requestBody)
       throws IOException, UnexpectedStatusCodeException {
-    ResourceSpec resource = patchboard.definition().resource(resourceName);
-    Action action = resource.action(actionName);
 
     com.squareup.okhttp.Request.Builder builder = new Request.Builder().url(url);
 
@@ -55,10 +62,10 @@ public class Client {
     if (requestBody != null)
       body = RequestBody.create(null, requestBody.toString());
 
-    builder.method(action.method(), body);
+    builder.method(actionSpec.method(), body);
 
     String authorization = null;
-    for (String scheme : action.request().authorizations()) {
+    for (String scheme : actionSpec.request().authorizations()) {
       if (authorizer.isAuthorized(scheme)) {
         authorization = authorizer.getCredentials(scheme);
         break;
@@ -67,21 +74,28 @@ public class Client {
 
     if (authorization != null)
       builder.header(AUTHORIZATION_HEADER, authorization);
-    if (action.response().type() != null)
-      builder.header(ACCEPT_HEADER, action.response().type());
-    if (action.request().type() != null)
-      builder.header(CONTENT_TYPE_HEADER, action.request().type());
+    if (actionSpec.response().type() != null)
+      builder.header(ACCEPT_HEADER, actionSpec.response().type());
+    if (actionSpec.request().type() != null)
+      builder.header(CONTENT_TYPE_HEADER, actionSpec.request().type());
 
     Request request = builder.build();
     Response response = httpClient.newCall(request).execute();
 
     int statusCode = response.code();
     String responseContent = response.body().string();
-    if (statusCode != action.response().status())
+    if (statusCode != actionSpec.response().status())
       throw new UnexpectedStatusCodeException(responseContent, statusCode, response);
 
-    return new JsonParser().parse(responseContent);
+    return responseContent;
+  }
 
+  public JsonElement performRequest(String url, ActionSpec actionSpec, JsonObject requestBody)
+      throws IOException, UnexpectedStatusCodeException {
+    String responseContent = performRawRequest(url, actionSpec, requestBody);
+    JsonElement attributes = new JsonParser().parse(responseContent);
+
+    return attributes;
   }
 
   public class UnexpectedStatusCodeException extends Exception {
@@ -101,4 +115,6 @@ public class Client {
           + super.getMessage();
     }
   }
+
+  public Definition definition() { return patchboard.definition(); }
 }

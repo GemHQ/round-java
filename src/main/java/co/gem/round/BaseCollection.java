@@ -46,8 +46,8 @@ public abstract class BaseCollection<T> {
     this.collection.clear();
     this.map.clear();
 
-    JsonArray objects =
-        this.round.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
+    JsonArray objects = null;
+//        this.round.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonArray();
 
     populateCollection(objects);
   }

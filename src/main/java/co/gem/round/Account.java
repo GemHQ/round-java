@@ -28,7 +28,7 @@ public class Account extends Base {
 
   public Address createAddress()
       throws IOException, Client.UnexpectedStatusCodeException {
-    JsonElement response = this.round.performRequest(getAddressesUrl(), "addresses", "create", null);
+    JsonElement response = null; //this.round.performRequest(getAddressesUrl(), "addresses", "create", null);
 
     return new Address(response.getAsJsonObject(), this.round);
   }
@@ -119,7 +119,7 @@ public class Account extends Base {
     body.add("outputs", recipientsJson);
 
     String url = resource.getAsJsonObject("payments").get("url").getAsString();
-    JsonObject resource = this.round.performRequest(url, "payments", "create", body).getAsJsonObject();
+    JsonObject resource = null; //this.round.performRequest(url, "payments", "create", body).getAsJsonObject();
 
     return new Payment(resource, this.round);
   }

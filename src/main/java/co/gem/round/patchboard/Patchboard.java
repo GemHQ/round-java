@@ -1,5 +1,6 @@
 package co.gem.round.patchboard;
 
+import co.gem.round.patchboard.definition.Definition;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.squareup.okhttp.OkHttpClient;

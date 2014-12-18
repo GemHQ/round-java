@@ -12,13 +12,13 @@ public class Round {
 
   static final String API_HOST = "http://bitvault-api.dev";
 
-  public JsonElement performRequest(String url,
-                                    String resourceName, String actionName,
-                                    JsonObject requestBody)
-      throws Client.UnexpectedStatusCodeException, IOException {
-
-    return this.patchboardClient.performRequest(url, resourceName, actionName, requestBody);
-  }
+//  public JsonElement performRequest(String url,
+//                                    String resourceName, String actionName,
+//                                    JsonObject requestBody)
+//      throws Client.UnexpectedStatusCodeException, IOException {
+//
+//    return this.patchboardClient.performRequest(url, resourceName, actionName, requestBody);
+//  }
 
 //  public Wallet wallet() throws Client.UnexpectedStatusCodeException, IOException {
 //    if (wallet == null) {

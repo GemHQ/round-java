@@ -1,4 +1,4 @@
-package co.gem.round.patchboard;
+package co.gem.round.patchboard.definition;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -23,7 +23,9 @@ public class RequestSpec {
   }
 
   public static RequestSpec parse(JsonObject requestJson) {
-    String type = requestJson.get(TYPE).getAsString();
+    String type = null;
+    if (requestJson.has(TYPE))
+      type = requestJson.get(TYPE).getAsString();
     JsonElement authorizationsElement = requestJson.get(AUTHORIZATION);
     List<String> authorizations = new ArrayList<String>();
     if (authorizationsElement != null) {

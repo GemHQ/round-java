@@ -35,7 +35,7 @@ public class Base {
   }
 
   public void refresh() throws Client.UnexpectedStatusCodeException, IOException {
-    resource = this.round.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
+    resource = null; //this.round.performRequest(this.url, this.resourceName, DEFAULT_ACTION, null).getAsJsonObject();
   }
 
   public String getKey() {

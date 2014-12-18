@@ -41,8 +41,8 @@ public class AccountCollection extends BaseCollection<Account> {
     JsonObject body = new JsonObject();
     body.addProperty("name", name);
 
-    JsonObject resource =
-        this.round.performRequest(this.url, RESOURCE_NAME, "create", body).getAsJsonObject();
+    JsonObject resource = null;
+//        this.round.performRequest(this.url, RESOURCE_NAME, "create", body).getAsJsonObject();
 
     Account account = new Account(resource, this.round);
     this.add(account.getKey(), account);

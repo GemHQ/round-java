@@ -39,7 +39,7 @@ public class Payment extends Base {
     body.addProperty("transaction_hash", transaction.getHashAsString());
     body.add("inputs", signaturesJson);
 
-    JsonElement response = this.round.performRequest(this.url, "unsigned_payment", "sign", body);
+    JsonElement response = null; //this.round.performRequest(this.url, "unsigned_payment", "sign", body);
 
     return new Payment(response.getAsJsonObject(), this.round);
   }
