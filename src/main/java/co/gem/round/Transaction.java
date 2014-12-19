@@ -1,23 +1,16 @@
 package co.gem.round;
 
-import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Transaction extends Base {
 
-  public static final String RESOURCE_NAME = "transaction";
   public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-
-  public Transaction(String url, Round round) {
-    super(url, round, RESOURCE_NAME);
-  }
 
   public Transaction(Resource resource, Round round) {
     super(resource, round);

@@ -38,8 +38,7 @@ public abstract class BaseCollection<T> extends Base {
   }
 
   public void fetch() throws Client.UnexpectedStatusCodeException, IOException {
-    super.fetch();
-
+    resource = resource.action(DEFAULT_ACTION);
     list = new ArrayList<T>();
     map = new HashMap<String, T>();
     populateCollection(resource);

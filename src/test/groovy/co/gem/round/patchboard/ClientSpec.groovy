@@ -19,8 +19,8 @@ class ClientSpec extends Specification {
 
   def "resources with query"() {
     when:
-    def query = new JsonObject();
-    query.addProperty("email", "julian@gem.co")
+    def query = new HashMap<String, String>();
+    query.put("email", "julian@gem.co")
     def resource = client.resources("user_query", query)
 
     then:

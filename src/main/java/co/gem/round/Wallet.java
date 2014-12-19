@@ -13,22 +13,15 @@ import java.security.spec.InvalidKeySpecException;
 
 public class Wallet extends Base {
 
-  public static final String RESOURCE_NAME = "wallet";
-
-  private AccountCollection accountsCollection;
   private EncryptedMessage encryptedSeed;
-
-  public Wallet(String url, Round round)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    super(url, round, RESOURCE_NAME);
-  }
 
   public Wallet(Resource resource, Round round) {
     super(resource, round);
   }
 
   public void unlock(String passphrase, UnlockedWalletCallback callback)
-      throws IOException, Client.UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
 
     String decryptedSeed = null;
 
@@ -48,11 +41,7 @@ public class Wallet extends Base {
   }
 
   public AccountCollection accounts() throws Client.UnexpectedStatusCodeException, IOException {
-    if (this.accountsCollection == null) {
-      this.accountsCollection = new AccountCollection(resource.subresource("accounts"), this.round, this);
-    }
-
-    return this.accountsCollection;
+    return new AccountCollection(resource.subresource("accounts"), this.round, this);
   }
 
   public EncryptedMessage getEncryptedSeed() {

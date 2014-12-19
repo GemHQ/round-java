@@ -27,15 +27,4 @@ public class AuthorizerTest {
 
     Assert.assertEquals("Foo foo=bar", credential);
   }
-
-  @Test
-  public void testAuthorizeBasic() {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("email", "julian@gem.co");
-    params.put("password", "password");
-    authorizer.authorize("Basic", params);
-
-    String credential = authorizer.getCredentials("Basic");
-    Assert.assertEquals("Basic anVsaWFuQGdlbS5jbzpwYXNzd29yZA==", credential);
-  }
 }

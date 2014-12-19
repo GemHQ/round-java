@@ -4,24 +4,18 @@ import co.gem.round.coinop.MultiWallet;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.List;
 
 public class Account extends Base {
 
-  public static final String RESOURCE_NAME = "account";
-
   private Wallet wallet;
   private TransactionCollection transactions;
-
-  public Account(String url, Round round)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    super(url, round, RESOURCE_NAME);
-  }
 
   public Account(Resource resource, Round round) {
     super(resource, round);
@@ -61,24 +55,28 @@ public class Account extends Base {
   }
 
   public Payment payToEmail(String passphrase, String email, long amount)
-      throws IOException, Client.UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
     Recipient recipient = Recipient.recipientWithEmail(email, amount);
     return this.pay(passphrase, recipient);
   }
 
   public Payment payToAddress(String passphrase, String address, long amount)
-      throws IOException, Client.UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
     return this.pay(passphrase, Recipient.recipientWithAddress(address, amount));
   }
 
   public Payment pay(String passphrase, Recipient recipient)
-      throws IOException, Client.UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
     return this.pay(passphrase, recipients);
   }
 
   public Payment pay(String passphrase, List<Recipient> recipients)
-      throws IOException, Client.UnexpectedStatusCodeException {
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
     final Payment payment = this.createUnsignedPayment(recipients);
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override

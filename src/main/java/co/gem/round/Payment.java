@@ -5,7 +5,6 @@ import co.gem.round.coinop.TransactionWrapper;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -14,15 +13,8 @@ import java.util.List;
 
 public class Payment extends Base {
 
-  public static final String RESOURCE_NAME = "payment";
-
   public Payment(Resource resource, Round round) {
     super(resource, round);
-  }
-
-  public Payment(String url, Round round)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    super(url, round, RESOURCE_NAME);
   }
 
   public Payment sign(MultiWallet wallet)

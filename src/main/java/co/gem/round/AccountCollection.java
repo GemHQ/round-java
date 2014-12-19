@@ -2,8 +2,6 @@ package co.gem.round;
 
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -37,8 +35,8 @@ public class AccountCollection extends BaseCollection<Account> {
   @Override
   public void populateCollection(Iterable<Resource> resources) {
     for (Resource resource : resources) {
-      Account account = new Account(resource, this.round);
-      this.add(account.key(), account);
+      Account account = new Account(resource, round);
+      this.add(account.getString("name"), account);
     }
   }
 

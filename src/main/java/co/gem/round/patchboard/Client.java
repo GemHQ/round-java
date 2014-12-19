@@ -1,6 +1,8 @@
 package co.gem.round.patchboard;
 
-import co.gem.round.patchboard.definition.*;
+import co.gem.round.patchboard.definition.ActionSpec;
+import co.gem.round.patchboard.definition.Definition;
+import co.gem.round.patchboard.definition.MappingSpec;
 import co.gem.round.util.Strings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,7 +39,7 @@ public class Client {
     return resources(name, null, null);
   }
 
-  public Resource resources(String name, JsonObject query) {
+  public Resource resources(String name, Map<String, String> query) {
     return resources(name, null, query);
   }
 
@@ -45,7 +47,7 @@ public class Client {
     return resources(name, url, null);
   }
 
-  public Resource resources(String name, String url, JsonObject query) {
+  public Resource resources(String name, String url, Map<String, String> query) {
     MappingSpec mappingSpec = patchboard.definition().mapping(name);
     if (url == null)
       url = mappingSpec.url();
@@ -56,12 +58,11 @@ public class Client {
     return new Resource(url, mappingSpec.resourceSpec(), this);
   }
 
-  public String queryStringFromObject(JsonObject query) {
+  public String queryStringFromObject(Map<String, String> query) {
     List<String> params = new ArrayList<String>();
-    for(Map.Entry<String, JsonElement> entry : query.entrySet()) {
-      String key = entry.getKey();
-      String value = entry.getValue().getAsString();
-      String param = Strings.urlEncode(key) + "=" + Strings.urlEncode(value);
+    for(Map.Entry<String, String> entry : query.entrySet()) {
+      String param = Strings.urlEncode(entry.getKey()) + "="
+          + Strings.urlEncode(entry.getValue());
       params.add(param);
     }
 
@@ -132,4 +133,5 @@ public class Client {
   }
 
   public Definition definition() { return patchboard.definition(); }
+  public AuthorizerInterface authorizer() { return authorizer; }
 }

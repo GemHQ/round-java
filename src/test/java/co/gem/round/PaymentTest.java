@@ -2,6 +2,7 @@ package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
 import co.gem.round.patchboard.Client;
+import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.Assert;
@@ -42,8 +43,8 @@ public class PaymentTest {
       br.close();
     }
 
-    JsonObject resource = new JsonParser().parse(payload).getAsJsonObject();
-    unsignedPayment = new Payment(resource, round);
+    JsonObject attributes = new JsonParser().parse(payload).getAsJsonObject();
+
   }
 
   private static final String primaryPrivSeed =

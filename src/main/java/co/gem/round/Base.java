@@ -8,8 +8,6 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 
 public class Base {
-
-  protected String url;
   protected Resource resource;
   protected Round round;
 
@@ -18,7 +16,6 @@ public class Base {
   public Base() {}
 
   public Base(String url, Round round, String resourceName) {
-    this.url = url;
     this.round = round;
     resource = this.round.patchboardClient().resources(resourceName, url);
   }
@@ -26,8 +23,6 @@ public class Base {
   public Base(Resource resource, Round round) {
     this.resource = resource;
     this.round = round;
-
-    url = this.resource.url();
   }
 
   public void fetch() throws Client.UnexpectedStatusCodeException, IOException {
