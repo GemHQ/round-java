@@ -29,6 +29,4 @@ class RoundSpec extends Specification {
       users.url().equals("http://localhost:8999/users")
   }
 
-  def "client "
-
 }
