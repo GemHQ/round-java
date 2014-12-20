@@ -1,6 +1,6 @@
-# bitvault-java
+# Round-java
 
-A Java client for accessing the BitVault API
+A Java client for accessing the Gem API
 
 ## Development dependencies
 
