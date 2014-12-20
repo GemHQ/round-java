@@ -1,4 +1,4 @@
-# round-java
+# Round-java
 
 A Java client for accessing the Gem API
 
