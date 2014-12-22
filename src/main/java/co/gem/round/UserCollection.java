@@ -36,7 +36,7 @@ public class UserCollection extends BaseCollection<User> {
 
     Resource resource = this.resource.action("create", payload);
     User user = new User(resource, round);
-    User.Wrapper wrapper = new User.Wrapper(user, multiWallet);
+    User.Wrapper wrapper = new User.Wrapper(user, multiWallet.serializedBackupPrivateSeed());
     return wrapper;
   }
 

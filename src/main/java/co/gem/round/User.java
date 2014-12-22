@@ -58,13 +58,13 @@ public class User extends Base {
     return getString("email");
   }
 
-  static class Wrapper {
+  public static class Wrapper {
     public User user;
-    public MultiWallet multiWallet;
+    public String backupPrivateSeed;
 
-    public Wrapper(User user, MultiWallet multiWallet) {
+    public Wrapper(User user, String backupPrivateSeed) {
       this.user = user;
-      this.multiWallet = multiWallet;
+      this.backupPrivateSeed = backupPrivateSeed;
     }
   }
 }

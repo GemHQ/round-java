@@ -7,14 +7,18 @@ import spock.lang.Specification
  */
 class RoundSpec extends Specification {
 
-  def round = Round.client(null)
+  def Round round
+
+  def setup() {
+    round = Round.client(null)
+  }
 
   def "#client returns a valid client"() {
     expect:
       round != null
   }
 
-  def "client returns a valid user_query resource"() {
+  def "client returns a valid User resource"() {
     when:
       def user = round.user("julian@gem.co")
     then:
