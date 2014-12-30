@@ -54,6 +54,7 @@ public class Round {
     params.put("api_token", apiToken);
     if (key != null) params.put("key", key);
     if (secret != null) params.put("secret", secret);
+    patchboardClient.authorizer().authorize(AuthScheme.OTP, params);
   }
 
   public User user(String email) {
