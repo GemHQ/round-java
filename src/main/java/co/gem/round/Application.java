@@ -14,8 +14,11 @@ public class Application extends Base{
     super(resource, round);
   }
 
-  public UserCollection users() {
+  public UserCollection users()
+      throws IOException, Client.UnexpectedStatusCodeException {
     Resource usersResource = resource.subresource("users");
+    UserCollection users = new UserCollection(usersResource, round);
+    users.fetch();
     return new UserCollection(usersResource, round);
   }
 

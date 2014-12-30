@@ -40,7 +40,8 @@ public class Resource implements Iterable<Resource>{
     this.resourceList = resourceList;
   }
 
-  public Resource subresource(String name) {
+  public Resource subresource(String name) throws
+    IOException, Client.UnexpectedStatusCodeException {
     String url = attributes.get(name).getAsJsonObject()
         .get(URL).getAsString();
     return client.resources(name, url);

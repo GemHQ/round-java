@@ -16,14 +16,20 @@ public class User extends Base {
     super(resource, round);
   }
 
-  public WalletCollection wallets() {
+  public WalletCollection wallets() throws
+    IOException, Client.UnexpectedStatusCodeException {
     Resource resource = this.resource.subresource("wallets");
-    return new WalletCollection(resource, round);
+    WalletCollection wallets = new WalletCollection(resource, round);
+    wallets.fetch();
+    return wallets;
   }
 
-  public Wallet defaultWallet() {
+  public Wallet defaultWallet()
+      throws IOException, Client.UnexpectedStatusCodeException {
     Resource resource = this.resource.subresource("default_wallet");
-    return new Wallet(resource, round);
+    Wallet defaultWallet = new Wallet(resource, round);
+    defaultWallet.fetch();
+    return defaultWallet;
   }
 
   public String beginDeviceAuth(String apiToken, String deviceName, String deviceId)
@@ -48,8 +54,7 @@ public class User extends Base {
     JsonObject payload = new JsonObject();
     payload.addProperty("name", deviceName);
     payload.addProperty("device_id", deviceId);
-    Resource userResource = null;
-    userResource = resource.action("authorize_device", payload);
+    Resource userResource = resource.action("authorize_device", payload);
 
     return new User(userResource, round);
   }

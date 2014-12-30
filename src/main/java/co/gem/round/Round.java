@@ -30,23 +30,29 @@ public class Round {
     return new Round(patchboardClient);
   }
 
-  public User authenticateDevice(String apiToken, String userToken, String deviceId, String email) {
+  public User authenticateDevice(String apiToken, String userToken, String deviceId, String email)
+    throws IOException, Client.UnexpectedStatusCodeException {
     Map<String, String> params = new HashMap<String, String>();
     params.put("api_token", apiToken);
     params.put("user_token", userToken);
     params.put("device_id", deviceId);
     patchboardClient.authorizer().authorize(AuthScheme.DEVICE, params);
 
-    return user(email);
+    User user = user(email);
+    user.fetch();
+    return user;
   }
 
-  public Application authenticateApplication(String url, String apiToken, String instanceId) {
+  public Application authenticateApplication(String url, String apiToken, String instanceId)
+    throws IOException, Client.UnexpectedStatusCodeException {
     Map<String, String> params = new HashMap<String, String>();
     params.put("api_token", apiToken);
     params.put("instance_id", instanceId);
     patchboardClient.authorizer().authorize(AuthScheme.APPLICATION, params);
 
-    return application(url);
+    Application app = application(url);
+    app.fetch();
+    return app;
   }
 
   public void authenticateOtp(String apiToken, String key, String secret) {

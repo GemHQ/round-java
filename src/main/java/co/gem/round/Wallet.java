@@ -41,7 +41,9 @@ public class Wallet extends Base {
   }
 
   public AccountCollection accounts() throws Client.UnexpectedStatusCodeException, IOException {
-    return new AccountCollection(resource.subresource("accounts"), this.round, this);
+    AccountCollection accounts = new AccountCollection(resource.subresource("accounts"), this.round, this);
+    accounts.fetch();
+    return accounts;
   }
 
   public EncryptedMessage getEncryptedSeed() {

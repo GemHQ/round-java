@@ -30,12 +30,13 @@ public class Account extends Base {
 
   public TransactionCollection transactions()
       throws IOException, Client.UnexpectedStatusCodeException {
-    if (this.transactions == null) {
+    if (transactions == null) {
       Resource transactionsResource = resource.subresource("transactions");
-      this.transactions = new TransactionCollection(transactionsResource, this.round);
+      transactions = new TransactionCollection(transactionsResource, this.round);
+      transactions.fetch();
     }
 
-    return this.transactions;
+    return transactions;
   }
 
   public String name() {
