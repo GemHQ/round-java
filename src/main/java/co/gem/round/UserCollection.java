@@ -21,7 +21,7 @@ public class UserCollection extends BaseCollection<User> {
   public User.Wrapper create(String email, String passphrase, String blockchain)
       throws Client.UnexpectedStatusCodeException, IOException,
       InvalidKeySpecException, NoSuchAlgorithmException{
-    MultiWallet multiWallet = MultiWallet.generate(Network.network(blockchain));
+    MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork(blockchain));
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);
 

@@ -20,13 +20,18 @@ public class Network {
             .put("tbtc", MultiWallet.Blockchain.TESTNET)
             .build();
 
-
-    public static MultiWallet.Blockchain network(String networkName){
+    /**
+     * Looks up a name for the type of blockchain network to use.
+     * if it is not found, it defaults to Bitcoin Testnet3
+     * @param networkName String
+     * @return MulitiWallet.Blockchain
+     */
+    public static MultiWallet.Blockchain blockchainNetwork(String networkName){
         String name = networkName.toLowerCase();
         if(NETWORK_MAP.containsKey(name)) {
             return NETWORK_MAP.get(name);
         } else {
-            throw new Error("network: " + networkName + " not found.");
+            return MultiWallet.Blockchain.TESTNET;
         }
     }
 }
