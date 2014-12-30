@@ -14,8 +14,8 @@ public class Http {
     Pattern pattern = Pattern.compile("(\\S*)\\=\"(\\S*)\"");
     Matcher matcher = pattern.matcher(header);
     while (matcher.find()) {
-      String key = matcher.group(0);
-      String value = matcher.group(1);
+      String key = matcher.group(1);
+      String value = matcher.group(2);
       params.put(key, value);
     }
     return params;
