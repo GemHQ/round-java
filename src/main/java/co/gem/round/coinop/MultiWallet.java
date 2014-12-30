@@ -90,6 +90,15 @@ public class MultiWallet {
     return new MultiWallet(primaryPrivateSeed, backupPublicSeed, cosignerPublicSeed);
   }
 
+  public Blockchain blockchain() {
+    if (networkParameters.getId().equals(NetworkParameters.ID_MAINNET))
+      return Blockchain.MAINNET;
+    else if (networkParameters.getId().equals(NetworkParameters.ID_TESTNET))
+      return Blockchain.TESTNET;
+
+    return Blockchain.TESTNET;
+  }
+
   public String serializedPrimaryPrivateSeed() {
     return this.primaryPrivateKey.serializePrivB58(networkParameters);
   }

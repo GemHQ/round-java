@@ -24,8 +24,14 @@ public class UserCollection extends BaseCollection<User> {
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);
 
+    String network = null;
+    if (multiWallet.blockchain() == MultiWallet.Blockchain.MAINNET)
+      network = "bitcoin";
+    else
+      network = "bitcoin_testnet";
+    
     JsonObject wallet = new JsonObject();
-    wallet.addProperty("network", "bitcoin_testnet");
+    wallet.addProperty("network", network);
     wallet.addProperty("backup_public_seed", multiWallet.serializedBackupPublicSeed());
     wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicSeed());
     wallet.add("primary_private_seed", encryptedPrivateSeed.asJsonObject());
