@@ -1,6 +1,7 @@
 package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
+import co.gem.round.coinop.util.Network;
 import co.gem.round.crypto.EncryptedMessage;
 import co.gem.round.crypto.PassphraseBox;
 import co.gem.round.patchboard.Client;
@@ -17,10 +18,10 @@ import java.security.spec.InvalidKeySpecException;
 public class UserCollection extends BaseCollection<User> {
   public UserCollection(Resource resource, Round round) { super(resource, round); }
 
-  public User.Wrapper create(String email, String passphrase)
+  public User.Wrapper create(String email, String passphrase, String blockchain)
       throws Client.UnexpectedStatusCodeException, IOException,
       InvalidKeySpecException, NoSuchAlgorithmException{
-    MultiWallet multiWallet = MultiWallet.generate(MultiWallet.Blockchain.TESTNET);
+    MultiWallet multiWallet = MultiWallet.generate(Network.network(blockchain));
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);
 
