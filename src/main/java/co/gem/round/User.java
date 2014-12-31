@@ -63,6 +63,14 @@ public class User extends Base {
     return getString("email");
   }
 
+  public String userToken() {
+    return getString("user_token");
+  }
+
+  public String userUrl() {
+    return getString("url");
+  }
+
   public static class Wrapper {
     public User user;
     public String backupPrivateSeed;
