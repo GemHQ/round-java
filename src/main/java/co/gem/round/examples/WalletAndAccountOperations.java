@@ -1,5 +1,6 @@
 package co.gem.round.examples;
 
+import co.gem.round.Account;
 import co.gem.round.Round;
 import co.gem.round.User;
 import co.gem.round.Wallet;
@@ -32,5 +33,10 @@ public class WalletAndAccountOperations {
                 "\nuser key: " + authUser.key());
 
         Wallet myWallet = authUser.wallets().get("default");
+        System.out.println("\n" + myWallet.getBackupPublicSeed() + "\n" + myWallet.getCosignerPublicSeed());
+
+
+        Account myAccount = myWallet.accounts().get("default_account");
+        System.out.println(Long.toString(myAccount.balance()));
     }
 }
