@@ -57,4 +57,14 @@ public class SchemaSpec {
   public String id() { return id; }
   public String type() { return type; }
   public JsonObject properties() { return properties; }
+
+  public String associationSchemaId(String name) {
+    if (properties() != null) {
+      if (properties().has(name)) {
+        JsonObject property = properties().get(name).getAsJsonObject();
+        if (property.has(REF)) return property.get(REF).getAsString();
+      }
+    }
+    return null;
+  }
 }

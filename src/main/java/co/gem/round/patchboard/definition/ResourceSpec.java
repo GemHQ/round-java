@@ -13,6 +13,7 @@ public class ResourceSpec {
   static final String ACTIONS = "actions";
 
   private Map<String, ActionSpec> actions = new HashMap<String, ActionSpec>();
+  private SchemaSpec schemaSpec;
 
   private ResourceSpec(JsonObject actionsJson) {
     parseActions(actionsJson);
@@ -24,6 +25,8 @@ public class ResourceSpec {
     return new ResourceSpec(actionsJson);
   }
 
+  public void setSchemaSpec(SchemaSpec schemaSpec) { this.schemaSpec = schemaSpec; }
+  public SchemaSpec schemaSpec() { return schemaSpec; }
   public ActionSpec action(String name) { return actions.get(name); }
 
   private void parseActions(JsonObject actionsJson) {

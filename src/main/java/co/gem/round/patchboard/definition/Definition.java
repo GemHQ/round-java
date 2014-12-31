@@ -27,6 +27,10 @@ public class Definition {
     parseResources(resourcesJson);
     parseMappings(mappingsJson);
     parseSchemas(schemasJson);
+    for (Map.Entry<String, ResourceSpec> entry : resources.entrySet()) {
+      SchemaSpec schemaSpec = schemasByResourceName.get(entry.getKey());
+      entry.getValue().setSchemaSpec(schemaSpec);
+    }
   }
 
   public static Definition parse(JsonObject discovery) {
@@ -50,6 +54,10 @@ public class Definition {
 
   public SchemaSpec schemaByMediaType(String mediaType) {
     return schemasByMediaType.get(mediaType);
+  }
+
+  public SchemaSpec schemaById(String id) {
+    return schemasById.get(id);
   }
 
   private void parseResources(JsonObject resourcesJson) {

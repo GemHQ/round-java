@@ -4,12 +4,9 @@ import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public abstract class BaseCollection<T> extends Base {
+public abstract class BaseCollection<T> extends Base implements Iterable<T> {
 
   protected List<T> list = new ArrayList<T>();
   protected Map<String, T> map = new HashMap<String, T>();
@@ -54,4 +51,9 @@ public abstract class BaseCollection<T> extends Base {
   public Map<String, T> asMap() { return map; }
 
   public abstract void populateCollection(Iterable<Resource> collection);
+
+  @Override
+  public Iterator<T> iterator() {
+    return list.iterator();
+  }
 }

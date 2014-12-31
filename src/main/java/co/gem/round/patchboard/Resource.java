@@ -20,23 +20,23 @@ public class Resource implements Iterable<Resource>{
 
   private String url;
   private Client client;
-  private ResourceSpec spec;
+  private ResourceSpec resourceSpec;
   private JsonObject attributes;
   private List<Resource> resourceList;
 
-  protected Resource(String url, ResourceSpec spec, Client client) {
+  protected Resource(String url, ResourceSpec resourceSpec, Client client) {
     this.url = url;
-    this.spec = spec;
+    this.resourceSpec = resourceSpec;
     this.client = client;
   }
 
-  protected Resource(JsonObject attributes, ResourceSpec spec, Client client) {
-    this(attributes.get(URL).getAsString(), spec, client);
+  protected Resource(JsonObject attributes, ResourceSpec resourceSpec, Client client) {
+    this(attributes.get(URL).getAsString(), resourceSpec, client);
     this.attributes = attributes;
   }
 
-  protected Resource(JsonObject attributes, List<Resource> resourceList, ResourceSpec spec, Client client) {
-    this(attributes, spec, client);
+  protected Resource(JsonObject attributes, List<Resource> resourceList, ResourceSpec resourceSpec, Client client) {
+    this(attributes, resourceSpec, client);
     this.resourceList = resourceList;
   }
 
@@ -44,7 +44,9 @@ public class Resource implements Iterable<Resource>{
     IOException, Client.UnexpectedStatusCodeException {
     String url = attributes.get(name).getAsJsonObject()
         .get(URL).getAsString();
-    return client.resources(name, url);
+    String schemaId = resourceSpec.schemaSpec().associationSchemaId(name);
+
+    return client.resources(name, url, schemaId);
   }
 
   public Resource action(String name)
@@ -54,7 +56,7 @@ public class Resource implements Iterable<Resource>{
 
   public Resource action(String name, JsonObject payload)
       throws IOException, Client.UnexpectedStatusCodeException {
-    ActionSpec actionSpec = spec.action(name);
+    ActionSpec actionSpec = resourceSpec.action(name);
 
     JsonElement response = client.performRequest(url, actionSpec, payload);
     String responseMediaType = actionSpec.response().type();

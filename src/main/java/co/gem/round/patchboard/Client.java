@@ -1,8 +1,6 @@
 package co.gem.round.patchboard;
 
-import co.gem.round.patchboard.definition.ActionSpec;
-import co.gem.round.patchboard.definition.Definition;
-import co.gem.round.patchboard.definition.MappingSpec;
+import co.gem.round.patchboard.definition.*;
 import co.gem.round.util.Strings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -36,26 +34,43 @@ public class Client {
   }
 
   public Resource resources(String name) {
-    return resources(name, null, null);
+    return resources(name, null, null, null);
   }
 
   public Resource resources(String name, Map<String, String> query) {
-    return resources(name, null, query);
+    return resources(name, null, null, query);
   }
 
   public Resource resources(String name, String url) {
-    return resources(name, url, null);
+    return resources(name, url, null, null);
   }
 
-  public Resource resources(String name, String url, Map<String, String> query) {
+  public Resource resources(String name, String url, String schemaId) {
+    return resources(name, url, schemaId, null);
+  }
+
+  public Resource resources(String name, String url, String schemaId, Map<String, String> query) {
+    SchemaSpec schemaSpec = null;
+    if (schemaId != null) {
+      schemaSpec = patchboard.definition().schemaById(schemaId);
+    }
+
     MappingSpec mappingSpec = patchboard.definition().mapping(name);
+
+    ResourceSpec resourceSpec = null;
+    if (schemaSpec != null) {
+      resourceSpec = schemaSpec.resourceSpec();
+    } else {
+      resourceSpec = mappingSpec.resourceSpec();
+    }
+
     if (url == null)
       url = mappingSpec.url();
 
     if (query != null)
       url = url + "?" + queryStringFromObject(query);
 
-    return new Resource(url, mappingSpec.resourceSpec(), this);
+    return new Resource(url, resourceSpec, this);
   }
 
   public String queryStringFromObject(Map<String, String> query) {
