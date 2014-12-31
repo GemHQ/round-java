@@ -61,7 +61,7 @@ public class Resource implements Iterable<Resource>{
     JsonElement response = client.performRequest(url, actionSpec, payload);
     String responseMediaType = actionSpec.response().type();
     SchemaSpec responseSchema = client.definition().schemaByMediaType(responseMediaType);
-    if (responseSchema.type() == "array") {
+    if (responseSchema.type() != null && responseSchema.type().equals("array")) {
       resourceList = new ArrayList<Resource>();
       JsonArray jsonArray = response.getAsJsonArray();
       for (JsonElement element : jsonArray) {
