@@ -1,6 +1,8 @@
 package co.gem.round.examples;
 
-import co.gem.round.*;
+import co.gem.round.Round;
+import co.gem.round.User;
+import co.gem.round.Wallet;
 import co.gem.round.patchboard.Client;
 
 import java.io.IOException;
@@ -8,9 +10,8 @@ import java.io.IOException;
 /**
  * Created by jled on 12/31/14.
  */
+public class WalletAndAccountOperations {
 
-
-public class UserDeviceAuth {
     private static final String API_TOKEN = "ssgPhVv-Pv-soqQtRM7pIFHzg7uGOGFzrAfSBVONqgo";
     private static final String APP_URL = "https://api-sandbox.gem.co/apps/oHgM6NrHq-C_K2-f1pfwIg";
     private static final String DEV_EMAIL = "joshua+devJava1@gem.co";
@@ -29,5 +30,7 @@ public class UserDeviceAuth {
         System.out.println("\nuser token: " + authUser.userToken() +
                 "\nuser url: " + authUser.userUrl() +
                 "\nuser key: " + authUser.key());
+
+        Wallet myWallet = authUser.wallets().get("default");
     }
 }
