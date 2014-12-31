@@ -10,7 +10,7 @@ import java.io.IOException;
 public class ExamplesRunner {
     public static void main(String[] args) throws IOException, Client.UnexpectedStatusCodeException {
 
-        UserCreationAndAuthentication.init();
-
+        //UserCreationAndAuthentication.init();
+        UserDeviceAuth.init();
     }
 }
