@@ -10,9 +10,8 @@ import java.io.IOException;
  * Created by jled on 12/31/14.
  */
 
-
 public class UserDeviceAuth {
-    public static void init() throws IOException, Client.UnexpectedStatusCodeException {
+    public static User init() throws IOException, Client.UnexpectedStatusCodeException {
         Round client = Round.client("https://api-sandbox.gem.co");
         User authUser = client.authenticateDevice(Utils.getApiToken(),
                 Utils.getUserToken(),
@@ -22,5 +21,7 @@ public class UserDeviceAuth {
         System.out.println("\nuser token: " + authUser.userToken() +
                 "\nuser url: " + authUser.userUrl() +
                 "\nuser key: " + authUser.key());
+
+        return authUser;
     }
 }

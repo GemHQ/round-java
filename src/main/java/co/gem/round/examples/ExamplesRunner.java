@@ -11,7 +11,7 @@ public class ExamplesRunner {
     public static void main(String[] args) throws IOException, Client.UnexpectedStatusCodeException {
 
         //UserCreationAndAuthentication.init();
-        UserDeviceAuth.init();
+        //UserDeviceAuth.init();
         //WalletAndAccountOperations.init();
     }
 }
