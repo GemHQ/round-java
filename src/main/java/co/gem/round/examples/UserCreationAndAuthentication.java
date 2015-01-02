@@ -10,7 +10,7 @@ import java.security.spec.InvalidKeySpecException;
 
 public class UserCreationAndAuthentication {
 
-    public void init() throws IOException, Client.UnexpectedStatusCodeException{
+    public static void init() throws IOException, Client.UnexpectedStatusCodeException{
         //create the API client pointing to one of our APIs
         // testnet sandbox:  https://api-sandbox.gem.co
         // mainnet:  https://api.gem.co
