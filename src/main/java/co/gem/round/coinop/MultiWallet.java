@@ -64,9 +64,9 @@ public class MultiWallet {
   public static NetworkParameters networkParametersFromBlockchain(Blockchain blockchain) {
     switch (blockchain) {
       case MAINNET:
-        return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
-      case TESTNET:
         return NetworkParameters.fromID(NetworkParameters.ID_MAINNET);
+      case TESTNET:
+        return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
     }
 
     return NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
