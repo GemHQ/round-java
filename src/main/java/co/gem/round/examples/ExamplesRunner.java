@@ -12,6 +12,6 @@ public class ExamplesRunner {
 
         //UserCreationAndAuthentication.init();
         //UserDeviceAuth.init();
-        //WalletAndAccountOperations.init();
+        WalletAndAccountOperations.init();
     }
 }
