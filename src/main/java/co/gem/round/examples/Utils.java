@@ -12,6 +12,7 @@ public class Utils {
 
     private static final String API_TOKEN = "ssgPhVv-Pv-soqQtRM7pIFHzg7uGOGFzrAfSBVONqgo";
     private static final String APP_URL = "https://api-sandbox.gem.co/apps/oHgM6NrHq-C_K2-f1pfwIg";
+    private static final String APP_INSTANCE = "";
     private static final String DEV_EMAIL = "joshua+devJava1@gem.co";
 
     private static final String USER_EMAIL = "joshua+userJava01@gem.co";
@@ -56,4 +57,10 @@ public class Utils {
     public static String getDeviceName() {
         return DEVICE_NAME;
     }
+
+    public static String getAppInstance() {
+        return APP_INSTANCE;
+    }
 }
+
+
