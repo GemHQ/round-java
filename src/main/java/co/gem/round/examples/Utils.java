@@ -14,8 +14,10 @@ public class Utils {
     private static final String APP_URL = "https://api-sandbox.gem.co/apps/oHgM6NrHq-C_K2-f1pfwIg";
     private static final String DEV_EMAIL = "joshua+devJava1@gem.co";
 
-    private static final String USER_TOKEN = "OZyLrmlIUO6jT3HgG0o6SAFKeSXhdiMFiV_6YngXGfQ";
-    private static final String USER_EMAIL = "joshua+userJava1@gem.co";
+    private static final String USER_EMAIL = "joshua+userJava01@gem.co";
+    private static final String USER_TOKEN = "yVLp6UuhmVpS7yUAcGJ9HiCL_tsmi1_pRvqzGUawlXg";
+    private static final String USER_URL = "https://api-sandbox.gem.co/users/W2v08puq6ZJKYVE3BWnKsw";
+
     private static final String DEVICE_ID = "12345abcd257v2212";
     private static final String DEVICE_NAME = "mbp-java";
 
