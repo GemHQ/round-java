@@ -22,7 +22,7 @@ public class WalletAndAccountOperations {
         System.out.println("\n" + myWallet.getBackupPublicSeed() + "\n" + myWallet.getCosignerPublicSeed());
 
 
-        Account myAccount = myWallet.accounts().get("default_account");
+        Account myAccount = myWallet.accounts().get("default");
         System.out.println(Long.toString(myAccount.balance()));
     }
 }

@@ -39,7 +39,9 @@ public class SchemaSpec {
     ResourceSpec arrayResource = null;
     if (schemaJson.has(ITEMS)) {
       JsonObject items = schemaJson.get(ITEMS).getAsJsonObject();
-      String resourceName = items.get(REF).getAsString();
+      // FIXME: this is ugly. Need a better strategy for parsing definitions
+      // to avoid this
+      String resourceName = items.get(REF).getAsString().replace("#", "");
       arrayResource = definition.resource(resourceName);
     }
     JsonObject properties = null;
