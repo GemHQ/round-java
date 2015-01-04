@@ -32,7 +32,7 @@ public class AccountTest {
 
   @Test
   public void testCreateAddress() throws IOException, Client.UnexpectedStatusCodeException {
-    Address address = account.createAddress();
+    Address address = account.addresses().create();
     Assert.assertNotNull(address);
   }
 }
