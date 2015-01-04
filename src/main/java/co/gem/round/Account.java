@@ -15,28 +15,27 @@ import java.util.List;
 public class Account extends Base {
 
   private Wallet wallet;
-  private TransactionCollection transactions;
 
   public Account(Resource resource, Round round) {
     super(resource, round);
   }
 
-  public Address createAddress()
-      throws IOException, Client.UnexpectedStatusCodeException {
-    Resource addressResource = resource.subresource("addresses").action("create");
-
-    return new Address(addressResource, this.round);
-  }
-
   public TransactionCollection transactions()
       throws IOException, Client.UnexpectedStatusCodeException {
-    if (transactions == null) {
-      Resource transactionsResource = resource.subresource("transactions");
-      transactions = new TransactionCollection(transactionsResource, this.round);
-      transactions.fetch();
-    }
+    Resource transactionsResource = resource.subresource("transactions");
+    TransactionCollection transactions = new TransactionCollection(transactionsResource, this.round);
+    transactions.fetch();
 
     return transactions;
+  }
+
+  public AddressCollection addresses()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    Resource addressesResource = resource.subresource("addresses");
+    AddressCollection addresses = new AddressCollection(addressesResource, this.round);
+    addresses.fetch();
+
+    return addresses;
   }
 
   public String name() {

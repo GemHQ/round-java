@@ -31,7 +31,11 @@ public class Resource implements Iterable<Resource>{
   }
 
   protected Resource(JsonObject attributes, ResourceSpec resourceSpec, Client client) {
-    this(attributes.get(URL).getAsString(), resourceSpec, client);
+    this((String)null, resourceSpec, client);
+    if (attributes.has(URL)) {
+      this.url = attributes.get(URL).getAsString();
+    }
+
     this.attributes = attributes;
   }
 
