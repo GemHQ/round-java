@@ -28,5 +28,18 @@ public class WalletAndAccountOperations {
 
         Address myAddress = myAccount.addresses().create();
         System.out.println(myAddress.getAddressString());
+
+        //fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
+
+//        Payment payment = null;
+//        try {
+//            payment = myAccount.payToAddress("password", "1lJPij0u4209430jsdf", 84059540L);
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (InvalidKeySpecException e) {
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println(payment.getStatus());
     }
 }
