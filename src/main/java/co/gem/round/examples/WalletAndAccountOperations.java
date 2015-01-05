@@ -26,7 +26,7 @@ public class WalletAndAccountOperations {
         Account myAccount = myWallet.accounts().get("default");
         System.out.println(Long.toString(myAccount.balance()));
 
-        Address myAddress = myAccount.createAddress();
+        Address myAddress = myAccount.addresses().create();
         System.out.println(myAddress.getAddressString());
     }
 }
