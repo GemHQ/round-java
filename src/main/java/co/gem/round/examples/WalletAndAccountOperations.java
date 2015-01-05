@@ -26,11 +26,22 @@ public class WalletAndAccountOperations {
         Account myAccount = myWallet.accounts().get("default");
         System.out.println(Long.toString(myAccount.balance()));
 
-        Address address = myAccount.createAddress();
+        Address address = myAccount.addresses().create();
         System.out.println(
                 "\nAddress: " + address.getAddressString() +
                 "\nPath: " + address.url());
 
+        //fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
 
+//        Payment payment = null;
+//        try {
+//            payment = myAccount.payToAddress("password", "1lJPij0u4209430jsdf", 84059540L);
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (InvalidKeySpecException e) {
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println(payment.getStatus());
     }
 }
