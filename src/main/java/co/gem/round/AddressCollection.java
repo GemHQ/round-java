@@ -13,7 +13,7 @@ public class AddressCollection extends BaseCollection<Address> {
 
   public Address create()
       throws IOException, Client.UnexpectedStatusCodeException {
-    Resource addressResource = resource.subresource("addresses").action("create");
+    Resource addressResource = resource.action("create");
     return new Address(addressResource, this.round);
   }
 
