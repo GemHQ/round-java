@@ -32,6 +32,7 @@ public class Base {
   public String key() {
     return getString("key");
   }
+
   public String url() { return resource.url(); }
 
   public Resource resource() {

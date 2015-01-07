@@ -21,7 +21,10 @@ public class ApplicaitonAuth {
         
         List<User> users = myApp.users().asList();
         for(User u : users){
-            System.out.println(u.email());
+            List<Account> accounts = u.defaultWallet().accounts().asList();
+            for (Account act : accounts){
+                System.out.println(u.email() + ": " + act.name() + " | " + act.balance() + " satoshis");
+            }
         }
     }
 }

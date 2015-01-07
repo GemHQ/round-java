@@ -15,10 +15,6 @@ public class WalletAndAccountOperations {
     public static void init() throws IOException, Client.UnexpectedStatusCodeException {
         User authUser = UserDeviceAuth.init();
 
-        System.out.println("\nuser token: " + authUser.userToken() +
-                "\nuser url: " + authUser.userUrl() +
-                "\nuser key: " + authUser.key());
-
         Wallet myWallet = authUser.wallets().get("default");
         System.out.println("\n" + myWallet.getBackupPublicSeed() + "\n" + myWallet.getCosignerPublicSeed());
 
@@ -26,8 +22,9 @@ public class WalletAndAccountOperations {
         Account myAccount = myWallet.accounts().get("default");
         System.out.println(Long.toString(myAccount.balance()));
 
-        Address myAddress = myAccount.addresses().create();
-        System.out.println(myAddress.getAddressString());
+        Address address = myAccount.addresses().create();
+        System.out.println(
+                "\nAddress: " + address.getAddressString());
 
         //fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
 
