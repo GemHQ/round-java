@@ -10,19 +10,19 @@ import java.io.InputStreamReader;
 public class Utils {
 
 
-    private static final String API_TOKEN = "ssgPhVv-Pv-soqQtRM7pIFHzg7uGOGFzrAfSBVONqgo";
-    private static final String APP_URL = "https://api-sandbox.gem.co/apps/oHgM6NrHq-C_K2-f1pfwIg";
+    private static final String API_TOKEN = " ";
+    private static final String APP_URL = " ";
 
-    private static final String APP_INSTANCE = "DE73gGgLcJB07D0gW0G3VUN3aywgcd1T8F3bT-0eTy8";
-    private static final String DEV_EMAIL = "joshua+devJava1@gem.co";
+    private static final String APP_INSTANCE = " ";
+    private static final String DEV_EMAIL = " ";
 
-    private static final String USER_EMAIL = "joshua+userJava06@gem.co";
-    private static final String USER_TOKEN = "0x20mNTVcUWujHrtGENR9NjSF0_K6JYLlDfMTMUjh-Q";
-    private static final String USER_URL = "https://api-sandbox.gem.co/users/1bIKvHKszboJhLBr2PfLLA";
+    private static final String USER_EMAIL = " ";
+    private static final String USER_TOKEN = " ";
+    private static final String USER_URL = " ";
 
 
-    private static final String DEVICE_ID = USER_EMAIL + "device6";
-    private static final String DEVICE_NAME = USER_EMAIL + "mbp-java1";
+    private static final String DEVICE_ID = " ";
+    private static final String DEVICE_NAME = " ";
 
 
     public static String getUserInput(String str) throws IOException {
