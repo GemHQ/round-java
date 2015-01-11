@@ -26,7 +26,9 @@ public class Payment extends Base {
     for (String signature : signatures) {
       JsonObject signatureJson = new JsonObject();
       signatureJson.addProperty("primary", signature);
+      signaturesJson.add(signatureJson);
     }
+
 
     JsonObject body = new JsonObject();
     body.addProperty("transaction_hash", transaction.getHashAsString());

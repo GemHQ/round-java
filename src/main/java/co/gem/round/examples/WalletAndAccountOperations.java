@@ -12,7 +12,7 @@ import java.io.IOException;
  * Created by jled on 12/31/14.
  */
 public class WalletAndAccountOperations {
-    public static void init() throws IOException, Client.UnexpectedStatusCodeException {
+    public static void init(Boolean makeAddress) throws IOException, Client.UnexpectedStatusCodeException {
         User authUser = UserDeviceAuth.init();
 
         Wallet myWallet = authUser.wallets().get("default");
@@ -20,17 +20,25 @@ public class WalletAndAccountOperations {
 
 
         Account myAccount = myWallet.accounts().get("default");
-        System.out.println(Long.toString(myAccount.balance()));
+        System.out.println("\nbalance: " + Long.toString(myAccount.balance()) +
+        "\nPending Balance: " + Long.toString(myAccount.pendingBalance()) + "\n");
 
-        Address address = myAccount.addresses().create();
-        System.out.println(
-                "\nAddress: " + address.getAddressString());
+        if(makeAddress) {
+            Address address = myAccount.addresses().create();
+            System.out.println(
+                    "\nAddress: " + address.getAddressString());
+        }
+
+//        Map<String, Address> addys = myAccount.addresses().asMap();
+//        List<Address> addys = myAccount.addresses().asList();
+//        for(Address address : addys) {
+//            System.out.println(address.getAddressPath());
+//        }
 
         //fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
-
 //        Payment payment = null;
 //        try {
-//            payment = myAccount.payToAddress("password", "1lJPij0u4209430jsdf", 84059540L);
+//            payment = myAccount.payToAddress("password", "mwhRqLNwRK7jsBLETP8ears5uSR7F7kEMN", 227579L);
 //        } catch (NoSuchAlgorithmException e) {
 //            e.printStackTrace();
 //        } catch (InvalidKeySpecException e) {

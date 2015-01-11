@@ -11,6 +11,10 @@ public class Address extends Base {
   public String getAddressString() {
     return getString("string");
   }
+
+  public String getAddressPath() {
+    return getString("path");
+  }
 }
 
 

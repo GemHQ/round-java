@@ -44,14 +44,15 @@ public class InputWrapper {
       e.printStackTrace();
       return null;
     }
-    // TODO parse the wallet path
+
+    String walletPath = outputJson.get("metadata").getAsJsonObject().get("wallet_path").getAsString();
     Script outputScript = ScriptBuilder.createOutputScript(address);
     long outputIndex = outputJson.get("index").getAsLong();
     Coin value = Coin.valueOf(outputJson.get("value").getAsLong());
     NetworkParameters networkParameters = NetworkParameters.fromID(NetworkParameters.ID_TESTNET);
     TransactionInput input = new TransactionInput(networkParameters, parent, outputScript.getProgram(),
         new TransactionOutPoint(networkParameters, outputIndex, txHash), value);
-    return new InputWrapper(input, null);
+    return new InputWrapper(input, walletPath);
   }
 
   public String walletPath() {
