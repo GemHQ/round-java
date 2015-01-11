@@ -36,6 +36,7 @@ public class AccountCollection extends BaseCollection<Account> {
   public void populateCollection(Iterable<Resource> resources) {
     for (Resource resource : resources) {
       Account account = new Account(resource, round);
+      account.setWallet(this.wallet);
       this.add(account.getString("name"), account);
     }
   }

@@ -10,17 +10,20 @@ import java.io.InputStreamReader;
 public class Utils {
 
 
-    private static final String API_TOKEN = "";
-    private static final String APP_URL = "";
-    private static final String APP_INSTANCE = "";
-    private static final String DEV_EMAIL = "";
+    private static final String API_TOKEN = " ";
+    private static final String APP_URL = " ";
 
-    private static final String USER_EMAIL = "";
-    private static final String USER_TOKEN = "";
-    private static final String USER_URL = "";
+    private static final String APP_INSTANCE = " ";
+    private static final String DEV_EMAIL = " ";
 
-    private static final String DEVICE_ID = "";
-    private static final String DEVICE_NAME = "";
+    private static final String USER_EMAIL = " ";
+    private static final String USER_TOKEN = " ";
+    private static final String USER_URL = " ";
+
+
+    private static final String DEVICE_ID = " ";
+    private static final String DEVICE_NAME = " ";
+
 
     public static String getUserInput(String str) throws IOException {
         BufferedReader buff = new BufferedReader(
