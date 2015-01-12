@@ -35,9 +35,9 @@ public class UserCreationAndAuthentication {
                 + "\nUser email: " + newUser.user.email());
 
         //authenticate Device
-                String key = newUser.user.beginDeviceAuth(Utils.getApiToken(),
-                        Utils.getDeviceName(),
-                        Utils.getDeviceId());
+        String key = newUser.user.beginDeviceAuth(Utils.getApiToken(),
+                Utils.getDeviceName(),
+                Utils.getDeviceId());
 
         System.out.println("OOB Secret: " + key);
 

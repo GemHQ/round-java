@@ -16,7 +16,7 @@ public class WalletAndAccountOperations {
         User authUser = UserDeviceAuth.init();
 
         Wallet myWallet = authUser.wallets().get("default");
-        System.out.println("\n" + myWallet.getBackupPublicSeed() + "\n" + myWallet.getCosignerPublicSeed());
+        System.out.println("\nBackupXPub: " + myWallet.getBackupPublicSeed() + "\nCosignerXPub: " + myWallet.getCosignerPublicSeed() + "\nPrimaryXPub:" + myWallet.getPrimaryPublicSeed());
 
 
         Account myAccount = myWallet.accounts().get("default");

@@ -68,4 +68,8 @@ public class Wallet extends Base {
   public String getCosignerPublicSeed() {
     return getString("cosigner_public_seed");
   }
+
+  public String getPrimaryPublicSeed() {
+    return getString("primary_public_seed");
+  }
 }
