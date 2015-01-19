@@ -72,4 +72,14 @@ public class Wallet extends Base {
   public String getPrimaryPublicSeed() {
     return getString("primary_public_seed");
   }
+
+  public static class Wrapper {
+    public Wallet wallet;
+    public String backupPrivateSeed;
+
+    public Wrapper(Wallet wallet, String backupPrivateSeed) {
+      this.wallet = wallet;
+      this.backupPrivateSeed = backupPrivateSeed;
+    }
+  }
 }
