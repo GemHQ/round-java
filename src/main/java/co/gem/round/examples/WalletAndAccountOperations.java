@@ -1,9 +1,6 @@
 package co.gem.round.examples;
 
-import co.gem.round.Account;
-import co.gem.round.Address;
-import co.gem.round.User;
-import co.gem.round.Wallet;
+import co.gem.round.*;
 import co.gem.round.patchboard.Client;
 
 import java.io.IOException;
@@ -16,12 +13,32 @@ public class WalletAndAccountOperations {
         User authUser = UserDeviceAuth.init();
 
         Wallet myWallet = authUser.wallets().get("default");
-        System.out.println("\nBackupXPub: " + myWallet.getBackupPublicSeed() + "\nCosignerXPub: " + myWallet.getCosignerPublicSeed() + "\nPrimaryXPub:" + myWallet.getPrimaryPublicSeed());
+        System.out.println("\nBackupXPub: " + myWallet.getBackupPublicSeed() +
+                "\nCosignerXPub: " + myWallet.getCosignerPublicSeed() +
+                "\nPrimaryXPub:" + myWallet.getPrimaryPublicSeed() + "\n");
+
+        Utils.print(myWallet.balance().toString());
 
 
         Account myAccount = myWallet.accounts().get("default");
-        System.out.println("\nbalance: " + Long.toString(myAccount.balance()) +
-        "\nPending Balance: " + Long.toString(myAccount.pendingBalance()) + "\n");
+        for(Account a : myWallet.accounts()) {
+            System.out.println("Name: " + a.name() +
+                            " | balance: " + Long.toString(a.balance()) +
+                            " | Pending Balance: " + Long.toString(a.pendingBalance()));
+        }
+
+        System.out.println();
+
+        for(Transaction tx : myAccount.transactions()) {
+            System.out.println(
+                    "Tx status: " + tx.getStatus() +
+                            " | Tx date: " + tx.getCreatedAt() +
+                            " | Tx hash: " + tx.getTransactionHash());
+
+//            if (tx.getStatus().equals("unconfirmed")){
+//                tx.cancel();
+//            }
+        }
 
         if(makeAddress) {
             Address address = myAccount.addresses().create();
@@ -29,22 +46,22 @@ public class WalletAndAccountOperations {
                     "\nAddress: " + address.getAddressString());
         }
 
-//        Map<String, Address> addys = myAccount.addresses().asMap();
+
 //        List<Address> addys = myAccount.addresses().asList();
 //        for(Address address : addys) {
 //            System.out.println(address.getAddressPath());
 //        }
 
-        //fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
+//        fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
 //        Payment payment = null;
 //        try {
-//            payment = myAccount.payToAddress("password", "mwhRqLNwRK7jsBLETP8ears5uSR7F7kEMN", 227579L);
+//            payment = myAccount.payToAddress("password", "2N3DdaZ8K9PmxXYXmwj9QZcPbcgqqPcs8hM", 40000L);
 //        } catch (NoSuchAlgorithmException e) {
 //            e.printStackTrace();
 //        } catch (InvalidKeySpecException e) {
 //            e.printStackTrace();
 //        }
-//
+
 //        System.out.println(payment.getStatus());
     }
 }

@@ -72,4 +72,8 @@ public class Wallet extends Base {
   public String getPrimaryPublicSeed() {
     return getString("primary_public_seed");
   }
+
+  public Long balance() {
+    return getLong("balance");
+  }
 }
