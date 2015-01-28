@@ -4,20 +4,30 @@ import co.gem.round.*;
 import co.gem.round.patchboard.Client;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * Created by jled on 12/31/14.
  */
 public class WalletAndAccountOperations {
-    public static void init(Boolean makeAddress) throws IOException, Client.UnexpectedStatusCodeException {
+    public static void init(Boolean makeAddress) throws
+            IOException, Client.UnexpectedStatusCodeException,
+            NoSuchAlgorithmException, InvalidKeySpecException {
+
         User authUser = UserDeviceAuth.init();
+
+        //Wallet.Wrapper newWallet = authUser.wallets().create("newWallet", "password", "testnet");
+//        System.out.println("backupXpriv: " + newWallet.backupPrivateSeed +
+//                            "\nWalletPrimaryXpub: " + newWallet.wallet.getPrimaryPublicSeed());
+
 
         Wallet myWallet = authUser.wallets().get("default");
         System.out.println("\nBackupXPub: " + myWallet.getBackupPublicSeed() +
                 "\nCosignerXPub: " + myWallet.getCosignerPublicSeed() +
                 "\nPrimaryXPub:" + myWallet.getPrimaryPublicSeed() + "\n");
 
-        //Utils.print(myWallet.balance().toString());
+        Utils.print(myWallet.balance().toString());
 
 
         Account myAccount = myWallet.accounts().get("default");
@@ -27,7 +37,7 @@ public class WalletAndAccountOperations {
                             " | Pending Balance: " + Long.toString(a.pendingBalance()));
         }
 
-        System.out.println();
+        Utils.print("");
 
         for(Transaction tx : myAccount.transactions()) {
             System.out.println(

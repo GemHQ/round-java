@@ -33,6 +33,10 @@ public class Utils {
         return buff.readLine();
     }
 
+    public static void print(String str) {
+        System.out.println(str);
+    }
+
     public static String getApiToken() {
         return API_TOKEN;
     }
