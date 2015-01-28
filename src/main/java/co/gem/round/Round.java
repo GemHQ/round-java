@@ -3,6 +3,8 @@ package co.gem.round;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Patchboard;
 import co.gem.round.patchboard.Resource;
+import co.gem.round.util.Http;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -61,6 +63,35 @@ public class Round {
     if (key != null) params.put("key", key);
     if (secret != null) params.put("secret", secret);
     patchboardClient.authorizer().authorize(AuthScheme.OTP, params);
+  }
+
+  public String beginDeviceAuth(String email, String deviceName, String deviceId, String apiToken)
+      throws Client.UnexpectedStatusCodeException, IOException {
+    this.authenticateOtp(apiToken, null, null);
+    JsonObject payload = new JsonObject();
+    payload.addProperty("name", deviceName);
+    payload.addProperty("device_id", deviceId);
+    User user = this.user(email);
+    try {
+      user.resource().action("authorize_device", payload);
+    } catch(Client.UnexpectedStatusCodeException e) {
+      if (e.statusCode != 401) throw e;
+      String authHeader = e.response.header("Www-Authenticate");
+      return Http.extractParamsFromHeader(authHeader).get("key");
+    }
+    return null;
+  }
+
+  public User completeDeviceAuth(String email, String deviceName, String deviceId, String apiToken, String key, String secret)
+      throws Client.UnexpectedStatusCodeException, IOException {
+    this.authenticateOtp(apiToken, key, secret);
+    JsonObject payload = new JsonObject();
+    payload.addProperty("name", deviceName);
+    payload.addProperty("device_id", deviceId);
+    User user = this.user(email);
+    Resource userResource = user.resource().action("authorize_device", payload);
+
+    return new User(userResource, this);
   }
 
   public User user(String email) {

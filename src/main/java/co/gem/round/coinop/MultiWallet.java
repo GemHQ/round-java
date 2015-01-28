@@ -120,22 +120,22 @@ public class MultiWallet {
   }
 
   public DeterministicKey childPrimaryPrivateKeyFromPath(String path) {
-    return this.childKeyFromPath(path, this.primaryPrivateKey);
+    return childKeyFromPath(path, this.primaryPrivateKey);
   }
 
   public DeterministicKey childPrimaryPublicKeyFromPath(String path) {
-    return this.childKeyFromPath(path, this.primaryPrivateKey.getPubOnly());
+    return childKeyFromPath(path, this.primaryPrivateKey.getPubOnly());
   }
 
   public DeterministicKey childBackupPublicKeyFromPath(String path) {
-    return this.childKeyFromPath(path, this.backupPublicKey);
+    return childKeyFromPath(path, this.backupPublicKey);
   }
 
   public DeterministicKey childCosignerPublicKeyFromPath(String path) {
-    return this.childKeyFromPath(path, this.cosignerPublicKey);
+    return childKeyFromPath(path, this.cosignerPublicKey);
   }
 
-  public DeterministicKey childKeyFromPath(String path, DeterministicKey parentKey) {
+  public static DeterministicKey childKeyFromPath(String path, DeterministicKey parentKey) {
     String[] segments = path.split("/");
     DeterministicKey currentKey = parentKey;
     for (int i = 1; i < segments.length; i++) {

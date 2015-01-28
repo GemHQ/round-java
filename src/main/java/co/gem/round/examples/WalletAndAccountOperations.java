@@ -17,7 +17,7 @@ public class WalletAndAccountOperations {
                 "\nCosignerXPub: " + myWallet.getCosignerPublicSeed() +
                 "\nPrimaryXPub:" + myWallet.getPrimaryPublicSeed() + "\n");
 
-        Utils.print(myWallet.balance().toString());
+        //Utils.print(myWallet.balance().toString());
 
 
         Account myAccount = myWallet.accounts().get("default");

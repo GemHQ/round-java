@@ -32,33 +32,6 @@ public class User extends Base {
     return defaultWallet;
   }
 
-  public String beginDeviceAuth(String apiToken, String deviceName, String deviceId)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    round.authenticateOtp(apiToken, null, null);
-    JsonObject payload = new JsonObject();
-    payload.addProperty("name", deviceName);
-    payload.addProperty("device_id", deviceId);
-    try {
-      resource.action("authorize_device", payload);
-    } catch(Client.UnexpectedStatusCodeException e) {
-      if (e.statusCode != 401) throw e;
-      String authHeader = e.response.header("Www-Authenticate");
-      return Http.extractParamsFromHeader(authHeader).get("key");
-    }
-    return null;
-  }
-
-  public User completeDeviceAuth(String apiToken, String deviceName, String deviceId, String key, String secret)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    round.authenticateOtp(apiToken, key, secret);
-    JsonObject payload = new JsonObject();
-    payload.addProperty("name", deviceName);
-    payload.addProperty("device_id", deviceId);
-    Resource userResource = resource.action("authorize_device", payload);
-
-    return new User(userResource, round);
-  }
-
   public String email() {
     return getString("email");
   }
