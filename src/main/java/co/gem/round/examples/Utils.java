@@ -17,12 +17,12 @@ public class Utils {
     private static final String DEV_EMAIL = "joshua+devJava1@gem.co";
 
     private static final String USER_EMAIL = "joshua+userJava07@gem.co";
-    private static final String USER_TOKEN = "0x20mNTVcUWujHrtGENR9NjSF0_K6JYLlDfMTMUjh-Q";
-    private static final String USER_URL = "https://api-sandbox.gem.co/users/1bIKvHKszboJhLBr2PfLLA";
+    private static final String USER_TOKEN = "zqTjdwdIbMemJxp6KpLnDzFVYXWnYWjyb01-30Y9HLE";
+    private static final String USER_URL = "https://api-sandbox.gem.co/users/D96qgNVcTekOjTcAk8ESMA";
 
 
-    private static final String DEVICE_ID = USER_EMAIL + "device6";
-    private static final String DEVICE_NAME = USER_EMAIL + "mbp-java1";
+    private static final String DEVICE_ID = USER_EMAIL + "device7";
+    private static final String DEVICE_NAME = USER_EMAIL + "mbp-java7";
 
 
     public static String getUserInput(String str) throws IOException {

@@ -51,5 +51,7 @@ public class UserCreationAndAuthentication {
             Utils.getApiToken(),
             key,
             otp);
+
+        System.out.println("authed user: " + authUser.email() + " | " + authUser.toString());
     }
 }
