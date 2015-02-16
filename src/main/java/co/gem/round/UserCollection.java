@@ -30,8 +30,9 @@ public class UserCollection extends BaseCollection<User> {
       network = "bitcoin";
     else
       network = "bitcoin_testnet";
-    
+
     JsonObject wallet = new JsonObject();
+    wallet.addProperty("name", "default");
     wallet.addProperty("network", network);
     wallet.addProperty("backup_public_seed", multiWallet.serializedBackupPublicSeed());
     wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicSeed());
@@ -39,7 +40,7 @@ public class UserCollection extends BaseCollection<User> {
 
     JsonObject payload = new JsonObject();
     payload.addProperty("email", email);
-    payload.add("wallet", wallet);
+    payload.add("default_wallet", wallet);
 
     Resource resource = this.resource.action("create", payload);
     User user = new User(resource, round);
