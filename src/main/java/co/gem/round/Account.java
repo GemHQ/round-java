@@ -87,6 +87,13 @@ public class Account extends Base {
     return payment;
   }
 
+  public SubscriptionCollection subscriptions()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
+    subscriptions.fetch();
+    return subscriptions;
+  }
+
   public Payment createUnsignedPayment(List<Recipient> recipients)
       throws IOException, Client.UnexpectedStatusCodeException {
     JsonArray recipientsJson = new JsonArray();

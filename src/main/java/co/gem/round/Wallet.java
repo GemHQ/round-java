@@ -46,6 +46,13 @@ public class Wallet extends Base {
     return accounts;
   }
 
+  public SubscriptionCollection subscriptions()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
+    subscriptions.fetch();
+    return subscriptions;
+  }
+
   public EncryptedMessage getEncryptedSeed() {
     if (this.encryptedSeed == null) {
       JsonObject seedObject = getObject("primary_private_seed");
