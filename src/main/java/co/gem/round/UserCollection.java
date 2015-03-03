@@ -18,6 +18,17 @@ import java.security.spec.InvalidKeySpecException;
 public class UserCollection extends BaseCollection<User> {
   public UserCollection(Resource resource, Round round) { super(resource, round); }
 
+  /**
+   *
+   * @param email
+   * @param passphrase
+   * @param blockchain
+   * @return
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws IOException
+   * @throws InvalidKeySpecException
+   * @throws NoSuchAlgorithmException
+   */
   public User.Wrapper create(String email, String passphrase, String blockchain)
       throws Client.UnexpectedStatusCodeException, IOException,
       InvalidKeySpecException, NoSuchAlgorithmException{
