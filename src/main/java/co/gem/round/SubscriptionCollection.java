@@ -7,7 +7,10 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 
 /**
- * Created by julian on 2/27/15.
+ * Webhook collection class to create subscriptions for addresses at various levels of round objects.
+ * Requires a client with application authentication
+ *
+ * @author Julian Del Vergel de Dios (julian@gem.co) 2/27/15.
  */
 public class SubscriptionCollection extends BaseCollection<Subscription> {
 
@@ -15,6 +18,14 @@ public class SubscriptionCollection extends BaseCollection<Subscription> {
     super(resource, round);
   }
 
+  /**
+   * Creates a new subscription for notification of transactions on addresses.
+   * @param callbackUrl String of the developer application url to receive the subscription
+   * @return subscription object
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws IOException
+   * @see co.gem.round.Subscription
+   */
   public Subscription create(String callbackUrl)
       throws Client.UnexpectedStatusCodeException, IOException {
     JsonObject payload = new JsonObject();
