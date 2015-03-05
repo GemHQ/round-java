@@ -13,7 +13,9 @@ import java.security.spec.InvalidKeySpecException;
 
 /**
  * Wallet is a gem wallet which is the HD Multi-Sig (2of3) wallet that is owned by a User.  Wallets provide access to
- * accounts in the wallet.  As well as info such as the balance of all accounts.
+ * accounts in the wallet.  As well as info such as the balance of all accounts.  Gem wallets follow BIP32 and BIP44
+ * but without hardened nodes.
+ *
  * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
  * @see co.gem.round.Account
  */

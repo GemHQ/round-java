@@ -6,11 +6,20 @@ import co.gem.round.patchboard.Resource;
 import java.io.IOException;
 
 /**
- * Created by julian on 1/4/15.
+ * Collection class for addresses.  AddressCollection provides access to the create method to generate a new address
+ *
+ * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class AddressCollection extends BaseCollection<Address> {
   public AddressCollection(Resource resource, Round round) { super(resource, round); }
 
+  /**
+   *  Generates a new address within an account.
+   * @return Address
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.Address
+   */
   public Address create()
       throws IOException, Client.UnexpectedStatusCodeException {
     Resource addressResource = resource.action("create");
