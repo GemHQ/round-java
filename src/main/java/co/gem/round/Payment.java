@@ -10,13 +10,26 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.List;
 
-
+/**
+ * Payment objects
+ *
+ * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ */
 public class Payment extends Base {
 
   public Payment(Resource resource, Round round) {
     super(resource, round);
   }
 
+  /**
+   * Sign a Gem API unsigned payment to send back to Gem for rules verification, co-signing and publishing to the
+   * blockchain
+   * @param wallet coinop.MultiWallet
+   * @return Payment signed
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.coinop.MultiWallet
+   */
   public Payment sign(MultiWallet wallet)
       throws IOException, Client.UnexpectedStatusCodeException {
     TransactionWrapper transaction = TransactionWrapper.parseTransaction(resource.attributes(), wallet.networkParameters());
@@ -39,6 +52,10 @@ public class Payment extends Base {
     return new Payment(signedPayment, this.round);
   }
 
+  /**
+   * Getter for the status of a payment
+   * @return String status
+   */
   public String getStatus() {
     return resource.attributes().get("status").getAsString();
   }
