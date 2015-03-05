@@ -22,6 +22,7 @@ public class User extends Base {
    * @return WalletCollection
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.WalletCollection
    */
   public WalletCollection wallets() throws
     IOException, Client.UnexpectedStatusCodeException {

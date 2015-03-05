@@ -51,6 +51,7 @@ public class Wallet extends Base {
    * @return AccountCollection of Accounts
    * @throws Client.UnexpectedStatusCodeException
    * @throws IOException
+   * @see co.gem.round.AccountCollection
    */
   public AccountCollection accounts() throws Client.UnexpectedStatusCodeException, IOException {
     AccountCollection accounts = new AccountCollection(resource.subresource("accounts"), this.round, this);
@@ -102,7 +103,7 @@ public class Wallet extends Base {
   }
 
   /**
-   * Sum of all of the account balances within a wallet.  Balances are based off of the value of inputs with 6 or more
+   * Sum of all of the account balances within a wallet.  Balances are based off of the value of inputs with 1 or more
    * confirmations.
    * @return Long
    */
