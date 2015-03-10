@@ -57,27 +57,52 @@ public class Account extends Base {
   public Payment payToEmail(String passphrase, String email, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
+    return this.payToEmail(passphrase, email, 6);
+  }
+
+  public Payment payToEmail(String passphrase, String email, long amount, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
     Recipient recipient = Recipient.recipientWithEmail(email, amount);
-    return this.pay(passphrase, recipient);
+    return this.pay(passphrase, recipient, confirmations);
   }
 
   public Payment payToAddress(String passphrase, String address, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
-    return this.pay(passphrase, Recipient.recipientWithAddress(address, amount));
+    return this.payToAddress(passphrase, address, amount, 6);
+  }
+
+  public Payment payToAddress(String passphrase, String address, long amount, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    return this.pay(passphrase, Recipient.recipientWithAddress(address, amount), confirmations);
   }
 
   public Payment pay(String passphrase, Recipient recipient)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
-    return this.pay(passphrase, recipients);
+    return this.pay(passphrase, recipients, 6);
+  }
+
+  public Payment pay(String passphrase, Recipient recipient, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
+    return this.pay(passphrase, recipients, confirmations);
   }
 
   public Payment pay(String passphrase, List<Recipient> recipients)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
-    final Payment payment = this.createUnsignedPayment(recipients);
+    return this.pay(passphrase, recipients, 6);
+  }
+
+  public Payment pay(String passphrase, List<Recipient> recipients, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    final Payment payment = this.createUnsignedPayment(recipients, confirmations);
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override
       public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
@@ -88,6 +113,10 @@ public class Account extends Base {
   }
 
   public Payment createUnsignedPayment(List<Recipient> recipients)
+    throws IOException, Client.UnexpectedStatusCodeException {
+    return this.createUnsignedPayment(recipients, 6);
+  }
+  public Payment createUnsignedPayment(List<Recipient> recipients, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException {
     JsonArray recipientsJson = new JsonArray();
     for (Recipient recipient : recipients) {
