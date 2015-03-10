@@ -28,6 +28,11 @@ public class AccountTest {
     Payment payment = account.createUnsignedPayment(recipients);
 
     Assert.assertNotNull(payment);
+
+    // Test with confirmations param
+    Payment payment = account.createUnsignedPayment(recipients, 6);
+
+    Assert.assertNotNull(payment);
   }
 
   @Test
