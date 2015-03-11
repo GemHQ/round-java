@@ -52,6 +52,16 @@ public class Payment extends Base {
   }
 
   /**
+   * cancels an unsigned payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   */
+  public void cancel()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    resource.action("cancel");
+  }
+
+  /**
    * Getter for the status of a payment
    * @return String status
    */

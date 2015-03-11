@@ -1,7 +1,9 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +19,16 @@ public class Transaction extends Base {
 
   public Transaction(Resource resource, Round round) {
     super(resource, round);
+  }
+
+  /**
+   * Cancels an unsigned transaction
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   */
+  public void cancel()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    this.resource.action("cancel");
   }
 
   /**
