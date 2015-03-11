@@ -90,8 +90,14 @@ public class Account extends Base {
   private Payment payToEmail(String passphrase, String email, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
+    return this.payToEmail(passphrase, email, 6);
+  }
+  @Deprecated
+  public Payment payToEmail(String passphrase, String email, long amount, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
     Recipient recipient = Recipient.recipientWithEmail(email, amount);
-    return this.pay(passphrase, recipient);
+    return this.pay(passphrase, recipient, confirmations);
   }
 
   /**
@@ -109,13 +115,32 @@ public class Account extends Base {
   public Payment payToAddress(String passphrase, String address, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
-    return this.pay(passphrase, Recipient.recipientWithAddress(address, amount));
+    return this.payToAddress(passphrase, address, amount, 6);
   }
 
   /**
-   * Make a payment to a Recipient object.
+   * Make a payment to a specific bitcoin address.
+   * @param passphrase String passphrase to the wallet
+   * @param address String valid bitcoin address based on the network
+   * @param amount Long amount in satoshis
+   * @param confirmations Int number of confirmations UTXOs must have to be used in the payment
+   * @return Payment signed payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Payment
+   */
+  public Payment payToAddress(String passphrase, String address, long amount, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    return this.pay(passphrase, Recipient.recipientWithAddress(address, amount), confirmations);
+  }
+
+  /**
+   * Make a payment to a Recipient object with a default of 6 confirmations for UTXO selection
    * @param passphrase String
-   * @param recipient
+   * @param recipient Recipient
    * @return Payment signed broadcasted payment object (transaction)
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
@@ -128,7 +153,27 @@ public class Account extends Base {
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
-    return this.pay(passphrase, recipients);
+    return this.pay(passphrase, recipients, 6);
+  }
+
+  /**
+   * Make a payment to a Recipient object with an overrided number of confirmations for UTXO selection
+   * @param passphrase String
+   * @param recipient Recipient
+   * @param confirmations Int number of confirmations UTXOs must have for selection in the transaction
+   * @return Payment signed broadcasted payment object (transaction)
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   * @see co.gem.round.Payment
+   */
+  public Payment pay(String passphrase, Recipient recipient, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
+    return this.pay(passphrase, recipients, confirmations);
   }
 
   /**
@@ -146,11 +191,30 @@ public class Account extends Base {
   public Payment pay(String passphrase, List<Recipient> recipients)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
-    final Payment payment = this.createUnsignedPayment(recipients);
+    return this.pay(passphrase, recipients, 6);
+  }
+
+  /**
+   * Make payment to a list of recipients.  This is a transaction with multiple To: addresses and amounts
+   * @param passphrase String
+   * @param recipients List of recipients
+   * @param confirmations Int number of confirmations UTXOs must have for selection in the transaction
+   * @return Signed broadcasted payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   * @see co.gem.round.Payment
+   */
+  public Payment pay(String passphrase, List<Recipient> recipients, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    final Payment payment = this.createUnsignedPayment(recipients, confirmations);
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override
       public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
-        payment.sign(wallet);
+          payment.sign(wallet);
       }
     });
     return payment;
@@ -180,6 +244,10 @@ public class Account extends Base {
    * @see co.gem.round.Payment
    */
   public Payment createUnsignedPayment(List<Recipient> recipients)
+    throws IOException, Client.UnexpectedStatusCodeException {
+    return this.createUnsignedPayment(recipients, 6);
+  }
+  public Payment createUnsignedPayment(List<Recipient> recipients, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException {
     JsonArray recipientsJson = new JsonArray();
     for (Recipient recipient : recipients) {
@@ -199,6 +267,7 @@ public class Account extends Base {
 
     JsonObject body = new JsonObject();
     body.add("outputs", recipientsJson);
+    body.addProperty("confirmations", confirmations);
 
     Resource paymentResource = resource.subresource("payments").action("create", body);
 

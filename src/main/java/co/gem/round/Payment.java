@@ -42,14 +42,23 @@ public class Payment extends Base {
       signaturesJson.add(signatureJson);
     }
 
-
     JsonObject body = new JsonObject();
     body.addProperty("transaction_hash", transaction.getHashAsString());
     body.add("inputs", signaturesJson);
 
     Resource signedPayment = resource.action("sign", body);
+    resource = signedPayment;
+    return this;
+  }
 
-    return new Payment(signedPayment, this.round);
+  /**
+   * cancels an unsigned payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   */
+  public void cancel()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    resource.action("cancel");
   }
 
   /**

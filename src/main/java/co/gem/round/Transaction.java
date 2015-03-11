@@ -1,8 +1,9 @@
 package co.gem.round;
 
+import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
-import com.google.gson.JsonObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,19 +22,21 @@ public class Transaction extends Base {
   }
 
   /**
+   * Cancels an unsigned transaction
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   */
+  public void cancel()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    this.resource.action("cancel");
+  }
+
+  /**
    * Getter for the transaction type.  "incoming" and "outgoing" are the two types of values to be returned
    * @return String type either "incoming" or "outgoing"
    */
   public String getType() {
-    return getString("type");
-  }
-
-  /**
-   * Getter for the full bitcoin transaction json object.
-   * @return JsonObject bitcoin transaction
-   */
-  public JsonObject getBitcoinTransaction() {
-    return getObject("data");
+    return this.resource().attributes().get("type").getAsString();
   }
 
   /**
@@ -41,7 +44,7 @@ public class Transaction extends Base {
    * @return String bitcoin transaction hash
    */
   public String getTransactionHash() {
-    return getBitcoinTransaction().get("hash").getAsString();
+    return this.resource().attributes().get("hash").getAsString();
   }
 
   /**
@@ -49,7 +52,7 @@ public class Transaction extends Base {
    * @return Long value
    */
   public long getValue() {
-    return getBitcoinTransaction().get("value").getAsLong();
+    return this.resource().attributes().get("value").getAsLong();
   }
 
   /**
@@ -57,7 +60,23 @@ public class Transaction extends Base {
    * @return String status: confirmed, unconfirmed, canceled, unsigned
    */
   public String getStatus() {
-    return getBitcoinTransaction().get("status").getAsString();
+    return this.resource().attributes().get("status").getAsString();
+  }
+
+  /**
+   * Getter for the number of confirmations of a transaction
+   * @return int number of confirmations
+   */
+  public int getConfirmations() {
+    return this.resource().attributes().get("confirmations").getAsInt();
+  }
+
+  /**
+   * Getter for the fee in the transaction.  Value - Fee = amount sent
+   * @return
+   */
+  public long getFee() {
+    return this.resource().attributes().get("fee").getAsLong();
   }
 
 //  public String getActor() {
@@ -92,7 +111,7 @@ public class Transaction extends Base {
    * @return Date created at
    */
   public Date getCreatedAt() {
-    String dateString = getBitcoinTransaction().get("created_at").getAsString();
+    String dateString = this.resource().attributes().get("created_at").getAsString();
 
     Date createdAt = null;
     try {
