@@ -35,19 +35,23 @@ public class UserCreationAndAuthentication {
                 + "\nUser email: " + newUser.user.email());
 
         //authenticate Device
-                String key = newUser.user.beginDeviceAuth(Utils.getApiToken(),
-                        Utils.getDeviceName(),
-                        Utils.getDeviceId());
+        String key = client.beginDeviceAuth(Utils.getUserEmail(),
+            Utils.getDeviceName(),
+            Utils.getDeviceId(),
+            Utils.getApiToken());
 
         System.out.println("OOB Secret: " + key);
 
         //get the OOB-OTP from email
         String otp = Utils.getUserInput("Enter OTP: ");
 
-        User authUser = newUser.user.completeDeviceAuth(Utils.getApiToken(),
-                Utils.getDeviceName(),
-                Utils.getDeviceId(),
-                key,
-                otp);
+        User authUser = client.completeDeviceAuth(Utils.getUserEmail(),
+            Utils.getDeviceName(),
+            Utils.getDeviceId(),
+            Utils.getApiToken(),
+            key,
+            otp);
+
+        System.out.println("authed user: " + authUser.email() + " | " + authUser.toString());
     }
 }

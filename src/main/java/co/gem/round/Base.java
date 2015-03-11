@@ -6,7 +6,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
-
+/**
+ * Base class for building Gem API singleton objects.  Simplifies interactions with the json resources
+ *
+ * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ */
 public class Base {
   protected Resource resource;
   protected Round round;

@@ -29,4 +29,11 @@ public class Application extends Base{
     Resource applicationInstanceResource = resource.action("authorize_instance", payload);
     return new ApplicationInstance(applicationInstanceResource, round);
   }
+
+  public SubscriptionCollection subscriptions()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
+    subscriptions.fetch();
+    return subscriptions;
+  }
 }

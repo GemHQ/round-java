@@ -1,21 +1,29 @@
 package co.gem.round;
 
-import co.gem.round.coinop.MultiWallet;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
-import co.gem.round.util.Http;
-import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
 /**
- * Created by julian on 12/18/14.
+ * Gem users are the objects that interact with wallets.  When creating a user, the user will have a default wallet
+ * but users can also have multiple wallets over time.  Users also have their own tokens which are used for various
+ * authentication schemes.
+ * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @see co.gem.round.Round#authenticateDevice(String, String, String, String)
  */
 public class User extends Base {
   public User(Resource resource, Round round) {
     super(resource, round);
   }
 
+  /**
+   * Getter all the wallets belonging to a user
+   * @return WalletCollection
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.WalletCollection
+   */
   public WalletCollection wallets() throws
     IOException, Client.UnexpectedStatusCodeException {
     Resource resource = this.resource.subresource("wallets");
@@ -24,6 +32,12 @@ public class User extends Base {
     return wallets;
   }
 
+  /**
+   * Getter for the default wallet of a user
+   * @return Wallet
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   */
   public Wallet defaultWallet()
       throws IOException, Client.UnexpectedStatusCodeException {
     Resource resource = this.resource.subresource("default_wallet");
@@ -32,45 +46,31 @@ public class User extends Base {
     return defaultWallet;
   }
 
-  public String beginDeviceAuth(String apiToken, String deviceName, String deviceId)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    round.authenticateOtp(apiToken, null, null);
-    JsonObject payload = new JsonObject();
-    payload.addProperty("name", deviceName);
-    payload.addProperty("device_id", deviceId);
-    try {
-      resource.action("authorize_device", payload);
-    } catch(Client.UnexpectedStatusCodeException e) {
-      if (e.statusCode != 401) throw e;
-      String authHeader = e.response.header("Www-Authenticate");
-      return Http.extractParamsFromHeader(authHeader).get("key");
-    }
-    return null;
-  }
-
-  public User completeDeviceAuth(String apiToken, String deviceName, String deviceId, String key, String secret)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    round.authenticateOtp(apiToken, key, secret);
-    JsonObject payload = new JsonObject();
-    payload.addProperty("name", deviceName);
-    payload.addProperty("device_id", deviceId);
-    Resource userResource = resource.action("authorize_device", payload);
-
-    return new User(userResource, round);
-  }
-
+  /**
+   * Getter for email for a user
+   * @return String email address
+   */
   public String email() {
     return getString("email");
   }
 
+  /**
+   * Getter for the user token which is used in various authentication schemes
+   * @return String user token
+   */
   public String userToken() {
     return getString("user_token");
   }
 
+  /**
+   * Getter for the Gem API url of a user
+   * @return String
+   */
   public String userUrl() {
     return getString("url");
   }
 
+  @Deprecated
   public static class Wrapper {
     public User user;
     public String backupPrivateSeed;
@@ -79,5 +79,12 @@ public class User extends Base {
       this.user = user;
       this.backupPrivateSeed = backupPrivateSeed;
     }
+  }
+
+  public SubscriptionCollection subscriptions()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
+    subscriptions.fetch();
+    return subscriptions;
   }
 }

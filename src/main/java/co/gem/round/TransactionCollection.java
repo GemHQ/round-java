@@ -2,6 +2,11 @@ package co.gem.round;
 
 import co.gem.round.patchboard.Resource;
 
+/**
+ * Provide a collection of transactions within an account.
+ *
+ * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ */
 public class TransactionCollection extends BaseCollection<Transaction> {
 
   public TransactionCollection(Resource resource, Round round) {
