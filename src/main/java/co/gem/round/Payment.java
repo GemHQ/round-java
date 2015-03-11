@@ -42,13 +42,11 @@ public class Payment extends Base {
       signaturesJson.add(signatureJson);
     }
 
-
     JsonObject body = new JsonObject();
     body.addProperty("transaction_hash", transaction.getHashAsString());
     body.add("inputs", signaturesJson);
 
     Resource signedPayment = resource.action("sign", body);
-
     return new Payment(signedPayment, this.round);
   }
 

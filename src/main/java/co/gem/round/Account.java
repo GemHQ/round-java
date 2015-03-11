@@ -214,7 +214,7 @@ public class Account extends Base {
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override
       public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
-        payment.sign(wallet);
+          payment.sign(wallet);
       }
     });
     return payment;
@@ -267,6 +267,7 @@ public class Account extends Base {
 
     JsonObject body = new JsonObject();
     body.add("outputs", recipientsJson);
+    body.addProperty("confirmations", confirmations);
 
     Resource paymentResource = resource.subresource("payments").action("create", body);
 
