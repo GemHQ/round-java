@@ -47,7 +47,8 @@ public class Payment extends Base {
     body.add("inputs", signaturesJson);
 
     Resource signedPayment = resource.action("sign", body);
-    return new Payment(signedPayment, this.round);
+    resource = signedPayment;
+    return this;
   }
 
   /**
