@@ -6,6 +6,7 @@ import co.gem.round.patchboard.Client;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 /**
  * Created by jled on 12/31/14.
@@ -39,16 +40,16 @@ public class WalletAndAccountOperations {
 
         Utils.print("");
 
-        for(Transaction tx : myAccount.transactions()) {
-            System.out.println(
-                    "Tx status: " + tx.getStatus() +
-                            " | Tx date: " + tx.getCreatedAt() +
-                            " | Tx hash: " + tx.getTransactionHash());
+//        for(Transaction tx : myAccount.transactions()) {
+//            System.out.println(
+//                    "Tx status: " + tx.getStatus() +
+//                            " | Tx date: " + tx.getCreatedAt() +
+//                            " | Tx hash: " + tx.getTransactionHash());
 
 //            if (tx.getStatus().equals("unconfirmed")){
 //                tx.cancel();
 //            }
-        }
+//        }
 
         if(makeAddress) {
             Address address = myAccount.addresses().create();
@@ -57,21 +58,22 @@ public class WalletAndAccountOperations {
         }
 
 
-//        List<Address> addys = myAccount.addresses().asList();
-//        for(Address address : addys) {
-//            System.out.println(address.getAddressPath());
+        List<Address> addys = myAccount.addresses().asList();
+        for(Address address : addys) {
+          System.out.println(address.getAddressPath() + " | " + address.getAddressString());
+        }
 //        }
 
 //        fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
-//        Payment payment = null;
-//        try {
-//            payment = myAccount.payToAddress("password", "2N3DdaZ8K9PmxXYXmwj9QZcPbcgqqPcs8hM", 40000L);
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeySpecException e) {
-//            e.printStackTrace();
-//        }
-
-//        System.out.println(payment.getStatus());
+        Payment payment = null;
+        try {
+            payment = myAccount.payToAddress("password", "n3YH27xRRoYQfcMnCN2bB1hR78Sw4GjJXq", 40000L, 1);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+//
+        System.out.println(payment.resource().attributes().get("hash").getAsString());
     }
 }

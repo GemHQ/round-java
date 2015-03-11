@@ -14,8 +14,8 @@ public class ExamplesRunner {
             IOException, Client.UnexpectedStatusCodeException, NoSuchAlgorithmException, InvalidKeySpecException{
 
         //UserCreationAndAuthentication.init();
-        UserDeviceAuth.init();
-        //WalletAndAccountOperations.init(true);
+        //UserDeviceAuth.init();
+        WalletAndAccountOperations.init(false);
         //ApplicaitonAuth.init();
     }
 }
