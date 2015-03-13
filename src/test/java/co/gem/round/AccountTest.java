@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static co.gem.round.RoundTest.round;
-
 public class AccountTest {
   private static Account account = null;
 
@@ -28,6 +26,11 @@ public class AccountTest {
     Payment payment = account.createUnsignedPayment(recipients);
 
     Assert.assertNotNull(payment);
+
+    // Test with confirmations param
+    Payment payment2 = account.createUnsignedPayment(recipients, 6);
+
+    Assert.assertNotNull(payment2);
   }
 
   @Test

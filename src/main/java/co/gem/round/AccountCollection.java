@@ -6,18 +6,21 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
-
+/**
+ * AccountCollection is a collection of Gem wallet Accounts.  This class provides the method to create a new account.
+ * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ */
 public class AccountCollection extends BaseCollection<Account> {
   public static final String RESOURCE_NAME = "accounts";
 
   private Wallet wallet;
 
-  public AccountCollection(String url, Round round, Wallet wallet) {
-    super(url, round, RESOURCE_NAME);
-
-    this.wallet = wallet;
-    setWallets();
-  }
+//  public AccountCollection(String url, Round round, Wallet wallet) {
+//    super(url, round, RESOURCE_NAME);
+//
+//    this.wallet = wallet;
+//    setWallets();
+//  }
 
   public AccountCollection(Resource resource, Round round, Wallet wallet) {
     super(resource, round);
@@ -41,6 +44,15 @@ public class AccountCollection extends BaseCollection<Account> {
     }
   }
 
+  /**
+   * Creates a new account within a Wallet.
+   *
+   * @param name
+   * @return Account
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.Account
+   */
   public Account create(String name)
       throws IOException, Client.UnexpectedStatusCodeException {
     JsonObject body = new JsonObject();

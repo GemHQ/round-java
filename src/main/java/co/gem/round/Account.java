@@ -12,6 +12,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Account class is the primary class where most of the interactions for the wallet will occur.  From an account, you
+ * have the ability to send transactions, get balance and pending balance of the account, generate addresses.
+ *
+ * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ */
 public class Account extends Base {
 
   private Wallet wallet;
@@ -20,6 +26,13 @@ public class Account extends Base {
     super(resource, round);
   }
 
+  /**
+   * Getter for transactions on an account
+   * @return TransactionCollection
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.TransactionCollection
+   */
   public TransactionCollection transactions()
       throws IOException, Client.UnexpectedStatusCodeException {
     Resource transactionsResource = resource.subresource("transactions");
@@ -29,6 +42,13 @@ public class Account extends Base {
     return transactions;
   }
 
+  /**
+   * Getter for addresses within an account
+   * @return
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.AddressCollection
+   */
   public AddressCollection addresses()
       throws IOException, Client.UnexpectedStatusCodeException {
     Resource addressesResource = resource.subresource("addresses");
@@ -38,14 +58,26 @@ public class Account extends Base {
     return addresses;
   }
 
+  /**
+   * Getter for the name of the account
+   * @return String name
+   */
   public String name() {
     return getString("name");
   }
 
+  /**
+   * Getter for the balance of the account.  This is 1 or more confirmations
+   * @return Long balance
+   */
   public long balance() {
     return getLong("balance");
   }
 
+  /**
+   * Getter for the pending balance on an account. This is 0 confirmations
+   * @return Long pending balance
+   */
   public long pendingBalance() {
     return getLong("pending_balance");
   }
@@ -54,40 +86,168 @@ public class Account extends Base {
     this.wallet = wallet;
   }
 
-  public Payment payToEmail(String passphrase, String email, long amount)
+  @Deprecated
+  private Payment payToEmail(String passphrase, String email, long amount)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    return this.payToEmail(passphrase, email, 6);
+  }
+  @Deprecated
+  public Payment payToEmail(String passphrase, String email, long amount, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     Recipient recipient = Recipient.recipientWithEmail(email, amount);
-    return this.pay(passphrase, recipient);
+    return this.pay(passphrase, recipient, confirmations);
   }
 
+  /**
+   * Make a payment to a specific bitcoin address.
+   * @param passphrase String passphrase to the wallet
+   * @param address String valid bitcoin address based on the network
+   * @param amount Long amount in satoshis
+   * @return Payment signed payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Payment
+   */
   public Payment payToAddress(String passphrase, String address, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
-    return this.pay(passphrase, Recipient.recipientWithAddress(address, amount));
+    return this.payToAddress(passphrase, address, amount, 6);
   }
 
+  /**
+   * Make a payment to a specific bitcoin address.
+   * @param passphrase String passphrase to the wallet
+   * @param address String valid bitcoin address based on the network
+   * @param amount Long amount in satoshis
+   * @param confirmations Int number of confirmations UTXOs must have to be used in the payment
+   * @return Payment signed payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Payment
+   */
+  public Payment payToAddress(String passphrase, String address, long amount, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    return this.pay(passphrase, Recipient.recipientWithAddress(address, amount), confirmations);
+  }
+
+  /**
+   * Make a payment to a Recipient object with a default of 6 confirmations for UTXO selection
+   * @param passphrase String
+   * @param recipient Recipient
+   * @return Payment signed broadcasted payment object (transaction)
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   * @see co.gem.round.Payment
+   */
   public Payment pay(String passphrase, Recipient recipient)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
-    return this.pay(passphrase, recipients);
+    return this.pay(passphrase, recipients, 6);
   }
 
+  /**
+   * Make a payment to a Recipient object with an overrided number of confirmations for UTXO selection
+   * @param passphrase String
+   * @param recipient Recipient
+   * @param confirmations Int number of confirmations UTXOs must have for selection in the transaction
+   * @return Payment signed broadcasted payment object (transaction)
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   * @see co.gem.round.Payment
+   */
+  public Payment pay(String passphrase, Recipient recipient, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
+    return this.pay(passphrase, recipients, confirmations);
+  }
+
+  /**
+   * Make payment to a list of recipients.  This is a transaction with multiple To: addresses and amounts
+   * @param passphrase String
+   * @param recipients List of recipients
+   * @return Signed broadcasted payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   * @see co.gem.round.Payment
+   */
   public Payment pay(String passphrase, List<Recipient> recipients)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
-    final Payment payment = this.createUnsignedPayment(recipients);
+    return this.pay(passphrase, recipients, 6);
+  }
+
+  /**
+   * Make payment to a list of recipients.  This is a transaction with multiple To: addresses and amounts
+   * @param passphrase String
+   * @param recipients List of recipients
+   * @param confirmations Int number of confirmations UTXOs must have for selection in the transaction
+   * @return Signed broadcasted payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   * @see co.gem.round.Payment
+   */
+  public Payment pay(String passphrase, List<Recipient> recipients, int confirmations)
+      throws IOException, Client.UnexpectedStatusCodeException,
+      NoSuchAlgorithmException, InvalidKeySpecException {
+    final Payment payment = this.createUnsignedPayment(recipients, confirmations);
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override
       public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
-        payment.sign(wallet);
+          payment.sign(wallet);
       }
     });
     return payment;
   }
 
+  /**
+   * Create a subscription for webhook notifications on account level activity
+   * @return Subscriptions
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.SubscriptionCollection
+   */
+  public SubscriptionCollection subscriptions()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
+    subscriptions.fetch();
+    return subscriptions;
+  }
+
+  /**
+   * Requests a payment object to be created by the Gem API.  This will lock UTXOs while you inspect the unsigned
+   * payment for things like the suggested fee.
+   * @param recipients List of recipients
+   * @return Payment - unsigned and not broadcasted
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @see co.gem.round.Payment
+   */
   public Payment createUnsignedPayment(List<Recipient> recipients)
+    throws IOException, Client.UnexpectedStatusCodeException {
+    return this.createUnsignedPayment(recipients, 6);
+  }
+  public Payment createUnsignedPayment(List<Recipient> recipients, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException {
     JsonArray recipientsJson = new JsonArray();
     for (Recipient recipient : recipients) {
@@ -107,6 +267,7 @@ public class Account extends Base {
 
     JsonObject body = new JsonObject();
     body.add("outputs", recipientsJson);
+    body.addProperty("confirmations", confirmations);
 
     Resource paymentResource = resource.subresource("payments").action("create", body);
 

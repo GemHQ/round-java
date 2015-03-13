@@ -1,50 +1,74 @@
 package co.gem.round.examples;
 
-import co.gem.round.Account;
-import co.gem.round.Address;
-import co.gem.round.User;
-import co.gem.round.Wallet;
+import co.gem.round.*;
 import co.gem.round.patchboard.Client;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 /**
  * Created by jled on 12/31/14.
  */
 public class WalletAndAccountOperations {
-    public static void init(Boolean makeAddress) throws IOException, Client.UnexpectedStatusCodeException {
+    public static void init(Boolean makeAddress) throws
+            IOException, Client.UnexpectedStatusCodeException,
+            NoSuchAlgorithmException, InvalidKeySpecException {
+
         User authUser = UserDeviceAuth.init();
 
-        Wallet myWallet = authUser.wallets().get("default");
-        System.out.println("\n" + myWallet.getBackupPublicSeed() + "\n" + myWallet.getCosignerPublicSeed());
+        //Wallet.Wrapper newWallet = authUser.wallets().create("newWallet", "password", "testnet");
+//        System.out.println("backupXpriv: " + newWallet.backupPrivateSeed +
+//                            "\nWalletPrimaryXpub: " + newWallet.wallet.getPrimaryPublicSeed());
 
+
+        Wallet myWallet = authUser.wallets().get("default");
+        System.out.println("\nBackupXPub: " + myWallet.getBackupPublicSeed() +
+                "\nCosignerXPub: " + myWallet.getCosignerPublicSeed() +
+                "\nPrimaryXPub:" + myWallet.getPrimaryPublicSeed() + "\n");
 
         Account myAccount = myWallet.accounts().get("default");
-        System.out.println("\nbalance: " + Long.toString(myAccount.balance()) +
-        "\nPending Balance: " + Long.toString(myAccount.pendingBalance()) + "\n");
-
-        if(makeAddress) {
-            Address address = myAccount.addresses().create();
-            System.out.println(
-                    "\nAddress: " + address.getAddressString());
+        for(Account a : myWallet.accounts()) {
+            System.out.println("Name: " + a.name() +
+                            " | balance: " + Long.toString(a.balance()) +
+                            " | Pending Balance: " + Long.toString(a.pendingBalance()));
         }
 
-//        Map<String, Address> addys = myAccount.addresses().asMap();
-//        List<Address> addys = myAccount.addresses().asList();
-//        for(Address address : addys) {
-//            System.out.println(address.getAddressPath());
-//        }
+        Utils.print("");
 
-        //fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
-//        Payment payment = null;
-//        try {
-//            payment = myAccount.payToAddress("password", "mwhRqLNwRK7jsBLETP8ears5uSR7F7kEMN", 227579L);
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeySpecException e) {
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println(payment.getStatus());
+        for(Transaction tx : myAccount.transactions()) {
+          if (tx.getType().equals("incoming")) {
+            System.out.println(
+                "Tx status: " + tx.getStatus() +
+                    " | Tx conf: " + tx.getConfirmations() +
+                    " | Tx val: " + tx.getValue() +
+                    " | Tx type: " + tx.getType() +
+                    " | Tx date: " + tx.getCreatedAt() +
+                    " | Tx hash: " + tx.getTransactionHash());
+          }
+        }
+
+        List<Address> addys = myAccount.addresses().asList();
+        for(Address address : addys) {
+          System.out.println(address.getAddressPath() + " | " + address.getAddressString());
+        }
+
+//        fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
+        Payment payment = null;
+        try {
+            payment = myAccount.payToAddress("password", "2N11qBXajB4DPNshMALBYNjDjgvjL7iGLZT", 450000L, 1);
+            System.out.println(payment.resource().attributes().get("hash").getAsString());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+
+        if(makeAddress) {
+          Address address = myAccount.addresses().create();
+          System.out.println(
+            "\n\nAddress: " + address.getAddressString());
+        }
     }
 }
