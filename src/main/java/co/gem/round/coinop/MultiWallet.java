@@ -44,21 +44,23 @@ public class MultiWallet {
     this.backupPublicKey = this.backupPrivateKey.getPubOnly();
   }
 
-  private MultiWallet(String primaryPrivateSeed, String backupPublicSeed, String cosignerPublicSeed) {
-    byte[] decoded = new byte[0];
+  private MultiWallet(String primaryPrivateSeed, String backupPublicKey, String cosignerPublicKey) {
+    byte[] decodedCosignerPublicKey = new byte[0];
+    byte[] decodedPrimarySeed = new byte[DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS/8];
     try {
-      decoded = Base58.decode(primaryPrivateSeed);
-    } catch (AddressFormatException e) {
+      decodedCosignerPublicKey = Base58.decode(cosignerPublicKey);
+      decodedPrimarySeed = Hex.decode(primaryPrivateSeed);
+    } catch (Exception e) {
       e.printStackTrace();
     }
-    ByteBuffer buffer = ByteBuffer.wrap(decoded);
+    ByteBuffer buffer = ByteBuffer.wrap(decodedCosignerPublicKey);
     this.networkParameters = networkParametersFromHeaderBytes(buffer.getInt());
 
-    this.primaryPrivateKey = DeterministicKey.deserializeB58(primaryPrivateSeed, networkParameters);
-    if (backupPublicSeed != null)
-      this.backupPublicKey = DeterministicKey.deserializeB58(backupPublicSeed, networkParameters);
-    if (cosignerPublicSeed != null)
-      this.cosignerPublicKey = DeterministicKey.deserializeB58(cosignerPublicSeed, networkParameters);
+    this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(decodedPrimarySeed);
+    if (backupPublicKey != null)
+      this.backupPublicKey = DeterministicKey.deserializeB58(backupPublicKey, networkParameters);
+    if (cosignerPublicKey != null)
+      this.cosignerPublicKey = DeterministicKey.deserializeB58(cosignerPublicKey, networkParameters);
   }
 
   public static NetworkParameters networkParametersFromBlockchain(Blockchain blockchain) {

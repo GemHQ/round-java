@@ -45,6 +45,7 @@ public class Wallet extends Base {
 
     MultiWallet wallet = MultiWallet.importSeeds(decryptedSeed,
         this.getBackupPublicSeed(), this.getCosignerPublicSeed());
+    wallet.purgeSeeds(); // Get rid of seeds, we have the keys after initialization.
     callback.execute(wallet);
   }
 
