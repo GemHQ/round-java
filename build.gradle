@@ -32,8 +32,8 @@ dependencies {
 
   runtime 'com.madgag.spongycastle:prov:1.51.0.0'
 
-  compile "org.codehaus.groovy:groovy-all:2.3.6"
-  testCompile "org.spockframework:spock-core:1.0-groovy-2.3-SNAPSHOT"
+  compile "org.codehaus.groovy:groovy-all:2.4.1"
+  testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
   testCompile 'junit:junit:4.11'
 }
 
