@@ -55,7 +55,7 @@ public class MultiWalletTest {
 
   @Test
   public void testWalletDeserialize() {
-    Assert.assertEquals(serializedPublicSeed, testWallet.serializedPrimaryPublicSeed());
+    Assert.assertEquals(serializedPublicSeed, testWallet.serializedPrimaryPublicKey());
   }
 
   @Test
@@ -65,8 +65,8 @@ public class MultiWalletTest {
     MultiWallet primary = MultiWallet.importSeeds(wallet.serializedPrimaryPrivateSeed(), null, null);
     MultiWallet backup = MultiWallet.importSeeds(wallet.serializedBackupPrivateSeed(), null, null);
 
-    Assert.assertEquals(wallet.serializedPrimaryPublicSeed(), primary.serializedPrimaryPublicSeed());
-    Assert.assertEquals(wallet.serializedBackupPublicSeed(), backup.serializedPrimaryPublicSeed());
+    Assert.assertEquals(wallet.serializedPrimaryPublicKey(), primary.serializedPrimaryPublicKey());
+    Assert.assertEquals(wallet.serializedBackupPublicKey(), backup.serializedPrimaryPublicKey());
   }
 
   private static final String depth1ChildKey =
@@ -98,8 +98,8 @@ public class MultiWalletTest {
   public void testMultiWalletConstructor() {
     MultiWallet wallet =
         MultiWallet.importSeeds(serializedPrivateSeed, serializedBackupPublicSeed, serializedCosignerPublicSeed);
-    Assert.assertEquals(serializedBackupPublicSeed, wallet.serializedBackupPublicSeed());
-    Assert.assertEquals(serializedCosignerPublicSeed, wallet.serializedCosignerPublicSeed());
+    Assert.assertEquals(serializedBackupPublicSeed, wallet.serializedBackupPublicKey());
+    Assert.assertEquals(serializedCosignerPublicSeed, wallet.serializedCosignerPublicKey());
   }
 
   private static final String redeemScriptPrivateSeed =

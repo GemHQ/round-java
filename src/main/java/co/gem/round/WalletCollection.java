@@ -51,14 +51,15 @@ public class WalletCollection extends BaseCollection<Wallet> {
     JsonObject wallet = new JsonObject();
     wallet.addProperty("name", name);
     wallet.addProperty("network", network);
-    wallet.addProperty("backup_public_seed", multiWallet.serializedBackupPublicSeed());
-    wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicSeed());
+    wallet.addProperty("backup_public_seed", multiWallet.serializedBackupPublicKey());
+    wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicKey());
     wallet.add("primary_private_seed", encryptedPrivateSeed.asJsonObject());
 
     Resource resource = this.resource.action("create", wallet);
     Wallet gemWallet = new Wallet(resource, round);
 
     Wallet.Wrapper wrapper = new Wallet.Wrapper(gemWallet, multiWallet.serializedBackupPrivateSeed());
+    multiWallet.purgeSeeds();
     return wrapper;
 }
 

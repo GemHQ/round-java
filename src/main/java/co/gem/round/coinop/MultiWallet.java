@@ -2,6 +2,7 @@ package co.gem.round.coinop;
 
 
 import co.gem.round.encoding.Base58;
+import co.gem.round.encoding.Hex;
 import org.bitcoinj.core.*;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -23,11 +24,10 @@ public class MultiWallet {
     TESTNET, MAINNET
   }
 
-  private DeterministicKey primaryPrivateKey;
-  private DeterministicKey backupPrivateKey;
+  private byte[] primarySeed, backupSeed;
 
-  private DeterministicKey backupPublicKey;
-  private DeterministicKey cosignerPublicKey;
+  private DeterministicKey primaryPrivateKey, backupPrivateKey,
+          backupPublicKey, cosignerPublicKey;
 
   private NetworkParameters networkParameters;
 
@@ -36,11 +36,11 @@ public class MultiWallet {
 
     SecureRandom random1 = new SecureRandom();
     SecureRandom random2 = new SecureRandom();
-    DeterministicSeed primarySeed = new DeterministicKeyChain(random1).getSeed();
-    DeterministicSeed backupSeed = new DeterministicKeyChain(random2).getSeed();
+    this.primarySeed = new DeterministicKeyChain(random1).getSeed().getSeedBytes();
+    this.backupSeed = new DeterministicKeyChain(random2).getSeed().getSeedBytes();
 
-    this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(primarySeed.getSeedBytes());
-    this.backupPrivateKey = HDKeyDerivation.createMasterPrivateKey(backupSeed.getSeedBytes());
+    this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(primarySeed);
+    this.backupPrivateKey = HDKeyDerivation.createMasterPrivateKey(backupSeed);
     this.backupPublicKey = this.backupPrivateKey.getPubOnly();
   }
 
@@ -100,23 +100,36 @@ public class MultiWallet {
   }
 
   public String serializedPrimaryPrivateSeed() {
-    return this.primaryPrivateKey.serializePrivB58(networkParameters);
-  }
-
-  public String serializedPrimaryPublicSeed() {
-    return this.primaryPrivateKey.serializePubB58(networkParameters);
+    return Hex.encode(this.primarySeed);
   }
 
   public String serializedBackupPrivateSeed() {
+    return Hex.encode(this.backupSeed);
+  }
+
+  public String serializedPrimaryPrivateKey() {
+    return this.primaryPrivateKey.serializePrivB58(networkParameters);
+  }
+
+  public String serializedPrimaryPublicKey() {
+    return this.primaryPrivateKey.serializePubB58(networkParameters);
+  }
+
+  public String serializedBackupPrivateKey() {
     return this.backupPrivateKey.serializePrivB58(networkParameters);
   }
 
-  public String serializedBackupPublicSeed() {
+  public String serializedBackupPublicKey() {
     return this.backupPublicKey.serializePubB58(networkParameters);
   }
 
-  public String serializedCosignerPublicSeed() {
+  public String serializedCosignerPublicKey() {
     return this.cosignerPublicKey.serializePubB58(networkParameters);
+  }
+
+  public void purgeSeeds() {
+    this.primarySeed = null;
+    this.backupSeed = null;
   }
 
   public DeterministicKey childPrimaryPrivateKeyFromPath(String path) {

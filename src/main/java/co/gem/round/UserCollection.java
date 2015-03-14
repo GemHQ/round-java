@@ -49,8 +49,8 @@ public class UserCollection extends BaseCollection<User> {
     JsonObject wallet = new JsonObject();
     wallet.addProperty("name", "default");
     wallet.addProperty("network", network);
-    wallet.addProperty("backup_public_seed", multiWallet.serializedBackupPublicSeed());
-    wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicSeed());
+    wallet.addProperty("backup_public_seed", multiWallet.serializedBackupPublicKey());
+    wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicKey());
     wallet.add("primary_private_seed", encryptedPrivateSeed.asJsonObject());
 
     JsonObject payload = new JsonObject();
