@@ -5,7 +5,7 @@ import co.gem.round.patchboard.Resource;
 /**
  * Address objects provide getters to the address string and BIP44 path within a Gem Wallet.
  *
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class Address extends Base {
 

@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Round is the Gem API client class.  Most importantly it is where you access the authentication methods for the api
- * @author Julian Del Vergel de Dios (julian@gem.co) on 1/4/15.
+ * @author Julian Vergel de Dios (julian@gem.co) on 1/4/15.
  */
 public class Round {
 

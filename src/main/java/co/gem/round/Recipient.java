@@ -3,7 +3,7 @@ package co.gem.round;
 /**
  * Recipients are used as part of the account.pay
  *
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class Recipient {
   public String address;

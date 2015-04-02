@@ -16,7 +16,7 @@ import java.util.List;
  * Account class is the primary class where most of the interactions for the wallet will occur.  From an account, you
  * have the ability to send transactions, get balance and pending balance of the account, generate addresses.
  *
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class Account extends Base {
 
@@ -87,13 +87,13 @@ public class Account extends Base {
   }
 
   @Deprecated
-  private Payment payToEmail(String passphrase, String email, long amount)
+  private Transaction payToEmail(String passphrase, String email, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     return this.payToEmail(passphrase, email, 6);
   }
   @Deprecated
-  public Payment payToEmail(String passphrase, String email, long amount, int confirmations)
+  public Transaction payToEmail(String passphrase, String email, long amount, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     Recipient recipient = Recipient.recipientWithEmail(email, amount);
@@ -110,9 +110,8 @@ public class Account extends Base {
    * @throws Client.UnexpectedStatusCodeException
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeySpecException
-   * @see co.gem.round.Payment
    */
-  public Payment payToAddress(String passphrase, String address, long amount)
+  public Transaction payToAddress(String passphrase, String address, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     return this.payToAddress(passphrase, address, amount, 6);
@@ -129,9 +128,8 @@ public class Account extends Base {
    * @throws Client.UnexpectedStatusCodeException
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeySpecException
-   * @see co.gem.round.Payment
    */
-  public Payment payToAddress(String passphrase, String address, long amount, int confirmations)
+  public Transaction payToAddress(String passphrase, String address, long amount, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     return this.pay(passphrase, Recipient.recipientWithAddress(address, amount), confirmations);
@@ -147,9 +145,8 @@ public class Account extends Base {
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeySpecException
    * @see co.gem.round.Recipient
-   * @see co.gem.round.Payment
    */
-  public Payment pay(String passphrase, Recipient recipient)
+  public Transaction pay(String passphrase, Recipient recipient)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
@@ -167,9 +164,8 @@ public class Account extends Base {
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeySpecException
    * @see co.gem.round.Recipient
-   * @see co.gem.round.Payment
    */
-  public Payment pay(String passphrase, Recipient recipient, int confirmations)
+  public Transaction pay(String passphrase, Recipient recipient, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
@@ -186,9 +182,8 @@ public class Account extends Base {
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeySpecException
    * @see co.gem.round.Recipient
-   * @see co.gem.round.Payment
    */
-  public Payment pay(String passphrase, List<Recipient> recipients)
+  public Transaction pay(String passphrase, List<Recipient> recipients)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
     return this.pay(passphrase, recipients, 6);
@@ -205,12 +200,11 @@ public class Account extends Base {
    * @throws NoSuchAlgorithmException
    * @throws InvalidKeySpecException
    * @see co.gem.round.Recipient
-   * @see co.gem.round.Payment
    */
-  public Payment pay(String passphrase, List<Recipient> recipients, int confirmations)
+  public Transaction pay(String passphrase, List<Recipient> recipients, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException {
-    final Payment payment = this.createUnsignedPayment(recipients, confirmations);
+    final Transaction payment = this.transactions().create(recipients, confirmations);
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override
       public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
@@ -232,46 +226,6 @@ public class Account extends Base {
     SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
     subscriptions.fetch();
     return subscriptions;
-  }
-
-  /**
-   * Requests a payment object to be created by the Gem API.  This will lock UTXOs while you inspect the unsigned
-   * payment for things like the suggested fee.
-   * @param recipients List of recipients
-   * @return Payment - unsigned and not broadcasted
-   * @throws IOException
-   * @throws Client.UnexpectedStatusCodeException
-   * @see co.gem.round.Payment
-   */
-  public Payment createUnsignedPayment(List<Recipient> recipients)
-    throws IOException, Client.UnexpectedStatusCodeException {
-    return this.createUnsignedPayment(recipients, 6);
-  }
-  public Payment createUnsignedPayment(List<Recipient> recipients, int confirmations)
-      throws IOException, Client.UnexpectedStatusCodeException {
-    JsonArray recipientsJson = new JsonArray();
-    for (Recipient recipient : recipients) {
-      JsonObject payeeJson = new JsonObject();
-      if (recipient.email != null) {
-        payeeJson.addProperty("email", recipient.email);
-      } else if (recipient.address != null) {
-        payeeJson.addProperty("address", recipient.address);
-      }
-
-      JsonObject recipientJson = new JsonObject();
-      recipientJson.add("payee", payeeJson);
-      recipientJson.addProperty("amount", recipient.amount);
-
-      recipientsJson.add(recipientJson);
-    }
-
-    JsonObject body = new JsonObject();
-    body.add("outputs", recipientsJson);
-    body.addProperty("confirmations", confirmations);
-
-    Resource paymentResource = resource.subresource("payments").action("create", body);
-
-    return new Payment(paymentResource, this.round);
   }
 
 }

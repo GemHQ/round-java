@@ -8,7 +8,7 @@ import java.io.IOException;
 
 /**
  * AccountCollection is a collection of Gem wallet Accounts.  This class provides the method to create a new account.
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class AccountCollection extends BaseCollection<Account> {
   public static final String RESOURCE_NAME = "accounts";

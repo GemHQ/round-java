@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Base class for building Gem API collection objects.
  *
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public abstract class BaseCollection<T> extends Base implements Iterable<T> {
 

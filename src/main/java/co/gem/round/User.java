@@ -80,11 +80,4 @@ public class User extends Base {
       this.backupPrivateSeed = backupPrivateSeed;
     }
   }
-
-  public SubscriptionCollection subscriptions()
-      throws IOException, Client.UnexpectedStatusCodeException {
-    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
-    subscriptions.fetch();
-    return subscriptions;
-  }
 }

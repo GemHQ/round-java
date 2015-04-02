@@ -15,7 +15,7 @@ import java.security.spec.InvalidKeySpecException;
 /**
  * WalletCollection provides access to a users collection of wallets as well as the create method to add additional
  * wallets to a user.
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class WalletCollection extends BaseCollection<Wallet> {
   public WalletCollection(Resource resource, Round round) {

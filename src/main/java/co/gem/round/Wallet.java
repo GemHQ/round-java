@@ -16,7 +16,7 @@ import java.security.spec.InvalidKeySpecException;
  * accounts in the wallet.  As well as info such as the balance of all accounts.  Gem wallets follow BIP32 and BIP44
  * but without hardened nodes.
  *
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  * @see co.gem.round.Account
  */
 public class Wallet extends Base {

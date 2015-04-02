@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Collection class for addresses.  AddressCollection provides access to the create method to generate a new address
  *
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class AddressCollection extends BaseCollection<Address> {
   public AddressCollection(Resource resource, Round round) { super(resource, round); }

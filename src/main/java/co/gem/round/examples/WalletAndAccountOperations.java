@@ -1,7 +1,11 @@
 package co.gem.round.examples;
 
 import co.gem.round.*;
+import co.gem.round.Address;
+import co.gem.round.Transaction;
+import co.gem.round.Wallet;
 import co.gem.round.patchboard.Client;
+import org.bitcoinj.core.*;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -55,7 +59,7 @@ public class WalletAndAccountOperations {
         }
 
 //        fund the account from a faucet and wait for 6 confirmations on a tx before attempting to send
-        Payment payment = null;
+        Transaction payment = null;
         try {
             payment = myAccount.payToAddress("password", "2N11qBXajB4DPNshMALBYNjDjgvjL7iGLZT", 450000L, 1);
             System.out.println(payment.resource().attributes().get("hash").getAsString());

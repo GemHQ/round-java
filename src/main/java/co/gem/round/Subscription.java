@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  *
  *
- * @author Julian Del Vergel de Dios (julian@gem.co) on 2/27/15.
+ * @author Julian Vergel de Dios (julian@gem.co) on 2/27/15.
  */
 public class Subscription extends Base {
   public Subscription(Resource resource, Round round) {

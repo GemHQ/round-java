@@ -22,17 +22,10 @@ public class Application extends Base{
     return new UserCollection(usersResource, round);
   }
 
-  public ApplicationInstance authorizeInstance(String name)
-      throws IOException, Client.UnexpectedStatusCodeException {
-    JsonObject payload = new JsonObject();
-    payload.addProperty("name", name);
-    Resource applicationInstanceResource = resource.action("authorize_instance", payload);
-    return new ApplicationInstance(applicationInstanceResource, round);
-  }
-
   public SubscriptionCollection subscriptions()
       throws IOException, Client.UnexpectedStatusCodeException {
-    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
+    SubscriptionCollection subscriptions =
+        new SubscriptionCollection(resource.subresource("subscriptions"), round);
     subscriptions.fetch();
     return subscriptions;
   }

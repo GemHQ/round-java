@@ -10,7 +10,7 @@ import java.io.IOException;
  * Webhook collection class to create subscriptions for addresses at various levels of round objects.
  * Requires a client with application authentication
  *
- * @author Julian Del Vergel de Dios (julian@gem.co) 2/27/15.
+ * @author Julian Vergel de Dios (julian@gem.co) 2/27/15.
  */
 public class SubscriptionCollection extends BaseCollection<Subscription> {
 

@@ -14,7 +14,7 @@ import java.security.spec.InvalidKeySpecException;
 
 /**
  * UserCollection provides functionality to create users and generate a collection of users.
- * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
+ * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class UserCollection extends BaseCollection<User> {
   public UserCollection(Resource resource, Round round) { super(resource, round); }
