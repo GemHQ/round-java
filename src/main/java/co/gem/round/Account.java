@@ -214,18 +214,4 @@ public class Account extends Base {
     return payment;
   }
 
-  /**
-   * Create a subscription for webhook notifications on account level activity
-   * @return Subscriptions
-   * @throws IOException
-   * @throws Client.UnexpectedStatusCodeException
-   * @see co.gem.round.SubscriptionCollection
-   */
-  public SubscriptionCollection subscriptions()
-      throws IOException, Client.UnexpectedStatusCodeException {
-    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
-    subscriptions.fetch();
-    return subscriptions;
-  }
-
 }

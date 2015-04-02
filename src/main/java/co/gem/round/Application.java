@@ -19,14 +19,14 @@ public class Application extends Base{
     Resource usersResource = resource.subresource("users");
     UserCollection users = new UserCollection(usersResource, round);
     users.fetch();
-    return new UserCollection(usersResource, round);
+    return users;
   }
 
-  public SubscriptionCollection subscriptions()
+  public WalletCollection wallets()
       throws IOException, Client.UnexpectedStatusCodeException {
-    SubscriptionCollection subscriptions =
-        new SubscriptionCollection(resource.subresource("subscriptions"), round);
-    subscriptions.fetch();
-    return subscriptions;
+    Resource walletsResource = resource.subresource("wallets");
+    WalletCollection wallets = new WalletCollection(walletsResource, round);
+    wallets.fetch();
+    return wallets;
   }
 }

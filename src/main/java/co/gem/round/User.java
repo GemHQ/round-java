@@ -76,4 +76,8 @@ public class User extends Base {
   public String userUrl() {
     return getString("url");
   }
+
+  public String redirectUri() {
+    return getString("redirect_uri");
+  }
 }

@@ -56,6 +56,12 @@ public class Transaction extends Base {
     return this;
   }
 
+  public Transaction approve()
+      throws IOException, Client.UnexpectedStatusCodeException {
+    resource = this.resource().action("approve");
+    return this;
+  }
+
   /**
    * Cancels an unsigned transaction
    * @throws IOException

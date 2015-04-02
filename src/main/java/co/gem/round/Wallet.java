@@ -63,20 +63,6 @@ public class Wallet extends Base {
   }
 
   /**
-   * Create a subscription for webhook notifications on wallet level activity
-   * @return Subscriptions
-   * @throws IOException
-   * @throws Client.UnexpectedStatusCodeException
-   * @see co.gem.round.SubscriptionCollection
-   */
-  public SubscriptionCollection subscriptions()
-      throws IOException, Client.UnexpectedStatusCodeException {
-    SubscriptionCollection subscriptions = new SubscriptionCollection(resource.subresource("subscriptions"), round);
-    subscriptions.fetch();
-    return subscriptions;
-  }
-
-  /**
    * Getter for the elements of the encrypted primary seed.
    * @return EncryptedMessage containing ciphertext, salt, nonce, iterations for decryption purposes
    */

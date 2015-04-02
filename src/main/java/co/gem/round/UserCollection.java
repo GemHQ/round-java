@@ -40,7 +40,7 @@ public class UserCollection extends BaseCollection<User> {
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);
 
-    String network = null;
+    String network;
     if (multiWallet.blockchain() == MultiWallet.Blockchain.MAINNET)
       network = "bitcoin";
     else

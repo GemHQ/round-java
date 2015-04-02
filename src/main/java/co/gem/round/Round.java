@@ -65,6 +65,10 @@ public class Round {
     params.put("user_token", userToken);
     params.put("device_id", deviceId);
     patchboardClient.authorizer().authorize(AuthScheme.DEVICE, params);
+    Map<String, String> identifyParams = new HashMap<>();
+    params.put("api_token", apiToken);
+    patchboardClient.authorizer().authorize(AuthScheme.IDENTIFY, identifyParams);
+
 
     User user = user(email);
     user.fetch();
@@ -93,9 +97,9 @@ public class Round {
     Map<String, String> params = new HashMap<>();
     params.put("api_token", apiToken);
     params.put("instance_id", instanceToken);
+    patchboardClient.authorizer().authorize(AuthScheme.APPLICATION, params);
     Map<String, String> identifyParams = new HashMap<>();
     params.put("api_token", apiToken);
-    patchboardClient.authorizer().authorize(AuthScheme.APPLICATION, params);
     patchboardClient.authorizer().authorize(AuthScheme.IDENTIFY, identifyParams);
 
     Application app = application(url);
@@ -140,7 +144,6 @@ public class Round {
   static class AuthScheme {
     static final String DEVICE = "Gem-Device";
     static final String APPLICATION = "Gem-Application";
-    static final String MFA = "Gem-MFA";
     static final String IDENTIFY = "Gem-Identify";
   }
 }
