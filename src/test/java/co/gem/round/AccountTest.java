@@ -23,12 +23,12 @@ public class AccountTest {
   public void testCreateUnsignedPayment() throws IOException, Client.UnexpectedStatusCodeException {
     List<Recipient> recipients = new ArrayList<Recipient>();
     recipients.add(Recipient.recipientWithAddress(payAddress, 1000));
-    Payment payment = account.createUnsignedPayment(recipients);
+    Transaction payment = account.transactions().create(recipients);
 
     Assert.assertNotNull(payment);
 
     // Test with confirmations param
-    Payment payment2 = account.createUnsignedPayment(recipients, 6);
+    Transaction payment2 = account.transactions().create(recipients, 6);
 
     Assert.assertNotNull(payment2);
   }

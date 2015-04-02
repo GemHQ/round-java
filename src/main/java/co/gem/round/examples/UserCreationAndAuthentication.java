@@ -20,7 +20,7 @@ public class UserCreationAndAuthentication {
         //user creation
         // testnet or mainnet
         // remember to to match what the client is set to
-        User.Wrapper newUser = null;
+        User newUser = null;
         try {
             newUser = client.users().create(Utils.getUserEmail(), "password", "testnet");
         } catch (InvalidKeySpecException e) {
@@ -29,29 +29,15 @@ public class UserCreationAndAuthentication {
             e.printStackTrace();
         }
 
-        System.out.println("Backup Seed: " + newUser.backupPrivateSeed); // userWrapper returns backup privKey only on user creation
-        System.out.println("User url: " + newUser.user.url()
-                + "\nUser Token: " + newUser.user.getAttribute("user_token").getAsString()
-                + "\nUser email: " + newUser.user.email());
+
+        System.out.println("User url: " + newUser.url()
+            + "\nUser Token: " + newUser.getAttribute("user_token").getAsString()
+            + "\nUser email: " + newUser.email());
 
         //authenticate Device
-        String key = client.beginDeviceAuth(Utils.getUserEmail(),
-            Utils.getDeviceName(),
-            Utils.getDeviceId(),
-            Utils.getApiToken());
+        Device device = newUser.devices().create(Utils.getDeviceName());
 
-        System.out.println("OOB Secret: " + key);
-
-        //get the OOB-OTP from email
-        String otp = Utils.getUserInput("Enter OTP: ");
-
-        User authUser = client.completeDeviceAuth(Utils.getUserEmail(),
-            Utils.getDeviceName(),
-            Utils.getDeviceId(),
-            Utils.getApiToken(),
-            key,
-            otp);
-
-        System.out.println("authed user: " + authUser.email() + " | " + authUser.toString());
+        System.out.println("Redirect URI: " + device.getRedirectURI());
+        System.out.println("authed user: " + newUser.email() + " | " + newUser.toString());
     }
 }

@@ -21,9 +21,11 @@ public class Round {
   private static Patchboard patchboard;
 
   private Client patchboardClient;
+  private Authorizer authorizer;
 
-  private Round(Client patchboardClient) {
+  private Round(Client patchboardClient, Authorizer authorizer) {
     this.patchboardClient = patchboardClient;
+    this.authorizer = authorizer;
   }
 
   /**
@@ -40,8 +42,9 @@ public class Round {
       url = API_HOST;
     patchboard = Patchboard.discover(url);
 
-    Client patchboardClient = patchboard.spawn(new Authorizer());
-    return new Round(patchboardClient);
+    Authorizer authorizer = new Authorizer();
+    Client patchboardClient = patchboard.spawn(authorizer);
+    return new Round(patchboardClient, authorizer);
   }
 
   /**
@@ -74,12 +77,19 @@ public class Round {
    * @param url of the application
    * @param apiToken api token of the application
    * @param instanceToken unique instance id
+   * @param otpSecret TOTP secret for authorizing transactions
    * @return Application Round Application
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
    */
-  public Application authenticateApplication(String url, String apiToken, String instanceToken)
+  public Application authenticateApplication(String url, String apiToken, String instanceToken, String otpSecret)
     throws IOException, Client.UnexpectedStatusCodeException {
+    authorizer.setOtpSecret(otpSecret);
+    return authenticateApplication(url, apiToken, instanceToken);
+  }
+
+  public Application authenticateApplication(String url, String apiToken, String instanceToken)
+      throws IOException, Client.UnexpectedStatusCodeException {
     Map<String, String> params = new HashMap<>();
     params.put("api_token", apiToken);
     params.put("instance_id", instanceToken);

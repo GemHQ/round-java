@@ -20,7 +20,7 @@ import static co.gem.round.RoundTest.round;
 
 public class PaymentTest {
 
-  public static Payment unsignedPayment;
+  public static Transaction unsignedPayment;
 
   @Before
   public void setUp() throws URISyntaxException, IOException {
@@ -57,7 +57,7 @@ public class PaymentTest {
 
   @Test
   public void testSign() throws IOException, Client.UnexpectedStatusCodeException {
-    Payment signed = unsignedPayment.sign(wallet);
+    Transaction signed = unsignedPayment.sign(wallet);
 
     Assert.assertEquals("unconfirmed", signed.getStatus());
   }
