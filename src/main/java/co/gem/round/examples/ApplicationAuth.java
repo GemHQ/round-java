@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class ApplicationAuth {
   public static Application init() throws IOException, Client.UnexpectedStatusCodeException {
-    Round client = Round.client("https://api-develop.gem.co");
+    Round client = Round.client("https://api-sandbox.gem.co");
     Application instance = client.authenticateApplication(Utils.getAppUrl(), Utils.getApiToken(), Utils.getAppInstance());
 
     return instance;

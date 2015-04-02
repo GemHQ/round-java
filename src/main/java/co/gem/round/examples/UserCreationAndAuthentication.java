@@ -14,7 +14,7 @@ public class UserCreationAndAuthentication {
         //create the API client pointing to one of our APIs
         // testnet sandbox:  https://api-sandbox.gem.co
         // mainnet:  https://api.gem.co
-        Round client = Round.client("https://api-sandbox.gem.co");
+        Round client = Round.client("http://localhost:8999");
         System.out.println(client.toString());
 
         //user creation
