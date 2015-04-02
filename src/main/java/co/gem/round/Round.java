@@ -54,8 +54,6 @@ public class Round {
    * @return User object with Gem-Device-Authentication level
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
-   * @see co.gem.round.Round#beginDeviceAuth(String, String, String, String)
-   * @see co.gem.round.Round#completeDeviceAuth(String, String, String, String, String, String)
    */
   public User authenticateDevice(String apiToken, String userToken, String deviceId, String email)
     throws IOException, Client.UnexpectedStatusCodeException {
@@ -75,86 +73,24 @@ public class Round {
    * user base.
    * @param url of the application
    * @param apiToken api token of the application
-   * @param instanceId unique instance id
+   * @param instanceToken unique instance id
    * @return Application Round Application
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
-   * @see co.gem.round.Application#authorizeInstance(String)
    */
-  public Application authenticateApplication(String url, String apiToken, String instanceId)
+  public Application authenticateApplication(String url, String apiToken, String instanceToken)
     throws IOException, Client.UnexpectedStatusCodeException {
-    Map<String, String> params = new HashMap<String, String>();
+    Map<String, String> params = new HashMap<>();
     params.put("api_token", apiToken);
-    params.put("instance_id", instanceId);
+    params.put("instance_id", instanceToken);
+    Map<String, String> identifyParams = new HashMap<>();
+    params.put("api_token", apiToken);
     patchboardClient.authorizer().authorize(AuthScheme.APPLICATION, params);
+    patchboardClient.authorizer().authorize(AuthScheme.IDENTIFY, identifyParams);
 
     Application app = application(url);
     app.fetch();
     return app;
-  }
-
-
-  private void authenticateOtp(String apiToken, String key, String secret) {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("api_token", apiToken);
-    if (key != null) params.put("key", key);
-    if (secret != null) params.put("secret", secret);
-    patchboardClient.authorizer().authorize(AuthScheme.OTP, params);
-  }
-
-  /**
-   * Use when associating a user to an application for the first time.  An OTP key string will be returned and a
-   * secret key will be emailed to the user's email address OOB.  The user will then provide the secret at which point
-   * you can call completeDeviceAuth.  There is a 24hr TTL on the secret that is sent to the user.
-   * @param email of the user
-   * @param deviceName device name associated with the user
-   * @param deviceId unique deviceID associated with the User/Application.
-   * @param apiToken Api token of the application
-   * @return String OTP key
-   * @throws Client.UnexpectedStatusCodeException
-   * @throws IOException
-   */
-  public String beginDeviceAuth(String email, String deviceName, String deviceId, String apiToken)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    this.authenticateOtp(apiToken, null, null);
-    JsonObject payload = new JsonObject();
-    payload.addProperty("name", deviceName);
-    payload.addProperty("device_id", deviceId);
-    User user = this.user(email);
-    try {
-      user.resource().action("authorize_device", payload);
-    } catch(Client.UnexpectedStatusCodeException e) {
-      if (e.statusCode != 401) throw e;
-      String authHeader = e.response.header("Www-Authenticate");
-      return Http.extractParamsFromHeader(authHeader).get("key");
-    }
-    return null;
-  }
-
-  /**
-   * Use for the second part to authenticating a user-device on an application for the first time.  Only a user-deviceid
-   * can be used once within an application.  If the secret:key do not match, an error will be thrown which will contain
-   * a new otp.key and a new secret will be sent to the user.
-   * @param email
-   * @param deviceName
-   * @param deviceId
-   * @param apiToken
-   * @param key
-   * @param secret
-   * @return User Round User
-   * @throws Client.UnexpectedStatusCodeException
-   * @throws IOException
-   */
-  public User completeDeviceAuth(String email, String deviceName, String deviceId, String apiToken, String key, String secret)
-      throws Client.UnexpectedStatusCodeException, IOException {
-    this.authenticateOtp(apiToken, key, secret);
-    JsonObject payload = new JsonObject();
-    payload.addProperty("name", deviceName);
-    payload.addProperty("device_id", deviceId);
-    User user = this.user(email);
-    Resource userResource = user.resource().action("authorize_device", payload);
-
-    return new User(userResource, this);
   }
 
   /**
@@ -194,9 +130,7 @@ public class Round {
   static class AuthScheme {
     static final String DEVICE = "Gem-Device";
     static final String APPLICATION = "Gem-Application";
-    static final String DEVELOPER = "Gem-Developer";
-    static final String DEVELOPER_SESSION = "Gem-Developer-Session";
-    static final String USER = "Gem-User";
-    static final String OTP = "Gem-OOB-OTP";
+    static final String MFA = "Gem-MFA";
+    static final String IDENTIFY = "Gem-Identify";
   }
 }

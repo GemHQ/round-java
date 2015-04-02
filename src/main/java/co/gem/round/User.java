@@ -32,6 +32,13 @@ public class User extends Base {
     return wallets;
   }
 
+  public DeviceCollection devices() throws
+      IOException, Client.UnexpectedStatusCodeException {
+    Resource resource = this.resource.subresource("devices");
+    DeviceCollection devices = new DeviceCollection(resource, round);
+    return devices;
+  }
+
   /**
    * Getter for the default wallet of a user
    * @return Wallet
@@ -68,16 +75,5 @@ public class User extends Base {
    */
   public String userUrl() {
     return getString("url");
-  }
-
-  @Deprecated
-  public static class Wrapper {
-    public User user;
-    public String backupPrivateSeed;
-
-    public Wrapper(User user, String backupPrivateSeed) {
-      this.user = user;
-      this.backupPrivateSeed = backupPrivateSeed;
-    }
   }
 }

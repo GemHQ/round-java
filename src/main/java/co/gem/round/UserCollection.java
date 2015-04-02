@@ -33,7 +33,7 @@ public class UserCollection extends BaseCollection<User> {
    * @throws InvalidKeySpecException
    * @throws NoSuchAlgorithmException
    */
-  public User.Wrapper create(String email, String passphrase, String blockchain)
+  public User create(String email, String passphrase, String blockchain)
       throws Client.UnexpectedStatusCodeException, IOException,
       InvalidKeySpecException, NoSuchAlgorithmException{
     MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork(blockchain));
@@ -49,7 +49,6 @@ public class UserCollection extends BaseCollection<User> {
     JsonObject wallet = new JsonObject();
     wallet.addProperty("name", "default");
     wallet.addProperty("network", network);
-    wallet.addProperty("backup_public_seed", multiWallet.serializedBackupPublicKey());
     wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicKey());
     wallet.add("primary_private_seed", encryptedPrivateSeed.asJsonObject());
 
@@ -59,15 +58,14 @@ public class UserCollection extends BaseCollection<User> {
 
     Resource resource = this.resource.action("create", payload);
     User user = new User(resource, round);
-    User.Wrapper wrapper = new User.Wrapper(user, multiWallet.serializedBackupPrivateSeed());
-    return wrapper;
+    return user;
   }
 
   @Override
   public void populateCollection(Iterable<Resource> collection) {
     for (Resource resource : collection) {
       User user = new User(resource, round);
-      add(user.key(), user);
+      add(user.email(), user);
     }
   }
 }

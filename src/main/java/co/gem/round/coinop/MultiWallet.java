@@ -34,14 +34,10 @@ public class MultiWallet {
   private MultiWallet(NetworkParameters networkParameters) {
     this.networkParameters = networkParameters;
 
-    SecureRandom random1 = new SecureRandom();
-    SecureRandom random2 = new SecureRandom();
-    this.primarySeed = new DeterministicKeyChain(random1).getSeed().getSeedBytes();
-    this.backupSeed = new DeterministicKeyChain(random2).getSeed().getSeedBytes();
+    SecureRandom random = new SecureRandom();
+    this.primarySeed = new DeterministicKeyChain(random).getSeed().getSeedBytes();
 
     this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(primarySeed);
-    this.backupPrivateKey = HDKeyDerivation.createMasterPrivateKey(backupSeed);
-    this.backupPublicKey = this.backupPrivateKey.getPubOnly();
   }
 
   private MultiWallet(String primaryPrivateSeed, String backupPublicKey, String cosignerPublicKey) {
