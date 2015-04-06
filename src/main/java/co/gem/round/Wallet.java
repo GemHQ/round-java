@@ -113,8 +113,7 @@ public class Wallet extends Base {
   public Long balance() {
     return getLong("balance");
   }
-
-  @Deprecated
+  
   public static class Wrapper {
     public Wallet wallet;
     public String backupPrivateSeed;
