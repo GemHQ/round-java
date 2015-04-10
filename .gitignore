@@ -8,3 +8,5 @@ build/
 /RemoteTempFiles
 .idea
 /dist
+*.idea
+*.DS_Store
