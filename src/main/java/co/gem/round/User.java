@@ -62,6 +62,22 @@ public class User extends Base {
   }
 
   /**
+   * Getter for first name for a user
+   * @return String first name
+   */
+  public String firstName() {
+    return getString("first_name");
+  }
+
+  /**
+   * Getter for last name for a user
+   * @return String last name
+   */
+  public String lastName() {
+    return getString("last_name");
+  }
+
+  /**
    * Getter for the user token which is used in various authentication schemes
    * @return String user token
    */
