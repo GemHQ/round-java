@@ -105,6 +105,13 @@ public class Round {
     return app;
   }
 
+  public void authenticateIdentify(String apiToken)
+      throws IOException, Client.UnexpectedStatusCodeException {
+    Map<String, String> params = new HashMap<>();
+    params.put("api_token", apiToken);
+    patchboardClient.authorizer().authorize(AuthScheme.IDENTIFY, params);
+  }
+
   /**
    * Returns a user object
    * @param email
