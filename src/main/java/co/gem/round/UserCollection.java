@@ -24,6 +24,8 @@ public class UserCollection extends BaseCollection<User> {
    * labeled "default".  The wallet requires a passphrase to encrypt the primary key and the network for address
    * creation.
    * @param email of the user
+   * @param firstName of the user
+   * @param lastName of the user
    * @param passphrase to encrypt the primary seed
    * @param blockchain network for the wallet.  Either mainnet or testnet
    * @return User wrapper were you can get the user object to initiate begin/complete device authentication.  This is
@@ -33,7 +35,7 @@ public class UserCollection extends BaseCollection<User> {
    * @throws InvalidKeySpecException
    * @throws NoSuchAlgorithmException
    */
-  public User create(String email, String passphrase, String blockchain)
+  public User create(String email, String firstName, String lastName, String passphrase, String blockchain, String deviceName)
       throws Client.UnexpectedStatusCodeException, IOException,
       InvalidKeySpecException, NoSuchAlgorithmException{
     MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork(blockchain));
@@ -54,7 +56,10 @@ public class UserCollection extends BaseCollection<User> {
 
     JsonObject payload = new JsonObject();
     payload.addProperty("email", email);
+    payload.addProperty("device_name", deviceName);
     payload.add("default_wallet", wallet);
+    payload.addProperty("first_name", firstName);
+    payload.addProperty("last_name", lastName);
 
     Resource resource = this.resource.action("create", payload);
     User user = new User(resource, round);
