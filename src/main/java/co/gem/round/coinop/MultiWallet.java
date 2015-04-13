@@ -36,8 +36,11 @@ public class MultiWallet {
 
     SecureRandom random = new SecureRandom();
     this.primarySeed = new DeterministicKeyChain(random).getSeed().getSeedBytes();
+    this.backupSeed = new DeterministicKeyChain(random).getSeed().getSeedBytes();
 
     this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(primarySeed);
+    this.backupPrivateKey = HDKeyDerivation.createMasterPrivateKey(backupSeed);
+    this.backupPublicKey = HDKeyDerivation.createMasterPubKeyFromBytes(backupPrivateKey.getPubKey(), backupPrivateKey.getChainCode());
   }
 
   private MultiWallet(String primaryPrivateSeed, String backupPublicKey, String cosignerPublicKey) {
