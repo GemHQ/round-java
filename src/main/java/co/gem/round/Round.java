@@ -3,8 +3,6 @@ package co.gem.round;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Patchboard;
 import co.gem.round.patchboard.Resource;
-import co.gem.round.util.Http;
-import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.HashMap;

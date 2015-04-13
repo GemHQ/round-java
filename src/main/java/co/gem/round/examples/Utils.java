@@ -3,6 +3,7 @@ package co.gem.round.examples;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 /**
  * Created by jled on 12/31/14.
