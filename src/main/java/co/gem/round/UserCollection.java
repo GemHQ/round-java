@@ -19,6 +19,7 @@ import java.security.spec.InvalidKeySpecException;
 public class UserCollection extends BaseCollection<User> {
   public UserCollection(Resource resource, Round round) { super(resource, round); }
 
+
   /**
    * Create a User on the Gem platform.  At the time of user creation a default HD multi-sig wallet is created
    * labeled "default".  The wallet requires a passphrase to encrypt the primary key and the network for address
@@ -35,9 +36,32 @@ public class UserCollection extends BaseCollection<User> {
    * @throws InvalidKeySpecException
    * @throws NoSuchAlgorithmException
    */
-  public User create(String email, String firstName, String lastName, String passphrase, String blockchain, String deviceName)
-      throws Client.UnexpectedStatusCodeException, IOException,
-      InvalidKeySpecException, NoSuchAlgorithmException{
+  public User create(String email, String firstName, String lastName, String passphrase, String blockchain,
+                     String deviceName) throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException,
+      InvalidKeySpecException, IOException {
+    return create(email, firstName, lastName, passphrase, blockchain, deviceName, null);
+  }
+
+  /**
+   * Create a User on the Gem platform.  At the time of user creation a default HD multi-sig wallet is created
+   * labeled "default".  The wallet requires a passphrase to encrypt the primary key and the network for address
+   * creation.
+   * @param email of the user
+   * @param firstName of the user
+   * @param lastName of the user
+   * @param passphrase to encrypt the primary seed
+   * @param blockchain network for the wallet.  Either mainnet or testnet
+   * @param redirectUri the user is sent to after confirming his/her email
+   * @return User wrapper were you can get the user object to initiate begin/complete device authentication.  This is
+   * depricated and will be replaced with returning only a User object.
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws IOException
+   * @throws InvalidKeySpecException
+   * @throws NoSuchAlgorithmException
+   */
+  public User create(String email, String firstName, String lastName, String passphrase, String blockchain,
+                     String deviceName, String redirectUri)
+      throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
     MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork(blockchain));
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);
@@ -55,6 +79,9 @@ public class UserCollection extends BaseCollection<User> {
     wallet.add("primary_private_seed", encryptedPrivateSeed.asJsonObject());
 
     JsonObject payload = new JsonObject();
+    if (redirectUri != null) {
+      payload.addProperty("redirect_uri", redirectUri);
+    }
     payload.addProperty("email", email);
     payload.addProperty("device_name", deviceName);
     payload.add("default_wallet", wallet);
