@@ -51,13 +51,6 @@ This tutorial assumes that you have completed the developer signup and that you 
 ### 1. Run the Client
 In this step you will learn how to instantiate the API client for the given networks.
 
-1. start your favorite interactive shell and import the round library
-
-	```bash
-	$ python
-	>>> import round
-	```
-
 1. Create the client object using the sandbox stack
 
 	```java

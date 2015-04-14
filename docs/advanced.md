@@ -1,4 +1,4 @@
-# round-rb: Advanced Topics
+# round-java: Advanced Topics
 
 ## Wallets and Accounts
 
@@ -24,7 +24,7 @@ The key methods on an account to use are:
 
 A pending_balance in Gem is any address involved in a transaction with 0 confirmations.  This means that in multiple transactions both incoming and outgoing will produce a net pending_balance.  As they confirm with a single confirmation, the account balance in the API reflects the change.  Objects get cached for speed in the client, so to fetch a new state of an account on the API, call account = account.refresh().
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ## Transactions and Payments
 Transaction collections have a relationship to an account. You can specify the following query parameters for transactions:
@@ -51,7 +51,7 @@ Transaction unsigned = account.transactions().create(recipients, 6);
 long fee = unsigned.getFee();
 ```
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ### Canceling Unsigned Transaction
 You can accomplish this by calling `tx.cancel()` on a transaction.  If you have a lot of transactions you can loop over the collection and cancel.
@@ -61,7 +61,7 @@ You can accomplish this by calling `tx.cancel()` on a transaction.  If you have 
 transaction.cancel();
 ```
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ## Attributes and Refresh
 ### Attributes
@@ -80,7 +80,7 @@ account.getString('something');
 
 __If there are no convenience methods for attributes you use often, please file an issue with what you need or make a pr if you build it in yourself.__
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ### Refresh()
 The data on objects are cached client-side for performance versuses having to make API calls for every single method.  What this also means is that if you have for example an instance method for an account, then the information on the account could get into a stale state.  You will have to trigger a refresh of the object with any changes from the API. 
@@ -104,30 +104,18 @@ Setting up a subscription on your application will allow you to be notified via 
 
 1. Click the “add new subscription”  and provide the callback_url .  Any new address added to any users wallet authorized on your app will automatically registered for you.
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ### Webhook operations
 You will start to receive a webhook subscription at the provided url for incoming/outgoing transactions.  The payload of the subscription will contain information about the transaction, amount, and UIDs for the user/wallet/account information.  You’ll be able to use this information to query your app.
 
 For example - the following snippet will retrieve the user in a given subscription 
 
-```ruby
-AHH ERROR AJKSFJASLFAKSFJKALJSF
-# generate the client
-client = Round.client
-
-# Authenticate with application credentials
-app = client.authenticate_application(api_token: api_token)
-
-# get the user given the user key from a subscription.
-sub_user_key = ‘2309rjefvgnu1340jvfvj24r0j’
-user = None
-
-for u in app.users.itervalues():
-	user = u if u.attributes[u’key’] == sub_user_key
+```java
+// Coming soon!
 ```
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ##  Integrated 2FA
 Gem has built 2FA into the API but additionally built a system to add additional 2FA challenges to your app, so you don’t have to integrate yet another api.  You can ask Gem to send an sms challenge to the user to then pass back to your app.  The user will not get an SMS if the user has a TOTP app installed like Google Authenticator, Authy, Duo etc.  
@@ -135,15 +123,10 @@ Gem has built 2FA into the API but additionally built a system to add additional
 Example of how to incorporate 2FA into your app.
 
 ```java
-
-def login_user(user)
-	user.send_mfa(phone_number: 5555551212)
-	verify_password
-	unlock_account(user) if user.verify_mfa(USER_ENTERED_MFA) 
-end
+// Coming soon!
 ```
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ## Operational/Custodial Wallets
 There are certain scenarios where you want to implement a wallet that you are in posession of that is used for business or custodial purposes.  In the operational/custodial model you will have two keys, the primary used for daily signing and the backup used for recovery.  This means that you hold funds be it the business or your end users.
@@ -154,39 +137,19 @@ There are certain scenarios where you want to implement a wallet that you are in
 	* Instance tokens are used in the application authentication scheme.  When authenticating as an application, you will have full control of the applications wallets and allows a read only view of end user data if your app supports both.
 * __Keep the token safe__
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ### Authenticate
 To authenticate as an application to get to an application wallet and/or pull information about the application call:
 
-```ruby
-app = client.authenticate_application(app_url: app_url, 
-                                      api_token: api_token, 
-                                      instance_id: instance_id)
+```java
+// Coming soon!
 ```
 
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
-### Wallet creation
+### Wallet creation (Soon)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
-`backup_key, totp_secret, wallet = app.wallets.create(<PASSPHRASE>)`
-
-* The totp secret is to be stored in a config file on the server operating the round client for this wallet.  This will be a part of the payment process.
-* The backup key is the root node that can derive all accounts, addresses.  This key will only be returned once via this call.  __YOU MUST STORE IT IN A SAFE PLACE OFFLINE__.  If you loose the backup_key and then later forget the passphrase to unlock the primary key, you will not be able to recover the wallet.
-* The wallet is the full wallet.  You can generate the accounts, addresses etc same as an end user in the previous steps.
-
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
-
-### Payments
-In this section you’ll learn how to make a payment for an operational/custodial wallet.
-
-1. Authenticate as the application
-	1. `app = client.authenticate_application(app_url, api_token, instance_token)`
-1. Unlock the wallet.
-	1. `wallet.unlock(passphrase, top_secret)`
-1. make a payment
-	1. `account.pay(payee,4)`
-
-The Gem client will use the top_secret to generate an MFA token that will be sent as part of the payment calls and verify on the Gem API side.
-
-[[top]](README.md#round-rb-advanced-topics) [[back]](../README.md)
+### Payments (Soon)
+[[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
