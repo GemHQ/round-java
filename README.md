@@ -90,10 +90,10 @@ In this step you will create your own personal Gem user and wallet authorized on
     //  Store the device token for future authentication
     User user = client.users().create("EMAIL", "YOUR FIRST NAME", "YOUR LAST NAME",
     		"aReallyStrongPassphrase", "SOME DEVICE NAME", "https://some-redirect-uri.com/");
-    String deviceId = user.getString("device_id");
+    String deviceToken = user.getString("device_token");
 	```
 
-1. Your application should **store the device_id permanently** as this will be required to authenticate from your app as this user.
+1. Your application should **store the deviceToken permanently** as this will be required to authenticate from your app as this user.
 1. You will receive an email from Gem asking you to confirm your account and finish setup.  Please follow the instructions. At the end of the User sign up flow, you'll be redirected to the redirect_uri provided in users.create (if you provided one).
 
 [[top]](README.md#getting-started-tutorial)
@@ -104,7 +104,7 @@ In this step you will learn how to authenticate to the Gem API on a User's devic
 1. Call the authenticateDevice method from the client object
 
 	```java
-	User fullUser = client.authenticateDevice(apiToken, user.userToken(), deviceId, user.email());
+	User fullUser = client.authenticateDevice(apiToken, user.userToken(), deviceToken, user.email());
 	```
 
 [[top]](README.md#getting-started-tutorial)

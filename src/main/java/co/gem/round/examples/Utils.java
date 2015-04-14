@@ -22,7 +22,7 @@ public class Utils {
   private static final String USER_URL = "https://api-sandbox.gem.co/users/D96qgNVcTekOjTcAk8ESMA";
 
 
-  private static final String DEVICE_ID = USER_EMAIL + "device7";
+  private static final String DEVICE_TOKEN = USER_EMAIL + "device7";
   private static final String DEVICE_NAME = USER_EMAIL + "mbp-java7";
 
 
@@ -65,8 +65,8 @@ public class Utils {
     return first + "@" + email[1];
   }
 
-  public static String getDeviceId() {
-    return DEVICE_ID;
+  public static String getDeviceToken() {
+    return DEVICE_TOKEN;
   }
 
   public static String getDeviceName() {

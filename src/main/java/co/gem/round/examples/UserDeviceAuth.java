@@ -15,7 +15,7 @@ public class UserDeviceAuth {
         Round client = Round.client("https://api-sandbox.gem.co");
         User authUser = client.authenticateDevice(Utils.getApiToken(),
                 Utils.getUserToken(),
-                Utils.getDeviceId(),
+                Utils.getDeviceToken(),
                 Utils.getUserEmail());
 
         System.out.println("\nuser token: " + authUser.userToken() +
