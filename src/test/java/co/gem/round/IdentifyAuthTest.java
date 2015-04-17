@@ -12,12 +12,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Random;
 
-public class IdentityAuthTest {
+public class IdentifyAuthTest {
   Round client;
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    client = Round.client("https://api-sandbox.gem.co");
+    client = Round.client("http://localhost:8999/");
     client.authenticateIdentify(Utils.getApiToken());
   }
 

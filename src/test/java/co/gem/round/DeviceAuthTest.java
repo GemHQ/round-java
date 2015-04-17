@@ -17,7 +17,8 @@ public class DeviceAuthTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    client = Round.client("https://api-sandbox.gem.co");
+//    client = Round.client("https://api-sandbox.gem.co");
+    client = Round.client("http://localhost:8999");
   }
 
   @Test
@@ -29,7 +30,7 @@ public class DeviceAuthTest {
     User user = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
     System.out.println("This will sleep for 60 seconds while the user completes signup. Hurry!");
     Thread.sleep(60000);
-    user = client.authenticateDevice(Utils.getApiToken(), user.userToken(), user.getString("device_id"), user.email());
+    user = client.authenticateDevice(Utils.getApiToken(), user.userToken(), user.getString("device_token"), user.email());
 
     // Make sure the default wallet is in the collection
     user.defaultWallet();
@@ -50,7 +51,6 @@ public class DeviceAuthTest {
     Assert.assertEquals(new Long(0), wallet.balance());
 
     // Default account exists?
-    wallet.defaultAccount();
     Assert.assertEquals(1, wallet.accounts().size());
     // Create a new account
     Account account = wallet.accounts().create("account");
@@ -59,5 +59,8 @@ public class DeviceAuthTest {
 
     // Make sure we can call transactions
     Assert.assertEquals(0, account.transactions().size());
+    Assert.assertEquals(0, account.transactions(Transaction.Status.CONFIRMED).size());
+    Assert.assertEquals(0, account.transactions(Transaction.Type.INCOMING).size());
+    Assert.assertEquals(0, account.transactions(Transaction.Type.INCOMING, Transaction.Status.REJECTED).size());
   }
 }
