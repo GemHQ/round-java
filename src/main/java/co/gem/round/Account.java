@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Account class is the primary class where most of the interactions for the wallet will occur.  From an account, you
@@ -26,6 +28,18 @@ public class Account extends Base {
     super(resource, round);
   }
 
+  public TransactionCollection transactions(Transaction.Status status) throws IOException, Client.UnexpectedStatusCodeException {
+    return transactions(null, status);
+  }
+
+  public TransactionCollection transactions(Transaction.Type type) throws IOException, Client.UnexpectedStatusCodeException {
+    return transactions(type, null);
+  }
+
+  public TransactionCollection transactions() throws IOException, Client.UnexpectedStatusCodeException {
+    return transactions(null, null);
+  }
+
   /**
    * Getter for transactions on an account
    * @return TransactionCollection
@@ -33,9 +47,16 @@ public class Account extends Base {
    * @throws Client.UnexpectedStatusCodeException
    * @see co.gem.round.TransactionCollection
    */
-  public TransactionCollection transactions()
+  public TransactionCollection transactions(Transaction.Type type, Transaction.Status status)
       throws IOException, Client.UnexpectedStatusCodeException {
-    Resource transactionsResource = resource.subresource("transactions");
+    Map<String, String> query = new HashMap<>();
+    if (type != null) {
+      query.put("type", type.toString());
+    }
+    if (status != null) {
+      query.put("status", status.toString());
+    }
+    Resource transactionsResource = resource.subresource("transactions", query);
     TransactionCollection transactions = new TransactionCollection(transactionsResource, this.round);
     transactions.fetch();
 

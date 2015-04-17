@@ -8,9 +8,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by julian on 11/26/14.
@@ -44,13 +47,16 @@ public class Resource implements Iterable<Resource>{
     this.resourceList = resourceList;
   }
 
-  public Resource subresource(String name) throws
+  public Resource subresource(String name) throws IOException, Client.UnexpectedStatusCodeException {
+    return subresource(name, null);
+  }
+
+  public Resource subresource(String name, Map<String, String> query) throws
     IOException, Client.UnexpectedStatusCodeException {
     String url = attributes.get(name).getAsJsonObject()
         .get(URL).getAsString();
     String schemaId = resourceSpec.schemaSpec().associationSchemaId(name);
-
-    return client.resources(name, url, schemaId);
+    return client.resources(name, url, schemaId, query);
   }
 
   public Resource action(String name)

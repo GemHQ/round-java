@@ -19,6 +19,34 @@ import java.util.List;
  * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class Transaction extends Base {
+  public enum Status {
+    UNCONFIRMED("unconfirmed"),
+    CONFIRMED("confirmed"),
+    REJECTED("rejected"),
+    CANCELED("canceled"),
+    UNSIGNED("unsigned");
+    private String status;
+    Status (String status) {
+      this.status = status;
+    }
+    public String toString() {
+      return this.status;
+    }
+  }
+  public enum Type {
+    INCOMING("incoming"),
+    OUTGOING("outgoing"),
+    TRANSFER_IN("transfer_in"),
+    TRANSFER_OUT("transfer_out"),
+    CHANGE("change");
+    private String type;
+    Type (String type) {
+      this.type = type;
+    }
+    public String toString() {
+      return this.type;
+    }
+  }
 
   public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
