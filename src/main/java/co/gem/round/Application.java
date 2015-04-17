@@ -22,6 +22,15 @@ public class Application extends Base{
     return users;
   }
 
+  public User userFromKey(String key) throws IOException, Client.UnexpectedStatusCodeException {
+    for(User user : users()) {
+      if (user.key().equals(key)) {
+        return user;
+      }
+    }
+    return null;
+  }
+
   public WalletCollection wallets()
       throws IOException, Client.UnexpectedStatusCodeException {
     Resource walletsResource = resource.subresource("wallets");
