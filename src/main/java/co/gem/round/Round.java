@@ -118,11 +118,10 @@ public class Round {
 
   /**
    *
-   * @param url
    * @return Application Round Application
    */
-  public Application application(String url) {
-    Resource resource = patchboardClient.resources("application", url);
+  public Application application() throws IOException, Client.UnexpectedStatusCodeException {
+    Resource resource = patchboardClient.resources("app").action("get");
     return new Application(resource, this);
   }
 
