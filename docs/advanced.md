@@ -27,15 +27,17 @@ A pending_balance in Gem is any address involved in a transaction with 0 confirm
 [[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ## Transactions and Payments
-Transaction collections have a relationship to an account. You can specify the following query parameters for transactions:
-* `status: ['unsigned', 'unconfirmed', 'confirmed', 'rejected', 'canceled']`
-* `type: ['incoming', 'outgoing', 'transfer_in', 'transfer_out', 'change']`
+Transaction collections have a relationship to an account. 
+There are two enums, Transaction.Type and Transaction.Status that give you granularity
+on the transactions returned to you. You can use one, none, or both.
 
-`txs = account.transactions(type: 'incoming')`
+`TransactionCollection txs = account.transactions(Transaction.Type.INCOMING, Transaction.Status.REJECTED);`
 
- Now lets look at a single transaction: `tx = txs[0]`
+ Now lets look at a single transaction: `Transaction tx = txs.get(0);`
 
-There is a lot of information on the tx.  You can call the attributes to get at the full list `tx.attributes`.  Additionally there are some convenience methods to get at key information quickly.  For example, `tx.hash` returns the transaction hash.
+There is a lot of information on the tx.  
+You can call the attributes to get at the full list `tx.resource().attributes()`.  Additionally there are some convenience methods to get at key information quickly.  
+For example, `tx.getFee()` returns the fee.
 
 ### Fee Estimation
 Fees are estimated by requesting for an unsigned transaction from the API.  The Gem API will then lock the unspent outputs to prevent a potential double spend.  The returned unsigned transaction will have a fee in the attributes that you can then inspect.  If you decide you don't want to perform the transaction you'll have to [cancel the transaction](advanced.md#canceling-unsigned-transaction) [[back]](../README.md)
@@ -83,7 +85,7 @@ __If there are no convenience methods for attributes you use often, please file 
 [[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
 ### Refresh()
-The data on objects are cached client-side for performance versuses having to make API calls for every single method.  What this also means is that if you have for example an instance method for an account, then the information on the account could get into a stale state.  You will have to trigger a refresh of the object with any changes from the API. 
+The data on objects are cached client-side for performance versus having to make API calls for every single method.  What this also means is that if you have for example an instance method for an account, then the information on the account could get into a stale state.  You will have to trigger a refresh of the object with any changes from the API. 
 
 When calling fetch, the object will be returned with the updated information.  
 Fetch can be called on individual objects as well as the corresponding collections.  For example:
@@ -105,14 +107,21 @@ Setting up a subscription on your application will allow you to be notified via 
 1. Click the “add new subscription”  and provide the callback_url .  Any new address added to any users wallet authorized on your app will automatically registered for you.
 
 [[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
-
 ### Webhook operations
 You will start to receive a webhook subscription at the provided url for incoming/outgoing transactions.  The payload of the subscription will contain information about the transaction, amount, and UIDs for the user/wallet/account information.  You’ll be able to use this information to query your app.
 
 For example - the following snippet will retrieve the user in a given subscription 
 
 ```java
-// Coming soon!
+  // generate the client
+  Round client = Round.client(null);
+  
+  // Authenticate with application credentials
+  Application app = client.authenticateApplication(api_token, admin_token);
+  
+  // The notification will contain the user key.
+  String subUserKey = ‘2309rjefvgnu1340jvfvj24r0j’;
+  User user = app.userFromKey(subUserKey);
 ```
 
 [[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
@@ -133,8 +142,8 @@ There are certain scenarios where you want to implement a wallet that you are in
 
 ### Configure 
 
-* Create a new instance token in the management console.  
-	* Instance tokens are used in the application authentication scheme.  When authenticating as an application, you will have full control of the applications wallets and allows a read only view of end user data if your app supports both.
+* Create a new admin token in the management console.  
+	* Admin tokens are used in the application authentication scheme.  When authenticating as an application, you will have full control of the applications wallets and allows a read only view of end user data if your app supports both.
 * __Keep the token safe__
 
 [[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
@@ -143,13 +152,44 @@ There are certain scenarios where you want to implement a wallet that you are in
 To authenticate as an application to get to an application wallet and/or pull information about the application call:
 
 ```java
-// Coming soon!
+Application app = client.authenticateApplication(apiToken, adminToken);
 ```
 
 [[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
-### Wallet creation (Soon)
+### Wallet creation
+
+```java
+Wallet.Wrapper wrapper = app.wallets().create("name", "passphrase", "testnet");
+
+String backupKey = wrapper.getBackupPrivateSeed();
+Wallet wallet = wrapper.getWallet();
+```
+
+* The backup key is the root node that can derive all accounts, addresses.  This key will only be returned once via this call.  __YOU MUST STORE IT IN A SAFE PLACE OFFLINE__.  If you loose the backup_key and then later forget the passphrase to unlock the primary key, you will not be able to recover the wallet.
+* The wallet is the full wallet.  You can generate the accounts, addresses etc same as an end user in the previous steps.
+
 [[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
 
-### Payments (Soon)
+### Payments
+In this section you’ll learn how to make a payment for an operational/custodial wallet.
+
+1. Authenticate as the application
+	1. `Application app = client.authenticateApplication(apiToken, adminToken);`
+1. Unlock the wallet.
+	1. 
+  ```java
+    wallet.unlock("aReallyStrongPassphrase", new UnlockedWalletCallback() {
+      @Override
+      public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
+        System.out.println("I'm handling this unlock!");
+      }
+    });
+	```
+1. make a payment (satoshis)
+	1. `account.payToAddress("aReallyStrongPassphrase", "address", 1337);`
+
+The Gem client will use the top_secret to generate an MFA token that will be sent as part of the payment calls and verify on the Gem API side.
+
 [[top]](README.md#round-java-advanced-topics) [[back]](../README.md)
+
