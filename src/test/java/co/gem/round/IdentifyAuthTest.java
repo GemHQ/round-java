@@ -18,10 +18,6 @@ public class IdentityAuthTest {
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
     client = Round.client("https://api-sandbox.gem.co");
-  }
-
-  @Test
-  public void identityAuthTest() throws IOException, Client.UnexpectedStatusCodeException {
     client.authenticateIdentify(Utils.getApiToken());
   }
 

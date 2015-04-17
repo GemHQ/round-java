@@ -108,7 +108,7 @@ In this step you will learn how to authenticate to the Gem API on a User's devic
 1. Get the default wallet and then default account
 
 	```java
-	Account account = full_user.defaultWallet().defaultAccount();
+	Account account = fullUser.defaultWallet().defaultAccount();
 	```
 
 [[top]](README.md#getting-started-tutorial)
