@@ -76,31 +76,23 @@ public class Round {
   /**
    * Method to authenticate an application instance with read only access to information about the application and
    * user base.
-   * @param url of the application
    * @param apiToken api token of the application
-   * @param instanceToken unique instance id
-   * @param otpSecret TOTP secret for authorizing transactions
+   * @param adminToken admin token for your application
    * @return Application Round Application
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
    */
-  public Application authenticateApplication(String url, String apiToken, String instanceToken, String otpSecret)
-    throws IOException, Client.UnexpectedStatusCodeException {
-    authorizer.setOtpSecret(otpSecret);
-    return authenticateApplication(url, apiToken, instanceToken);
-  }
-
-  public Application authenticateApplication(String url, String apiToken, String instanceToken)
+  public Application authenticateApplication(String apiToken, String adminToken)
       throws IOException, Client.UnexpectedStatusCodeException {
     Map<String, String> params = new HashMap<>();
     params.put("api_token", apiToken);
-    params.put("instance_id", instanceToken);
+    params.put("admin_token", adminToken);
     patchboardClient.authorizer().authorize(AuthScheme.APPLICATION, params);
     Map<String, String> identifyParams = new HashMap<>();
     params.put("api_token", apiToken);
     patchboardClient.authorizer().authorize(AuthScheme.IDENTIFY, identifyParams);
 
-    Application app = application(url);
+    Application app = application();
     app.fetch();
     return app;
   }

@@ -11,7 +11,8 @@ import java.util.Random;
 public class Utils {
 
 
-  private static final String API_TOKEN = "Ec7SXL0LhronEZ9PM6cZNNYpucCcsNf9EsoYXKPxRLs";
+  private static final String API_TOKEN = "_j-GuVuTfK32ZKm6EHf4iDMDFuGGol2RcpLhkIVqjAU";
+  private static final String ADMIN_TOKEN = "v49MNxe-FPrcDiVLnHX-Kw2Bn9Aci_315EuH2taVW-o";
   private static final String APP_URL = "https://api-sandbox.gem.co/apps/oHgM6NrHq-C_K2-f1pfwIg";
 
   private static final String APP_INSTANCE_ID = "DE73gGgLcJB07D0gW0G3VUN3aywgcd1T8F3bT-0eTy8";
@@ -40,6 +41,10 @@ public class Utils {
 
   public static String getApiToken() {
     return API_TOKEN;
+  }
+
+  public static String getAdminToken() {
+    return ADMIN_TOKEN;
   }
 
   public static String getAppUrl() {
