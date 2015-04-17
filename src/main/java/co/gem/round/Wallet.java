@@ -126,12 +126,28 @@ public class Wallet extends Base {
   }
 
   public static class Wrapper {
-    public Wallet wallet;
-    public String backupPrivateSeed;
+    private Wallet wallet;
+    private String backupPrivateSeed;
 
     public Wrapper(Wallet wallet, String backupPrivateSeed) {
       this.wallet = wallet;
       this.backupPrivateSeed = backupPrivateSeed;
+    }
+
+    /**
+     * Getter for the wallet
+     * @return String
+     */
+    public Wallet getWallet() {
+      return wallet;
+    }
+
+    /**
+     * Getter for the wallet's backup private seed
+     * @return String
+     */
+    public String getBackupPrivateSeed() {
+      return backupPrivateSeed;
     }
   }
 }

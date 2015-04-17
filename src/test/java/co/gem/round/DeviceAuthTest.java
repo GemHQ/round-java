@@ -38,7 +38,7 @@ public class DeviceAuthTest {
     Wallet.Wrapper wrapper = user.wallets().create("name", "password", "testnet");
     // Make sure the wallet count increases
     Assert.assertEquals(2, user.wallets().size());
-    Wallet wallet = wrapper.wallet;
+    Wallet wallet = wrapper.getWallet();
     // Unlock the wallet
     wallet.unlock("password", new UnlockedWalletCallback() {
       @Override
