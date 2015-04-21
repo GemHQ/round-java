@@ -1,7 +1,6 @@
 package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
-import co.gem.round.examples.Utils;
 import co.gem.round.patchboard.Client;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,15 +32,10 @@ public class DeviceAuthTest {
     user = client.authenticateDevice(Utils.getApiToken(), user.userToken(), user.getString("device_token"), user.email());
 
     // Make sure the default wallet is in the collection
-    user.defaultWallet();
     Assert.assertEquals(1, user.wallets().size());
-    // Create a new wallet
-    Wallet.Wrapper wrapper = user.wallets().create("name", "password", "testnet");
-    // Make sure the wallet count increases
-    Assert.assertEquals(2, user.wallets().size());
-    Wallet wallet = wrapper.getWallet();
     // Unlock the wallet
-    wallet.unlock("password", new UnlockedWalletCallback() {
+    Wallet wallet = user.wallet();
+    wallet.unlock("wat", new UnlockedWalletCallback() {
       @Override
       public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
         System.out.println("I'm handling this unlock!");

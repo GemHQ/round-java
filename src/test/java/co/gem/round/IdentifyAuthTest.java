@@ -1,6 +1,6 @@
 package co.gem.round;
 
-import co.gem.round.examples.Utils;
+import co.gem.round.Utils;
 import co.gem.round.patchboard.Client;
 import com.google.common.collect.Lists;
 import org.junit.Assert;

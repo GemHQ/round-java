@@ -108,7 +108,7 @@ In this step you will learn how to authenticate to the Gem API on a User's devic
 1. Get the default wallet and then default account
 
 	```java
-	Account account = fullUser.defaultWallet().defaultAccount();
+	Account account = fullUser.wallet().defaultAccount();
 	```
 
 [[top]](README.md#getting-started-tutorial)
@@ -140,7 +140,7 @@ In this section you’ll learn how to create a payment a multi-signature payment
 1. Unlock the wallet:
 			
   ```java
-    wallet.unlock("aReallyStrongPassphrase", new UnlockedWalletCallback() {
+    user.wallet().unlock("aReallyStrongPassphrase", new UnlockedWalletCallback() {
       @Override
       public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
         System.out.println("I'm handling this unlock!");

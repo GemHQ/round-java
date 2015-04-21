@@ -45,7 +45,7 @@ public class User extends Base {
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
    */
-  public Wallet defaultWallet()
+  public Wallet wallet()
       throws IOException, Client.UnexpectedStatusCodeException {
     Resource resource = this.resource.subresource("default_wallet");
     Wallet defaultWallet = new Wallet(resource, round);
