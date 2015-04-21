@@ -3,6 +3,7 @@ package co.gem.round;
 import co.gem.round.coinop.MultiWallet;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
+import com.google.common.base.Joiner;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -28,7 +29,7 @@ public class Account extends Base {
     super(resource, round);
   }
 
-  public TransactionCollection transactions(Transaction.Status status) throws IOException, Client.UnexpectedStatusCodeException {
+  public TransactionCollection transactions(List<Transaction.Status> status) throws IOException, Client.UnexpectedStatusCodeException {
     return transactions(null, status);
   }
 
@@ -47,14 +48,14 @@ public class Account extends Base {
    * @throws Client.UnexpectedStatusCodeException
    * @see co.gem.round.TransactionCollection
    */
-  public TransactionCollection transactions(Transaction.Type type, Transaction.Status status)
+  public TransactionCollection transactions(Transaction.Type type, List<Transaction.Status> status)
       throws IOException, Client.UnexpectedStatusCodeException {
     Map<String, String> query = new HashMap<>();
     if (type != null) {
       query.put("type", type.toString());
     }
     if (status != null) {
-      query.put("status", status.toString());
+      query.put("status", Joiner.on(',').join(status));
     }
     Resource transactionsResource = resource.subresource("transactions", query);
     TransactionCollection transactions = new TransactionCollection(transactionsResource, this.round);
