@@ -2,6 +2,7 @@ package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
 import co.gem.round.patchboard.Client;
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Collections;
 import java.util.Random;
 
 public class DeviceAuthTest {
@@ -53,8 +55,9 @@ public class DeviceAuthTest {
 
     // Make sure we can call transactions
     Assert.assertEquals(0, account.transactions().size());
-    Assert.assertEquals(0, account.transactions(Transaction.Status.CONFIRMED).size());
+    Assert.assertEquals(0, account.transactions(Collections.singletonList(Transaction.Status.CONFIRMED)).size());
+    Assert.assertEquals(0, account.transactions(Lists.newArrayList(Transaction.Status.CONFIRMED, Transaction.Status.CANCELED)).size());
     Assert.assertEquals(0, account.transactions(Transaction.Type.INCOMING).size());
-    Assert.assertEquals(0, account.transactions(Transaction.Type.INCOMING, Transaction.Status.REJECTED).size());
+    Assert.assertEquals(0, account.transactions(Transaction.Type.INCOMING, Collections.singletonList(Transaction.Status.REJECTED)).size());
   }
 }
