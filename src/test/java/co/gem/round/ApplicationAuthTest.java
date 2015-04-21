@@ -1,7 +1,7 @@
 package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
-import co.gem.round.examples.Utils;
+import co.gem.round.Utils;
 import co.gem.round.patchboard.Client;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,4 +53,13 @@ public class ApplicationAuthTest {
     Assert.assertEquals(size + 1, app.users().size());
     Assert.assertEquals(user.key(), app.userFromKey(user.key()).key());
   }
+
+  // The following will reset your API token and mess some stuff up.
+//  @Test
+//  public void resetTokensTest() throws IOException, Client.UnexpectedStatusCodeException {
+//    app.setTotpSecret(Utils.getTotpSecret());
+//    app.reset("api_token");
+//    System.out.println("New API token: " + app.getString("api_token"));
+//    app.fetch();
+//  }
 }

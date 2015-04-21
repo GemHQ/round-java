@@ -64,7 +64,7 @@ public class Resource implements Iterable<Resource>{
     return action(name, null);
   }
 
-  public Resource action(String name, JsonObject payload)
+  public Resource action(String name, JsonElement payload)
       throws IOException, Client.UnexpectedStatusCodeException {
     ActionSpec actionSpec = resourceSpec.action(name);
 

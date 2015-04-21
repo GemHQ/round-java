@@ -84,7 +84,7 @@ public class Client {
     return Strings.join("&", params);
   }
 
-  public String performRawRequest(String url, ActionSpec actionSpec, JsonObject requestBody)
+  public String performRawRequest(String url, ActionSpec actionSpec, JsonElement requestBody)
       throws IOException, UnexpectedStatusCodeException {
 
     com.squareup.okhttp.Request.Builder builder = new Request.Builder().url(url);
@@ -121,7 +121,7 @@ public class Client {
     return responseContent;
   }
 
-  public JsonElement performRequest(String url, ActionSpec actionSpec, JsonObject requestBody)
+  public JsonElement performRequest(String url, ActionSpec actionSpec, JsonElement requestBody)
       throws IOException, UnexpectedStatusCodeException {
     String responseContent = performRawRequest(url, actionSpec, requestBody);
     JsonElement attributes = new JsonParser().parse(responseContent);

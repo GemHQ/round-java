@@ -16,6 +16,7 @@ public class Authorizer implements AuthorizerInterface {
   private Map<String, Map<String, String>> schemes = new HashMap<>();
   private Totp totp = null;
 
+  @Override
   public void setOtpSecret(String otpSecret) {
     totp = new Totp(otpSecret);
   }
