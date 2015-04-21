@@ -45,7 +45,7 @@ public class User extends Base {
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
    */
-  public Wallet defaultWallet()
+  public Wallet wallet()
       throws IOException, Client.UnexpectedStatusCodeException {
     Resource resource = this.resource.subresource("default_wallet");
     Wallet defaultWallet = new Wallet(resource, round);
@@ -59,6 +59,22 @@ public class User extends Base {
    */
   public String email() {
     return getString("email");
+  }
+
+  /**
+   * Getter for first name for a user
+   * @return String first name
+   */
+  public String firstName() {
+    return getString("first_name");
+  }
+
+  /**
+   * Getter for last name for a user
+   * @return String last name
+   */
+  public String lastName() {
+    return getString("last_name");
   }
 
   /**

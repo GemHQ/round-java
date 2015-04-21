@@ -3,8 +3,6 @@ package co.gem.round;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Patchboard;
 import co.gem.round.patchboard.Resource;
-import co.gem.round.util.Http;
-import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -52,18 +50,18 @@ public class Round {
    * authentication).  This authenticated user has the ability to perform transactions on a wallet.
    * @param apiToken - the application API token
    * @param userToken - the user token retreived after the initial device authentication pattern
-   * @param deviceId -  unique device id provided at initial device authentication
+   * @param deviceToken -  unique device id provided at initial device authentication
    * @param email - email address of the user
    * @return User object with Gem-Device-Authentication level
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
    */
-  public User authenticateDevice(String apiToken, String userToken, String deviceId, String email)
+  public User authenticateDevice(String apiToken, String userToken, String deviceToken, String email)
     throws IOException, Client.UnexpectedStatusCodeException {
     Map<String, String> params = new HashMap<String, String>();
     params.put("api_token", apiToken);
     params.put("user_token", userToken);
-    params.put("device_id", deviceId);
+    params.put("device_token", deviceToken);
     patchboardClient.authorizer().authorize(AuthScheme.DEVICE, params);
     Map<String, String> identifyParams = new HashMap<>();
     params.put("api_token", apiToken);
@@ -78,33 +76,32 @@ public class Round {
   /**
    * Method to authenticate an application instance with read only access to information about the application and
    * user base.
-   * @param url of the application
    * @param apiToken api token of the application
-   * @param instanceToken unique instance id
-   * @param otpSecret TOTP secret for authorizing transactions
+   * @param adminToken admin token for your application
    * @return Application Round Application
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
    */
-  public Application authenticateApplication(String url, String apiToken, String instanceToken, String otpSecret)
-    throws IOException, Client.UnexpectedStatusCodeException {
-    authorizer.setOtpSecret(otpSecret);
-    return authenticateApplication(url, apiToken, instanceToken);
-  }
-
-  public Application authenticateApplication(String url, String apiToken, String instanceToken)
+  public Application authenticateApplication(String apiToken, String adminToken)
       throws IOException, Client.UnexpectedStatusCodeException {
     Map<String, String> params = new HashMap<>();
     params.put("api_token", apiToken);
-    params.put("instance_id", instanceToken);
+    params.put("admin_token", adminToken);
     patchboardClient.authorizer().authorize(AuthScheme.APPLICATION, params);
     Map<String, String> identifyParams = new HashMap<>();
     params.put("api_token", apiToken);
     patchboardClient.authorizer().authorize(AuthScheme.IDENTIFY, identifyParams);
 
-    Application app = application(url);
+    Application app = application();
     app.fetch();
     return app;
+  }
+
+  public void authenticateIdentify(String apiToken)
+      throws IOException, Client.UnexpectedStatusCodeException {
+    Map<String, String> params = new HashMap<>();
+    params.put("api_token", apiToken);
+    patchboardClient.authorizer().authorize(AuthScheme.IDENTIFY, params);
   }
 
   /**
@@ -121,11 +118,10 @@ public class Round {
 
   /**
    *
-   * @param url
    * @return Application Round Application
    */
-  public Application application(String url) {
-    Resource resource = patchboardClient.resources("application", url);
+  public Application application() throws IOException, Client.UnexpectedStatusCodeException {
+    Resource resource = patchboardClient.resources("app").action("get");
     return new Application(resource, this);
   }
 

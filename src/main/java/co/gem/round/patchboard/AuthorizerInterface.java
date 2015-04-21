@@ -9,4 +9,5 @@ public interface AuthorizerInterface {
   public void authorize(String scheme, Map<String, String> params);
   public String getCredentials(String scheme);
   public boolean isAuthorized(String scheme);
+  public void setOtpSecret(String otpSecret);
 }

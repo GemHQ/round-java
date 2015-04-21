@@ -50,6 +50,17 @@ public class Wallet extends Base {
   }
 
   /**
+   * Gets default (first) account in a wallet
+   * @return default Account
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws IOException
+   * @see co.gem.round.Account
+   */
+  public Account defaultAccount() throws Client.UnexpectedStatusCodeException, IOException {
+    return accounts().get(0);
+  }
+
+  /**
    * Getter for accounts in a wallet
    * @return AccountCollection of Accounts
    * @throws Client.UnexpectedStatusCodeException
@@ -113,14 +124,30 @@ public class Wallet extends Base {
   public Long balance() {
     return getLong("balance");
   }
-  
+
   public static class Wrapper {
-    public Wallet wallet;
-    public String backupPrivateSeed;
+    private Wallet wallet;
+    private String backupPrivateSeed;
 
     public Wrapper(Wallet wallet, String backupPrivateSeed) {
       this.wallet = wallet;
       this.backupPrivateSeed = backupPrivateSeed;
+    }
+
+    /**
+     * Getter for the wallet
+     * @return String
+     */
+    public Wallet getWallet() {
+      return wallet;
+    }
+
+    /**
+     * Getter for the wallet's backup private seed
+     * @return String
+     */
+    public String getBackupPrivateSeed() {
+      return backupPrivateSeed;
     }
   }
 }
