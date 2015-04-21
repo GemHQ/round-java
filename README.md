@@ -97,7 +97,7 @@ In this step you will learn how to authenticate to the Gem API on a User's devic
 1. Call the authenticateDevice method from the client object
 
 	```java
-	User fullUser = client.authenticateDevice(apiToken, user.userToken(), deviceToken, user.email());
+	User fullUser = client.authenticateDevice(apiToken, user.userToken(), user.getString("device_token"), user.email());
 	```
 
 [[top]](README.md#getting-started-tutorial)
