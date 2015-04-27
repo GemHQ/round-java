@@ -26,7 +26,6 @@ public class WalletCollection extends BaseCollection<Wallet> {
    * Creates an additional wallet on the authenticated user.
    * @param name of the wallet
    * @param passphrase to encrypt the primary seed
-   * @param blockchain network for the wallet.  Either mainnet or testnet
    * @return Wallet.Wrapper were you can get the user object to initiate begin/complete device authentication.  This is
    * depricated and will be replaced with returning only a Wallet object.
    * @throws Client.UnexpectedStatusCodeException
@@ -34,23 +33,16 @@ public class WalletCollection extends BaseCollection<Wallet> {
    * @throws InvalidKeySpecException
    * @throws NoSuchAlgorithmException
    */
-  public Wallet.Wrapper create(String name, String passphrase, String blockchain)
+  public Wallet.Wrapper create(String name, String passphrase)
           throws IOException, Client.UnexpectedStatusCodeException,
           InvalidKeySpecException, NoSuchAlgorithmException {
 
-    MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork(blockchain));
+    MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork("bitcoin"));
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);
 
-    String network = null;
-    if (multiWallet.blockchain() == MultiWallet.Blockchain.MAINNET)
-      network = "bitcoin";
-    else
-      network = "bitcoin_testnet";
-
     JsonObject wallet = new JsonObject();
     wallet.addProperty("name", name);
-    wallet.addProperty("network", network);
     wallet.addProperty("backup_public_seed", multiWallet.serializedBackupPublicKey());
     wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicKey());
     wallet.add("primary_private_seed", encryptedPrivateSeed.asJsonObject());

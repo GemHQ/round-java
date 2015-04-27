@@ -49,7 +49,7 @@ public class DeviceAuthTest {
     // Default account exists?
     Assert.assertEquals(1, wallet.accounts().size());
     // Create a new account
-    Account account = wallet.accounts().create("account");
+    Account account = wallet.accounts().create("account", "bitcoin");
     // Make sure account count increases
     Assert.assertEquals(2, wallet.accounts().size());
 

@@ -12,10 +12,10 @@ public class Utils {
 
 
   // Set these for testing.
-  private static final String API_TOKEN = "TXuc0JOqB6nTVBMqtusc67erT4ofNUva_Iz_uTvSm_8";
+  private static final String API_TOKEN = "DJTU2NJJwcu9r-cz5ziG5s4CHFwdLl9iN_jj9DmaJE0";
   private static final String APP_URL = "https://api-sandbox.gem.co/apps/oHgM6NrHq-C_K2-f1pfwIg";
-  private static final String ADMIN_TOKEN = "svuSVn4Ai4jBkSDo2QtemPEdpEXjyVHCRxciLrg7x58";
-  private static final String TOTP_SECRET = "sx66xln5khjeteyp";
+  private static final String ADMIN_TOKEN = "QFRoLeQ0Ip8h7yKEpSVD94B88RuPMaw7-Qg1b2whvE0";
+  private static final String TOTP_SECRET = "ut6evqqsbknhd6c4";
 
   private static final String APP_INSTANCE_ID = "DE73gGgLcJB07D0gW0G3VUN3aywgcd1T8F3bT-0eTy8";
   private static final String DEV_EMAIL = "joshua+devJava1@gem.co";

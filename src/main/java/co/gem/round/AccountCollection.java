@@ -53,10 +53,11 @@ public class AccountCollection extends BaseCollection<Account> {
    * @throws Client.UnexpectedStatusCodeException
    * @see co.gem.round.Account
    */
-  public Account create(String name)
+  public Account create(String name, String network)
       throws IOException, Client.UnexpectedStatusCodeException {
     JsonObject body = new JsonObject();
     body.addProperty("name", name);
+    body.addProperty("network", network);
 
     Resource accountResource = resource.action("create", body);
 

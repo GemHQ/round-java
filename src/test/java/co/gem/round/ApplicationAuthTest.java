@@ -26,7 +26,7 @@ public class ApplicationAuthTest {
 
   @Test
   public void createWalletsTest() throws IOException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, NoSuchAlgorithmException {
-    Wallet.Wrapper wrapper = app.wallets().create("name", "passphrase", "testnet");
+    Wallet.Wrapper wrapper = app.wallets().create("name", "passphrase");
     Wallet wallet = wrapper.getWallet();
     try {
       wallet.unlock("wrong", new UnlockedWalletCallback() {
@@ -52,6 +52,18 @@ public class ApplicationAuthTest {
     User user = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
     Assert.assertEquals(size + 1, app.users().size());
     Assert.assertEquals(user.key(), app.userFromKey(user.key()).key());
+  }
+
+  @Test
+  public void differentNetworkAcountsTest() throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+    Wallet.Wrapper wrapper = app.wallets().create("name", "passphrase");
+    Wallet wallet = wrapper.getWallet();
+    Account testnetAccount = wallet.accounts().create("name", "testnet");
+    Account bitcoinAccount = wallet.accounts().create("name2", "bitcoin");
+    Address testnetAddress = testnetAccount.addresses().create();
+    Address bitcoinAddress = bitcoinAccount.addresses().create();
+    Assert.assertEquals('2', testnetAddress.getAddressString().charAt(0));
+    Assert.assertEquals('3', bitcoinAddress.getAddressString().charAt(0));
   }
 
   // The following will reset your API token and mess some stuff up.
