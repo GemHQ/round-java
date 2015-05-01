@@ -9,23 +9,19 @@ import java.io.IOException;
 /**
  * Created by julian on 4/1/15.
  */
-public class DeviceCollection extends BaseCollection<Device> {
-  public DeviceCollection(Resource resource, Round round) {
+public class Devices extends Base {
+  public Devices(Resource resource, Round round) {
     super(resource, round);
   }
 
-  @Override
-  public void populateCollection(Iterable<Resource> collection) { }
-
-  public Device create(String name)
+  public AuthRequest create(String name)
       throws IOException, Client.UnexpectedStatusCodeException {
     JsonObject body = new JsonObject();
     body.addProperty("name", name);
 
-    Resource deviceResource = resource.action("create", body);
-
-    Device device = new Device(deviceResource, this.round);
-    this.add(device.getName(), device);
+    Resource authResource = resource.action("create", body);
+    String deviceToken = authResource.attributes().get("metadata").getAsJsonObject().get("device_token").getAsString();
+    String mfaUri authResource.attributes().get("mfa_uri");
     return device;
   }
 }

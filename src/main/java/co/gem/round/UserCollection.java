@@ -29,14 +29,13 @@ public class UserCollection extends BaseCollection<User> {
    * @param lastName of the user
    * @param passphrase to encrypt the primary seed
    * @param blockchain network for the wallet.  Either mainnet or testnet
-   * @return User wrapper were you can get the user object to initiate begin/complete device authentication.  This is
-   * depricated and will be replaced with returning only a User object.
+   * @return String deviceToken, used to authenticate device
    * @throws Client.UnexpectedStatusCodeException
    * @throws IOException
    * @throws InvalidKeySpecException
    * @throws NoSuchAlgorithmException
    */
-  public User create(String email, String firstName, String lastName, String passphrase, String blockchain,
+  public String create(String email, String firstName, String lastName, String passphrase, String blockchain,
                      String deviceName) throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException,
       InvalidKeySpecException, IOException {
     return create(email, firstName, lastName, passphrase, blockchain, deviceName, null);
@@ -52,14 +51,13 @@ public class UserCollection extends BaseCollection<User> {
    * @param passphrase to encrypt the primary seed
    * @param blockchain network for the wallet.  Either mainnet or testnet
    * @param redirectUri the user is sent to after confirming his/her email
-   * @return User wrapper were you can get the user object to initiate begin/complete device authentication.  This is
-   * depricated and will be replaced with returning only a User object.
+   * @return String deviceToken, used to authenticate device
    * @throws Client.UnexpectedStatusCodeException
    * @throws IOException
    * @throws InvalidKeySpecException
    * @throws NoSuchAlgorithmException
    */
-  public User create(String email, String firstName, String lastName, String passphrase, String blockchain,
+  public String create(String email, String firstName, String lastName, String passphrase, String blockchain,
                      String deviceName, String redirectUri)
       throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
     MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork(blockchain));
@@ -89,8 +87,7 @@ public class UserCollection extends BaseCollection<User> {
     payload.addProperty("last_name", lastName);
 
     Resource resource = this.resource.action("create", payload);
-    User user = new User(resource, round);
-    return user;
+    return resource.attributes().get("metadata").getAsJsonObject().get("device_token").getAsString();
   }
 
   @Override

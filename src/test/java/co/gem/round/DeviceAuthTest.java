@@ -18,20 +18,20 @@ public class DeviceAuthTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-//    client = Round.client("https://api-sandbox.gem.co");
-    client = Round.client("http://localhost:8999");
+    client = Round.client("https://api-sandbox.gem.co/");
   }
+
 
   @Test
   public void deviceAuthTest() throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, IOException, InterruptedException {
     client.authenticateIdentify(Utils.getApiToken());
-    int random = new Random().nextInt(1000000);
     String email = Utils.getRandomUserEmail();
     System.out.println(email);
-    User user = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
+    String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
     System.out.println("This will sleep for 60 seconds while the user completes signup. Hurry!");
     Thread.sleep(60000);
-    user = client.authenticateDevice(Utils.getApiToken(), user.userToken(), user.getString("device_token"), user.email());
+    System.out.println(deviceToken);
+    User user = client.authenticateDevice(Utils.getApiToken(), deviceToken, email);
 
     // Make sure the default wallet is in the collection
     Assert.assertEquals(1, user.wallets().size());
@@ -50,6 +50,15 @@ public class DeviceAuthTest {
     Assert.assertEquals(1, wallet.accounts().size());
     // Create a new account
     Account account = wallet.accounts().create("account");
+//    String address = account.addresses().create().getAddressString();
+//
+//    Transaction t = null;
+//    try {
+//      t = account.payToAddress("wat", "2N1xUrjMccVYbxdNBh1VfFXNZ2LnhkfMNFR", 10000, 1);
+//    } catch (Exception e) {
+//      System.out.println("ah");
+//      throw e;
+//    }
     // Make sure account count increases
     Assert.assertEquals(2, wallet.accounts().size());
 
