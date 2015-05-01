@@ -41,6 +41,10 @@ public class Account extends Base {
     return transactions(null, null);
   }
 
+  public Wallet getWallet() {
+    return wallet;
+  }
+
   /**
    * Getter for transactions on an account
    * @return TransactionCollection

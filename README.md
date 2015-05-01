@@ -151,6 +151,8 @@ In this section you’ll learn how to create a payment a multi-signature payment
 	```java
 	// address, amount (satoshis), confirmations the UTXOs must have
 	Transaction transaction = account.payToAddress("mxzdT4ShBudVtZbMqPMh9NVM3CS56Fp11s", 25000, 6)
+	String mfaUri = transaction.mfaUri();
+	// Redirect the user to the above URI to approve the transaction. 
 	```
 
 
