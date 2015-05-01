@@ -31,10 +31,10 @@ public class User extends Base {
     return wallets;
   }
 
-  public DeviceCollection devices() throws
+  public Devices devices() throws
       IOException, Client.UnexpectedStatusCodeException {
     Resource resource = this.resource.subresource("devices");
-    DeviceCollection devices = new DeviceCollection(resource, round);
+    Devices devices = new Devices(resource, round);
     return devices;
   }
 

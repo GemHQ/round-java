@@ -76,13 +76,23 @@ public class Transaction extends Base {
       signaturesJson.add(signatureJson);
     }
 
+    JsonObject transactionSignatures = new JsonObject();
+    transactionSignatures.addProperty("transaction_hash", transaction.getHashAsString());
+    transactionSignatures.add("inputs", signaturesJson);
     JsonObject body = new JsonObject();
-    body.addProperty("transaction_hash", transaction.getHashAsString());
-    body.add("inputs", signaturesJson);
+    body.add("signatures", transactionSignatures);
 
     Resource signedPayment = resource.action("update", body);
     resource = signedPayment;
     return this;
+  }
+
+  public String mfaUri() {
+    JsonElement possible = getAttribute("mfa_uri");
+    if (possible != null) {
+      return possible.getAsString();
+    }
+    return null;
   }
 
   public Transaction approve()
