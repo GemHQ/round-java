@@ -62,6 +62,8 @@ public class AccountCollection extends BaseCollection<Account> {
     Resource accountResource = resource.action("create", body);
 
     Account account = new Account(accountResource, this.round);
+    account.setWallet(wallet);
+    account.fetch();
     this.add(account.key(), account);
     return account;
   }

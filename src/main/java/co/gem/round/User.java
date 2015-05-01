@@ -10,7 +10,6 @@ import java.io.IOException;
  * but users can also have multiple wallets over time.  Users also have their own tokens which are used for various
  * authentication schemes.
  * @author Julian Del Vergel de Dios (julian@gem.co) on 12/18/14.
- * @see co.gem.round.Round#authenticateDevice(String, String, String, String)
  */
 public class User extends Base {
   public User(Resource resource, Round round) {
@@ -32,10 +31,10 @@ public class User extends Base {
     return wallets;
   }
 
-  public DeviceCollection devices() throws
+  public Devices devices() throws
       IOException, Client.UnexpectedStatusCodeException {
     Resource resource = this.resource.subresource("devices");
-    DeviceCollection devices = new DeviceCollection(resource, round);
+    Devices devices = new Devices(resource, round);
     return devices;
   }
 

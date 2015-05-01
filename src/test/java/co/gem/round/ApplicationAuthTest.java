@@ -49,9 +49,8 @@ public class ApplicationAuthTest {
     int size = app.users().size();
     int random = new Random().nextInt(1000000);
     String email = "email" + random + "@mailinator.com";
-    User user = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
+    String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
     Assert.assertEquals(size + 1, app.users().size());
-    Assert.assertEquals(user.key(), app.userFromKey(user.key()).key());
   }
 
   @Test

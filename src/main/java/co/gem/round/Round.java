@@ -49,18 +49,16 @@ public class Round {
    * Authentication method to get a user with device auth of an authenticated user (see begin/finish device
    * authentication).  This authenticated user has the ability to perform transactions on a wallet.
    * @param apiToken - the application API token
-   * @param userToken - the user token retreived after the initial device authentication pattern
    * @param deviceToken -  unique device id provided at initial device authentication
    * @param email - email address of the user
    * @return User object with Gem-Device-Authentication level
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
    */
-  public User authenticateDevice(String apiToken, String userToken, String deviceToken, String email)
+  public User authenticateDevice(String apiToken, String deviceToken, String email)
     throws IOException, Client.UnexpectedStatusCodeException {
     Map<String, String> params = new HashMap<String, String>();
     params.put("api_token", apiToken);
-    params.put("user_token", userToken);
     params.put("device_token", deviceToken);
     patchboardClient.authorizer().authorize(AuthScheme.DEVICE, params);
     Map<String, String> identifyParams = new HashMap<>();
