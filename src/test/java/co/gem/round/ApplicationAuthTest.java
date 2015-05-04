@@ -62,6 +62,8 @@ public class ApplicationAuthTest {
     Account bitcoinAccount = wallet.accounts().create("name2", "bitcoin");
     Address testnetAddress = testnetAccount.addresses().create();
     Address bitcoinAddress = bitcoinAccount.addresses().create();
+    System.out.println(testnetAddress.getAddressString());
+    System.out.println(bitcoinAddress.getAddressString());
     Assert.assertEquals('2', testnetAddress.getAddressString().charAt(0));
     Assert.assertEquals('3', bitcoinAddress.getAddressString().charAt(0));
   }
