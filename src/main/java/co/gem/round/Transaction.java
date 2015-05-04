@@ -87,7 +87,7 @@ public class Transaction extends Base {
     return this;
   }
 
-  public String mfaUri() {
+  public String getMfaUri() {
     JsonElement possible = getAttribute("mfa_uri");
     if (possible != null) {
       return possible.getAsString();
@@ -97,7 +97,7 @@ public class Transaction extends Base {
 
   public Transaction approve()
       throws IOException, Client.UnexpectedStatusCodeException {
-    resource = this.resource().action("approve");
+    resource = this.resource().action("approve", new JsonObject());
     return this;
   }
 

@@ -237,6 +237,9 @@ public class Account extends Base {
           payment.sign(wallet);
       }
     });
+    if (wallet.hasApplication()) {
+      payment.approve();
+    }
     return payment;
   }
 
