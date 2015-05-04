@@ -18,6 +18,12 @@ import java.security.spec.InvalidKeySpecException;
  * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class WalletCollection extends BaseCollection<Wallet> {
+  private Application app;
+
+  public WalletCollection(Resource resource, Round round, Application app) {
+    super(resource, round);
+    this.app = app;
+  }
   public WalletCollection(Resource resource, Round round) {
     super(resource, round);
   }
@@ -48,7 +54,7 @@ public class WalletCollection extends BaseCollection<Wallet> {
     wallet.add("primary_private_seed", encryptedPrivateSeed.asJsonObject());
 
     Resource resource = this.resource.action("create", wallet);
-    Wallet gemWallet = new Wallet(resource, round);
+    Wallet gemWallet = new Wallet(resource, round, app);
 
     Wallet.Wrapper wrapper = new Wallet.Wrapper(gemWallet, multiWallet.serializedBackupPrivateSeed());
     multiWallet.purgeSeeds();
@@ -58,7 +64,7 @@ public class WalletCollection extends BaseCollection<Wallet> {
   @Override
   public void populateCollection(Iterable<Resource> collection) {
     for (Resource resource : collection) {
-      Wallet wallet = new Wallet(resource, round);
+      Wallet wallet = new Wallet(resource, round, app);
       add(wallet.getString("name"), wallet);
     }
   }

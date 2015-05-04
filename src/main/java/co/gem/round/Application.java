@@ -50,7 +50,7 @@ public class Application extends Base{
   public WalletCollection wallets()
       throws IOException, Client.UnexpectedStatusCodeException {
     Resource walletsResource = resource.subresource("wallets");
-    WalletCollection wallets = new WalletCollection(walletsResource, round);
+    WalletCollection wallets = new WalletCollection(walletsResource, round, this);
     wallets.fetch();
     return wallets;
   }

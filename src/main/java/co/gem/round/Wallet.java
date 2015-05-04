@@ -21,10 +21,16 @@ import java.security.spec.InvalidKeySpecException;
  */
 public class Wallet extends Base {
 
+  private Application app;
   private EncryptedMessage encryptedSeed;
 
-  public Wallet(Resource resource, Round round) {
+  public Wallet(Resource resource, Round round, Application app) {
     super(resource, round);
+    this.app = app;
+  }
+
+  public boolean hasApplication() {
+    return app != null;
   }
 
   public void unlock(String passphrase, UnlockedWalletCallback callback)
