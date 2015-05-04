@@ -89,7 +89,7 @@ public class Transaction extends Base {
 
   public String getMfaUri() {
     JsonElement possible = getAttribute("mfa_uri");
-    if (possible != null) {
+    if (possible != null && !possible.isJsonNull()) {
       return possible.getAsString();
     }
     return null;

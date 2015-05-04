@@ -18,7 +18,7 @@ public class ApplicationAuthTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    client = Round.client("https://api-sandbox.gem.co/");
+    client = Round.client("http://localhost:8999");
     app = client.authenticateApplication(Utils.getApiToken(), Utils.getAdminToken());
     app.setTotpSecret(Utils.getTotpSecret());
     // This is definitely a bug. Identify doesn't work if done before application auth

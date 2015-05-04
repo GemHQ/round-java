@@ -30,7 +30,6 @@ public class DeviceAuthTest {
     String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
     System.out.println("This will sleep for 60 seconds while the user completes signup. Hurry!");
     Thread.sleep(60000);
-    System.out.println(deviceToken);
     User user = client.authenticateDevice(Utils.getApiToken(), deviceToken, email);
 
     // Make sure the default wallet is in the collection
