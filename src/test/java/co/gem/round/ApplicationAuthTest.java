@@ -18,8 +18,9 @@ public class ApplicationAuthTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    client = Round.client("http://localhost:8999/");
+    client = Round.client("https://api-sandbox.gem.co/");
     app = client.authenticateApplication(Utils.getApiToken(), Utils.getAdminToken());
+    app.setTotpSecret(Utils.getTotpSecret());
     // This is definitely a bug. Identify doesn't work if done before application auth
     client.authenticateIdentify(Utils.getApiToken());
   }
@@ -49,9 +50,8 @@ public class ApplicationAuthTest {
     int size = app.users().size();
     int random = new Random().nextInt(1000000);
     String email = "email" + random + "@mailinator.com";
-    User user = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
+    String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
     Assert.assertEquals(size + 1, app.users().size());
-    Assert.assertEquals(user.key(), app.userFromKey(user.key()).key());
   }
 
   // The following will reset your API token and mess some stuff up.

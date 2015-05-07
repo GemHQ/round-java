@@ -34,11 +34,10 @@ public class TransactionCollection extends BaseCollection<Transaction> {
    * @return Payment - unsigned and not broadcasted
    * @throws java.io.IOException
    * @throws co.gem.round.patchboard.Client.UnexpectedStatusCodeException
-   * @see co.gem.round.Payment
    */
   public Transaction create(List<Recipient> recipients, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException {
-    JsonArray recipientsJson = new JsonArray();
+    JsonArray payeesJson = new JsonArray();
     for (Recipient recipient : recipients) {
       JsonObject payeeJson = new JsonObject();
       if (recipient.email != null) {
@@ -47,18 +46,15 @@ public class TransactionCollection extends BaseCollection<Transaction> {
         payeeJson.addProperty("address", recipient.address);
       }
 
-      JsonObject recipientJson = new JsonObject();
-      recipientJson.add("payee", payeeJson);
-      recipientJson.addProperty("amount", recipient.amount);
-
-      recipientsJson.add(recipientJson);
+      payeeJson.addProperty("amount", recipient.amount);
+      payeesJson.add(payeeJson);
     }
 
     JsonObject body = new JsonObject();
-    body.add("outputs", recipientsJson);
-    body.addProperty("confirmations", confirmations);
+    body.add("payees", payeesJson);
+    body.addProperty("utxo_confirmations", confirmations);
 
-    Resource paymentResource = resource.subresource("payments").action("create", body);
+    Resource paymentResource = resource.action("create", body);
 
     return new Transaction(paymentResource, this.round);
   }

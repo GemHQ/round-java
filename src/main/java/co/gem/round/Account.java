@@ -41,6 +41,10 @@ public class Account extends Base {
     return transactions(null, null);
   }
 
+  public Wallet getWallet() {
+    return wallet;
+  }
+
   /**
    * Getter for transactions on an account
    * @return TransactionCollection
@@ -233,6 +237,9 @@ public class Account extends Base {
           payment.sign(wallet);
       }
     });
+    if (wallet.hasApplication()) {
+      payment.approve();
+    }
     return payment;
   }
 

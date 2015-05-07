@@ -5,6 +5,7 @@ import co.gem.round.coinop.TransactionWrapper;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -75,18 +76,28 @@ public class Transaction extends Base {
       signaturesJson.add(signatureJson);
     }
 
+    JsonObject transactionSignatures = new JsonObject();
+    transactionSignatures.addProperty("transaction_hash", transaction.getHashAsString());
+    transactionSignatures.add("inputs", signaturesJson);
     JsonObject body = new JsonObject();
-    body.addProperty("transaction_hash", transaction.getHashAsString());
-    body.add("inputs", signaturesJson);
+    body.add("signatures", transactionSignatures);
 
     Resource signedPayment = resource.action("update", body);
     resource = signedPayment;
     return this;
   }
 
+  public String getMfaUri() {
+    JsonElement possible = getAttribute("mfa_uri");
+    if (possible != null) {
+      return possible.getAsString();
+    }
+    return null;
+  }
+
   public Transaction approve()
       throws IOException, Client.UnexpectedStatusCodeException {
-    resource = this.resource().action("approve");
+    resource = this.resource().action("approve", new JsonObject());
     return this;
   }
 
