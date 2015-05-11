@@ -3,6 +3,8 @@ package co.gem.round.coinop;
 
 import co.gem.round.encoding.Base58;
 import co.gem.round.encoding.Hex;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.bitcoinj.core.*;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -185,6 +187,24 @@ public class MultiWallet {
 
   public NetworkParameters networkParameters() {
     return networkParameters;
+  }
+
+  /**
+   * We return the sig_hash and the wallet_path in every input of
+   * every unsigned transaction. Thus, all the data you need to sign the
+   * input is on the returned JSON. No need to parse the entire thing -
+   * this lets us use multinetwork without BitcoinJ yelling at us.
+   */
+  public List<String> signaturesFromUnparsedTransaction(JsonObject transactionJson) {
+    List<String> signatures = new ArrayList<>();
+    for (JsonElement raw : transactionJson.get("inputs").getAsJsonArray()) {
+      JsonObject input = raw.getAsJsonObject();
+      String sigHash = input.get("sig_hash").getAsString();
+      String walletPath = input.get("output").getAsJsonObject().get("metadata")
+          .getAsJsonObject().get("wallet_path").getAsString();
+      signatures.add(base58SignatureForPath(walletPath, new Sha256Hash(sigHash)));
+    }
+    return signatures;
   }
 
   public List<String> signaturesForTransaction(TransactionWrapper transaction) {

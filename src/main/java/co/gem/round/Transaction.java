@@ -66,8 +66,7 @@ public class Transaction extends Base {
    */
   public Transaction sign(MultiWallet wallet)
       throws IOException, Client.UnexpectedStatusCodeException {
-    TransactionWrapper transaction = TransactionWrapper.parseTransaction(resource.attributes(), wallet.networkParameters());
-    List<String> signatures = wallet.signaturesForTransaction(transaction);
+    List<String> signatures = wallet.signaturesFromUnparsedTransaction(resource.attributes());
 
     JsonArray signaturesJson = new JsonArray();
     for (String signature : signatures) {
@@ -77,7 +76,7 @@ public class Transaction extends Base {
     }
 
     JsonObject transactionSignatures = new JsonObject();
-    transactionSignatures.addProperty("transaction_hash", transaction.getHashAsString());
+    transactionSignatures.addProperty("transaction_hash", resource.attributes().get("hash").getAsString());
     transactionSignatures.add("inputs", signaturesJson);
     JsonObject body = new JsonObject();
     body.add("signatures", transactionSignatures);
