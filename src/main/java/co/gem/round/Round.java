@@ -14,6 +14,20 @@ import java.util.Map;
  */
 public class Round {
 
+  public enum Network {
+    TESTNET("testnet"),
+    BITCOIN("bitcoin"),
+    DOGECOIN("dogecoin"),
+    LITECOIN("litecoin");
+    private String network;
+    Network(String network) {
+      this.network = network;
+    }
+    public String toString() {
+      return this.network;
+    }
+  }
+
   static final String API_HOST = "https://api-sandbox.gem.co";
 
   private static Patchboard patchboard;

@@ -58,14 +58,24 @@ public class ApplicationAuthTest {
   public void differentNetworkAcountsTest() throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
     Wallet.Wrapper wrapper = app.wallets().create("name", "passphrase");
     Wallet wallet = wrapper.getWallet();
-    Account testnetAccount = wallet.accounts().create("name", "testnet");
-    Account bitcoinAccount = wallet.accounts().create("name2", "bitcoin");
+    Account testnetAccount = wallet.accounts().create("name", Round.Network.TESTNET);
+    Account bitcoinAccount = wallet.accounts().create("name2", Round.Network.BITCOIN);
+    Account litecoinAccount = wallet.accounts().create("name3", Round.Network.LITECOIN);
+    Account dogecoinAccount = wallet.accounts().create("name4", Round.Network.DOGECOIN);
     Address testnetAddress = testnetAccount.addresses().create();
     Address bitcoinAddress = bitcoinAccount.addresses().create();
+    Address litecoinAddress = litecoinAccount.addresses().create();
+    Address dogecoinAddress = dogecoinAccount.addresses().create();
     System.out.println(testnetAddress.getAddressString());
     System.out.println(bitcoinAddress.getAddressString());
+    System.out.println(litecoinAddress.getAddressString());
+    System.out.println(dogecoinAddress.getAddressString());
     Assert.assertEquals('2', testnetAddress.getAddressString().charAt(0));
     Assert.assertEquals('3', bitcoinAddress.getAddressString().charAt(0));
+    Assert.assertEquals('3', litecoinAddress.getAddressString().charAt(0));
+    boolean startsWithA = dogecoinAddress.getAddressString().charAt(0) == 'A';
+    boolean startsWith9 = dogecoinAddress.getAddressString().charAt(0) == '9';
+    Assert.assertTrue(startsWithA || startsWith9);
   }
 
   // The following will reset your API token and mess some stuff up.

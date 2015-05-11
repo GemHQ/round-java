@@ -48,21 +48,12 @@ public class DeviceAuthTest {
     // Default account exists?
     Assert.assertEquals(1, wallet.accounts().size());
     // Create a new account
-    Account accountB = wallet.accounts().create("accountB", "bitcoin");
-    Account accountT = wallet.accounts().create("accountT", "testnet");
+    Account accountB = wallet.accounts().create("accountB", Round.Network.BITCOIN);
+    Account accountT = wallet.accounts().create("accountT", Round.Network.TESTNET);
     String addressB = accountB.addresses().create().getAddressString();
     String addressT = accountT.addresses().create().getAddressString();
     System.out.println(addressB);
     System.out.println(addressT);
-
-    Transaction tB = null;
-    Transaction tT = null;
-    try {
-      tT = accountT.payToAddress("wat", "2Mz45PsStJTFHjEhgKVSRmQpTzKqkFdwM5e", 10000, 1);
-      tB = accountB.payToAddress("wat", "1P3gyUcpgHNi3wxT66mtP7mvd4W17WSYPp", 10000, 1);
-    } catch (Exception e) {
-      throw e;
-    }
     // Make sure account count increases
     Assert.assertEquals(2, wallet.accounts().size());
 
