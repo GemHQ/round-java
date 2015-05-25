@@ -15,7 +15,7 @@ import java.util.Map;
 public class Round {
 
   public enum Network {
-    TESTNET("testnet"),
+    TESTNET("bitcoin_testnet"),
     BITCOIN("bitcoin"),
     DOGECOIN("dogecoin"),
     LITECOIN("litecoin");
@@ -28,7 +28,7 @@ public class Round {
     }
   }
 
-  static final String API_HOST = "https://api-sandbox.gem.co";
+  static final String API_HOST = "https://api.gem.co";
 
   private static Patchboard patchboard;
 
