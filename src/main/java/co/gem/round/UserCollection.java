@@ -68,7 +68,7 @@ public class UserCollection extends BaseCollection<User> {
 
     JsonObject payload = new JsonObject();
     if (redirectUri != null) {
-//      payload.addProperty("redirect_uri", redirectUri);
+      payload.addProperty("redirect_uri", redirectUri);
     }
     payload.addProperty("email", email);
     payload.addProperty("device_name", deviceName);
