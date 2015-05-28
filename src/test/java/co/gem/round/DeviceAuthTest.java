@@ -11,14 +11,14 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Collections;
-import java.util.Random;
 
 public class DeviceAuthTest {
   Round client;
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    client = Round.client("https://api-sandbox.gem.co/");
+//    client = Round.client("https://api-sandbox.gem.co/");
+    client = Round.client("http://localhost:8999/");
   }
 
 
@@ -30,7 +30,6 @@ public class DeviceAuthTest {
     String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
     System.out.println("This will sleep for 60 seconds while the user completes signup. Hurry!");
     Thread.sleep(60000);
-    System.out.println(deviceToken);
     User user = client.authenticateDevice(Utils.getApiToken(), deviceToken, email);
 
     // Make sure the default wallet is in the collection
@@ -49,24 +48,20 @@ public class DeviceAuthTest {
     // Default account exists?
     Assert.assertEquals(1, wallet.accounts().size());
     // Create a new account
-    Account account = wallet.accounts().create("account");
-//    String address = account.addresses().create().getAddressString();
-//
-//    Transaction t = null;
-//    try {
-//      t = account.payToAddress("wat", "2N1xUrjMccVYbxdNBh1VfFXNZ2LnhkfMNFR", 10000, 1);
-//    } catch (Exception e) {
-//      System.out.println("ah");
-//      throw e;
-//    }
+    Account accountB = wallet.accounts().create("accountB", Round.Network.BITCOIN);
+    Account accountT = wallet.accounts().create("accountT", Round.Network.TESTNET);
+    String addressB = accountB.addresses().create().getAddressString();
+    String addressT = accountT.addresses().create().getAddressString();
+    System.out.println(addressB);
+    System.out.println(addressT);
     // Make sure account count increases
     Assert.assertEquals(2, wallet.accounts().size());
 
     // Make sure we can call transactions
-    Assert.assertEquals(0, account.transactions().size());
-    Assert.assertEquals(0, account.transactions(Collections.singletonList(Transaction.Status.CONFIRMED)).size());
-    Assert.assertEquals(0, account.transactions(Lists.newArrayList(Transaction.Status.CONFIRMED, Transaction.Status.CANCELED)).size());
-    Assert.assertEquals(0, account.transactions(Transaction.Type.INCOMING).size());
-    Assert.assertEquals(0, account.transactions(Transaction.Type.INCOMING, Collections.singletonList(Transaction.Status.REJECTED)).size());
+    Assert.assertEquals(0, accountB.transactions().size());
+    Assert.assertEquals(0, accountB.transactions(Collections.singletonList(Transaction.Status.CONFIRMED)).size());
+    Assert.assertEquals(0, accountB.transactions(Lists.newArrayList(Transaction.Status.CONFIRMED, Transaction.Status.CANCELED)).size());
+    Assert.assertEquals(0, accountB.transactions(Transaction.Type.INCOMING).size());
+    Assert.assertEquals(0, accountB.transactions(Transaction.Type.INCOMING, Collections.singletonList(Transaction.Status.REJECTED)).size());
   }
 }

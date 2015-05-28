@@ -3,6 +3,8 @@ package co.gem.round.coinop;
 
 import co.gem.round.encoding.Base58;
 import co.gem.round.encoding.Hex;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.bitcoinj.core.*;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -45,21 +47,28 @@ public class MultiWallet {
 
   private MultiWallet(String primaryPrivateSeed, String backupPublicKey, String cosignerPublicKey) {
     byte[] decodedCosignerPublicKey = new byte[0];
+    byte[] decodedBackupPublicKey = new byte[0];
     byte[] decodedPrimarySeed = new byte[DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS/8];
     try {
       decodedCosignerPublicKey = Base58.decode(cosignerPublicKey);
+      decodedBackupPublicKey = Base58.decode(backupPublicKey);
       decodedPrimarySeed = Hex.decode(primaryPrivateSeed);
     } catch (Exception e) {
       e.printStackTrace();
     }
-    ByteBuffer buffer = ByteBuffer.wrap(decodedCosignerPublicKey);
-    this.networkParameters = networkParametersFromHeaderBytes(buffer.getInt());
 
     this.primaryPrivateKey = HDKeyDerivation.createMasterPrivateKey(decodedPrimarySeed);
-    if (backupPublicKey != null)
+    if (backupPublicKey != null) {
+      ByteBuffer buffer = ByteBuffer.wrap(decodedBackupPublicKey);
+      NetworkParameters networkParameters = networkParametersFromHeaderBytes(buffer.getInt());
       this.backupPublicKey = DeterministicKey.deserializeB58(backupPublicKey, networkParameters);
-    if (cosignerPublicKey != null)
+    }
+    if (cosignerPublicKey != null) {
+      ByteBuffer buffer = ByteBuffer.wrap(decodedCosignerPublicKey);
+      NetworkParameters networkParameters = networkParametersFromHeaderBytes(buffer.getInt());
       this.cosignerPublicKey = DeterministicKey.deserializeB58(cosignerPublicKey, networkParameters);
+    }
+    this.networkParameters = networkParametersFromBlockchain(Blockchain.MAINNET);
   }
 
   public static NetworkParameters networkParametersFromBlockchain(Blockchain blockchain) {
@@ -178,6 +187,24 @@ public class MultiWallet {
 
   public NetworkParameters networkParameters() {
     return networkParameters;
+  }
+
+  /**
+   * We return the sig_hash and the wallet_path in every input of
+   * every unsigned transaction. Thus, all the data you need to sign the
+   * input is on the returned JSON. No need to parse the entire thing -
+   * this lets us use multinetwork without BitcoinJ yelling at us.
+   */
+  public List<String> signaturesFromUnparsedTransaction(JsonObject transactionJson) {
+    List<String> signatures = new ArrayList<>();
+    for (JsonElement raw : transactionJson.get("inputs").getAsJsonArray()) {
+      JsonObject input = raw.getAsJsonObject();
+      String sigHash = input.get("sig_hash").getAsString();
+      String walletPath = input.get("output").getAsJsonObject().get("metadata")
+          .getAsJsonObject().get("wallet_path").getAsString();
+      signatures.add(base58SignatureForPath(walletPath, new Sha256Hash(sigHash)));
+    }
+    return signatures;
   }
 
   public List<String> signaturesForTransaction(TransactionWrapper transaction) {

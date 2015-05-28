@@ -28,17 +28,16 @@ public class UserCollection extends BaseCollection<User> {
    * @param firstName of the user
    * @param lastName of the user
    * @param passphrase to encrypt the primary seed
-   * @param blockchain network for the wallet.  Either mainnet or testnet
    * @return String deviceToken, used to authenticate device
    * @throws Client.UnexpectedStatusCodeException
    * @throws IOException
    * @throws InvalidKeySpecException
    * @throws NoSuchAlgorithmException
    */
-  public String create(String email, String firstName, String lastName, String passphrase, String blockchain,
+  public String create(String email, String firstName, String lastName, String passphrase,
                      String deviceName) throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException,
       InvalidKeySpecException, IOException {
-    return create(email, firstName, lastName, passphrase, blockchain, deviceName, null);
+    return create(email, firstName, lastName, passphrase, deviceName, null);
   }
 
   /**
@@ -49,7 +48,6 @@ public class UserCollection extends BaseCollection<User> {
    * @param firstName of the user
    * @param lastName of the user
    * @param passphrase to encrypt the primary seed
-   * @param blockchain network for the wallet.  Either mainnet or testnet
    * @param redirectUri the user is sent to after confirming his/her email
    * @return String deviceToken, used to authenticate device
    * @throws Client.UnexpectedStatusCodeException
@@ -57,22 +55,14 @@ public class UserCollection extends BaseCollection<User> {
    * @throws InvalidKeySpecException
    * @throws NoSuchAlgorithmException
    */
-  public String create(String email, String firstName, String lastName, String passphrase, String blockchain,
+  public String create(String email, String firstName, String lastName, String passphrase,
                      String deviceName, String redirectUri)
       throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
-    MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork(blockchain));
+    MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork("bitcoin"));
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);
-
-    String network;
-    if (multiWallet.blockchain() == MultiWallet.Blockchain.MAINNET)
-      network = "bitcoin";
-    else
-      network = "bitcoin_testnet";
-
     JsonObject wallet = new JsonObject();
     wallet.addProperty("name", "default");
-    wallet.addProperty("network", network);
     wallet.addProperty("primary_public_seed", multiWallet.serializedPrimaryPublicKey());
     wallet.add("primary_private_seed", encryptedPrivateSeed.asJsonObject());
 
