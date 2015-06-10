@@ -7,7 +7,12 @@ import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonObject;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -35,7 +40,7 @@ public class Wallet extends Base {
 
   public void unlock(String passphrase, UnlockedWalletCallback callback)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
 
     String decryptedSeed = null;
 

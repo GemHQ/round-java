@@ -7,7 +7,12 @@ import com.google.common.base.Joiner;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
@@ -121,7 +126,7 @@ public class Account extends Base {
   @Deprecated
   public Transaction payToEmail(String passphrase, String email, long amount, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException {
     Recipient recipient = Recipient.recipientWithEmail(email, amount);
     return this.pay(passphrase, recipient, confirmations);
   }
@@ -139,7 +144,7 @@ public class Account extends Base {
    */
   public Transaction payToAddress(String passphrase, String address, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
     return this.payToAddress(passphrase, address, amount, 6);
   }
 
@@ -157,7 +162,7 @@ public class Account extends Base {
    */
   public Transaction payToAddress(String passphrase, String address, long amount, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException {
     return this.pay(passphrase, Recipient.recipientWithAddress(address, amount), confirmations);
   }
 
@@ -174,7 +179,7 @@ public class Account extends Base {
    */
   public Transaction pay(String passphrase, Recipient recipient)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
     return this.pay(passphrase, recipients, 6);
   }
@@ -193,7 +198,7 @@ public class Account extends Base {
    */
   public Transaction pay(String passphrase, Recipient recipient, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
     return this.pay(passphrase, recipients, confirmations);
   }
@@ -211,7 +216,7 @@ public class Account extends Base {
    */
   public Transaction pay(String passphrase, List<Recipient> recipients)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException {
     return this.pay(passphrase, recipients, 6);
   }
 
@@ -229,7 +234,8 @@ public class Account extends Base {
    */
   public Transaction pay(String passphrase, List<Recipient> recipients, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+      BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException {
     final Transaction payment = this.transactions().create(recipients, confirmations);
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override

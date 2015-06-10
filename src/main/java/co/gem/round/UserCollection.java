@@ -8,7 +8,12 @@ import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonObject;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -36,7 +41,7 @@ public class UserCollection extends BaseCollection<User> {
    */
   public String create(String email, String firstName, String lastName, String passphrase,
                      String deviceName) throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException,
-      InvalidKeySpecException, IOException {
+      InvalidKeySpecException, IOException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException {
     return create(email, firstName, lastName, passphrase, deviceName, null);
   }
 
@@ -57,7 +62,7 @@ public class UserCollection extends BaseCollection<User> {
    */
   public String create(String email, String firstName, String lastName, String passphrase,
                      String deviceName, String redirectUri)
-      throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+      throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
     MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork("bitcoin"));
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);

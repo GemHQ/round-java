@@ -47,8 +47,8 @@ public class PassphraseBox {
     this.iv = new byte[IVBYTES];
     random.nextBytes(this.iv);
     byte[] key = skf.generateSecret(spec).getEncoded();
-    this.aesSecretKey = new SecretKeySpec(Arrays.copyOfRange(key, 0, 255), "AES");
-    SecretKeySpec hmacSecretKey = new SecretKeySpec(Arrays.copyOfRange(key, 256, 512), "HmacSHA256");
+    this.aesSecretKey = new SecretKeySpec(Arrays.copyOfRange(key, 0, 32), "AES");
+    SecretKeySpec hmacSecretKey = new SecretKeySpec(Arrays.copyOfRange(key, 32, 64), "HmacSHA256");
     mac = Mac.getInstance("HmacSHA256");
     mac.init(hmacSecretKey);
     this.cipher = Cipher.getInstance("AES/CBC/NoPadding");

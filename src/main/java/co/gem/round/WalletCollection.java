@@ -8,7 +8,12 @@ import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonObject;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -40,8 +45,8 @@ public class WalletCollection extends BaseCollection<Wallet> {
    * @throws NoSuchAlgorithmException
    */
   public Wallet.Wrapper create(String name, String passphrase)
-          throws IOException, Client.UnexpectedStatusCodeException,
-          InvalidKeySpecException, NoSuchAlgorithmException {
+      throws IOException, Client.UnexpectedStatusCodeException,
+      InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
 
     MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork("bitcoin"));
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
