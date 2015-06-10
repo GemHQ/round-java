@@ -7,7 +7,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Collections;
@@ -21,9 +26,8 @@ public class DeviceAuthTest {
     client = Round.client("http://localhost:8999/");
   }
 
-
   @Test
-  public void deviceAuthTest() throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, IOException, InterruptedException {
+  public void deviceAuthTest() throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, IOException, InterruptedException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException {
     client.authenticateIdentify(Utils.getApiToken());
     String email = Utils.getRandomUserEmail();
     System.out.println(email);

@@ -7,14 +7,14 @@ import com.google.gson.JsonObject;
  */
 public class EncryptedMessage {
   public String salt;
-  public String nonce;
+  public String iv;
   public String ciphertext;
   public int iterations;
 
   public JsonObject asJsonObject() {
     JsonObject serialized = new JsonObject();
     serialized.addProperty("salt", salt);
-    serialized.addProperty("nonce", nonce);
+    serialized.addProperty("iv", iv);
     serialized.addProperty("ciphertext", ciphertext);
     serialized.addProperty("iterations", iterations);
     return serialized;
