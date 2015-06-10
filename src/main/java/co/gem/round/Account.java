@@ -234,7 +234,7 @@ public class Account extends Base {
     this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
       @Override
       public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
-          payment.sign(wallet);
+        payment.sign(wallet);
       }
     });
     if (wallet.hasApplication()) {

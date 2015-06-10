@@ -81,7 +81,7 @@ public class Wallet extends Base {
 
   /**
    * Getter for the elements of the encrypted primary seed.
-   * @return EncryptedMessage containing ciphertext, salt, nonce, iterations for decryption purposes
+   * @return EncryptedMessage containing ciphertext, salt, iv, iterations for decryption purposes
    */
   public EncryptedMessage getEncryptedSeed() {
     if (this.encryptedSeed == null) {
@@ -90,7 +90,7 @@ public class Wallet extends Base {
       EncryptedMessage encryptedMessage = new EncryptedMessage();
       encryptedMessage.ciphertext = seedObject.get("ciphertext").getAsString();
       encryptedMessage.salt = seedObject.get("salt").getAsString();
-      encryptedMessage.nonce = seedObject.get("nonce").getAsString();
+      encryptedMessage.iv = seedObject.get("iv").getAsString();
       encryptedMessage.iterations = Integer.parseInt(seedObject.get("iterations").getAsString());
       this.encryptedSeed = encryptedMessage;
     }
