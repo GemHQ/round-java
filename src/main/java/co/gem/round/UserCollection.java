@@ -7,7 +7,7 @@ import co.gem.round.crypto.PassphraseBox;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonObject;
-import org.spongycastle.crypto.InvalidCipherTextException;
+import org.bouncycastle.crypto.InvalidCipherTextException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;

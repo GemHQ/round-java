@@ -1,7 +1,7 @@
 package co.gem.round.crypto;
 
 import co.gem.round.encoding.Hex;
-import org.spongycastle.asn1.pkcs.PBEParameter;
+/*import org.spongycastle.asn1.pkcs.PBEParameter;
 import org.spongycastle.asn1.pkcs.PBKDF2Params;
 import org.spongycastle.crypto.*;
 import org.spongycastle.crypto.engines.AESEngine;
@@ -11,6 +11,18 @@ import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
 import org.spongycastle.util.Arrays;
+*/
+import org.bouncycastle.crypto.BufferedBlockCipher;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.InvalidCipherTextException;
+import org.bouncycastle.crypto.PBEParametersGenerator;
+import org.bouncycastle.crypto.engines.AESEngine;
+import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
+import org.bouncycastle.crypto.modes.CBCBlockCipher;
+import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
+import org.bouncycastle.util.Arrays;
 
 import javax.crypto.*;
 import javax.crypto.Mac;
@@ -22,18 +34,15 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
-/**
- * Created by Julian on 7/30/14.
- */
 public class PassphraseBox {
 
+  private byte[] aesKey;
   private byte[] salt;
   private byte[] iv;
-  private Cipher cipher;
   private BufferedBlockCipher encryptCipher;
   private BufferedBlockCipher decryptCipher;
   private SecretKeySpec aesSecretKey;
-  private Mac mac;
+  private SecretKeySpec hmacSecretKey;
 
   final int IVBYTES = 16;
 
@@ -41,37 +50,30 @@ public class PassphraseBox {
 
   public PassphraseBox(String passphrase, String salt, int iterations) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException {
 
+    SecureRandom random = new SecureRandom();
     if (salt == null) {
-      SecureRandom random = new SecureRandom();
       this.salt = new byte[16];
       random.nextBytes(this.salt);
     } else {
       this.salt = Hex.decode(salt);
     }
 
-    Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
-    PBEKeySpec spec = new PBEKeySpec(passphrase.toCharArray(), this.salt, iterations, 512);
-    SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1", "BC");
-
-    SecureRandom random = new SecureRandom();
     this.iv = new byte[IVBYTES];
     random.nextBytes(this.iv);
-    byte[] key = skf.generateSecret(spec).getEncoded();
-    this.aesSecretKey = new SecretKeySpec(Arrays.copyOfRange(key, 0, 32), "AES");
-    SecretKeySpec hmacSecretKey = new SecretKeySpec(Arrays.copyOfRange(key, 32, 64), "HmacSHA256");
-    mac = Mac.getInstance("HmacSHA256");
-    mac.init(hmacSecretKey);
-    this.cipher = Cipher.getInstance("AES/CBC/NoPadding", "BC");
 
-    // The following is using spongycastle.
-    byte[] aesKey = Arrays.copyOfRange(key, 0, 32);
-    byte[] hmacKey = Arrays.copyOfRange(key, 32, 64);
-    encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
-    decryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
-    CipherParameters ivAndKey = new ParametersWithIV(new KeyParameter(aesKey), this.iv);
-    encryptCipher.init(true, ivAndKey);
-    decryptCipher.init(false, ivAndKey);
+    Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
+    PBEParametersGenerator generator = new PKCS5S2ParametersGenerator();
+    generator.init(PBEParametersGenerator.PKCS5PasswordToUTF8Bytes(passphrase.toCharArray()), this.salt, iterations);
+    byte[] key = ((KeyParameter)generator.generateDerivedParameters(512)).getKey();
+
+
+    this.aesKey = Arrays.copyOfRange(key, 0, 32);
+    this.aesSecretKey = new SecretKeySpec(aesKey, "AES");
+    this.hmacSecretKey = new SecretKeySpec(Arrays.copyOfRange(key, 32, 64), "HmacSHA256");
+
+    this.encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
+    this.decryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
   }
 
   private byte[] cipherData(BufferedBlockCipher cipher, byte[] data) throws InvalidCipherTextException, UnsupportedEncodingException {
@@ -83,29 +85,38 @@ public class PassphraseBox {
     return out;
   }
 
-  public String decrypt(String iv, String ciphertext) throws InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException, InvalidCipherTextException {
-    this.iv = Hex.decode(iv);
+  public String decrypt(String iv, String ciphertext) throws InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException, InvalidCipherTextException, NoSuchAlgorithmException {
+    byte[] encryptedIv = Hex.decode(iv);
     byte[] ctext = Hex.decode(ciphertext);
-    byte[] mac = Arrays.copyOfRange(ctext, ctext.length - 32, ctext.length);
+    // This "ciphertext" that we import is constructed from actual_ciphertext + hmacsha1(iv + actual_ciphertext)
     byte[] ctextb = Arrays.copyOfRange(ctext, 0, ctext.length - 32);
-    if (!Arrays.areEqual(mac, (this.mac.doFinal(Arrays.concatenate(this.iv, ctextb))))) {
+    byte[] mac = Arrays.copyOfRange(ctext, ctext.length - 32, ctext.length);
+
+
+    // Recreate the hmac and verify it matches.
+    Mac hmac = Mac.getInstance("HmacSHA256");
+    hmac.init(this.hmacSecretKey);
+    if (!Arrays.areEqual(mac, hmac.doFinal(Arrays.concatenate(encryptedIv, ctextb)))) {
       throw new RuntimeException("Invalid authentication code: ciphertext may have been tampered with.");
     }
-//    byte[] prepend = { 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10};
-//    cipher.init(Cipher.DECRYPT_MODE, aesSecretKey, new IvParameterSpec(this.iv));
-    return Hex.encode(cipherData(decryptCipher, ctext));
-//    cipher.init(Cipher.DECRYPT_MODE, aesSecretKey, new IvParameterSpec(this.iv));
-//    return Hex.encode(cipher.doFinal(ctext));
+
+    // Decrypt the actual_ciphertext.
+    CipherParameters ivAndKey = new ParametersWithIV(new KeyParameter(aesKey), encryptedIv);
+    decryptCipher.init(false, ivAndKey);
+    return new String(cipherData(decryptCipher, ctextb), "UTF-8");
   }
 
   public EncryptedMessage encrypt(String message) throws InvalidAlgorithmParameterException, InvalidKeyException,
-      BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException, InvalidCipherTextException {
+          BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException, InvalidCipherTextException, NoSuchAlgorithmException {
+
+    CipherParameters ivAndKey = new ParametersWithIV(new KeyParameter(aesKey), this.iv);
+    encryptCipher.init(true, ivAndKey);
     byte[] es = cipherData(encryptCipher, message.getBytes(StandardCharsets.UTF_8));
-//    cipher.init(Cipher.ENCRYPT_MODE, aesSecretKey, new IvParameterSpec(this.iv));
-//    byte[] es = cipher.doFinal(message.getBytes(StandardCharsets.UTF_8));
-    mac.update(Arrays.concatenate(iv, es));
-    byte[] hmac = mac.doFinal();
-    byte[] ciphertext = Arrays.concatenate(es, hmac);
+
+    Mac hmac = Mac.getInstance("HmacSHA256");
+    hmac.init(this.hmacSecretKey);
+    byte[] digest = hmac.doFinal(Arrays.concatenate(this.iv, es));
+    byte[] ciphertext = Arrays.concatenate(es, digest);
 
     EncryptedMessage encrypted = new EncryptedMessage();
     encrypted.ciphertext = Hex.encode(ciphertext);

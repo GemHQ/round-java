@@ -34,7 +34,7 @@ dependencies {
 
   compile 'org.bouncycastle:bcpkix-jdk15on:1.52'
 
-  runtime 'com.madgag.spongycastle:prov:1.51.0.0'
+  compile 'com.madgag.spongycastle:prov:1.51.0.0'
 
   compile "org.codehaus.groovy:groovy-all:2.4.1"
   testCompile "org.spockframework:spock-core:1.0-groovy-2.4"

@@ -6,7 +6,7 @@ import co.gem.round.patchboard.Resource;
 import com.google.common.base.Joiner;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.spongycastle.crypto.InvalidCipherTextException;
+import org.bouncycastle.crypto.InvalidCipherTextException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
