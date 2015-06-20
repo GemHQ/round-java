@@ -147,7 +147,7 @@ public class MultiWallet {
   }
 
   public DeterministicKey childPrimaryPublicKeyFromPath(String path) {
-    return childKeyFromPath(path, this.primaryPrivateKey.getPubOnly());
+    return childKeyFromPath(path, this.primaryPrivateKey.dropPrivateBytes().dropParent());
   }
 
   public DeterministicKey childBackupPublicKeyFromPath(String path) {
