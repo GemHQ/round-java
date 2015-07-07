@@ -1,28 +1,18 @@
 package co.gem.round.crypto;
 
 import co.gem.round.encoding.Hex;
-/*import org.spongycastle.asn1.pkcs.PBEParameter;
+import org.spongycastle.asn1.pkcs.PBEParameter;
 import org.spongycastle.asn1.pkcs.PBKDF2Params;
 import org.spongycastle.crypto.*;
 import org.spongycastle.crypto.engines.AESEngine;
+import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.macs.HMac;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
 import org.spongycastle.util.Arrays;
-*/
-import org.bouncycastle.crypto.BufferedBlockCipher;
-import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.crypto.PBEParametersGenerator;
-import org.bouncycastle.crypto.engines.AESEngine;
-import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
-import org.bouncycastle.crypto.modes.CBCBlockCipher;
-import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.crypto.params.ParametersWithIV;
-import org.bouncycastle.util.Arrays;
+
 
 import javax.crypto.*;
 import javax.crypto.Mac;
@@ -48,6 +38,10 @@ public class PassphraseBox {
 
   static final int DEFAULT_ITERATIONS = 100000;
 
+  static {
+    Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+  }
+
   public PassphraseBox(String passphrase, String salt, int iterations) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException {
 
     SecureRandom random = new SecureRandom();
@@ -60,8 +54,6 @@ public class PassphraseBox {
 
     this.iv = new byte[IVBYTES];
     random.nextBytes(this.iv);
-
-    Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
     PBEParametersGenerator generator = new PKCS5S2ParametersGenerator();
     generator.init(PBEParametersGenerator.PKCS5PasswordToUTF8Bytes(passphrase.toCharArray()), this.salt, iterations);

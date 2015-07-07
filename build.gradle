@@ -31,9 +31,6 @@ dependencies {
   compile 'org.bitcoinj:bitcoinj-core:0.13-SNAPSHOT'
   compile 'org.abstractj.kalium:kalium:0.3.0'
   compile 'org.jboss.aerogear:aerogear-otp-java:1.0.0'
-
-  compile 'org.bouncycastle:bcpkix-jdk15on:1.52'
-
   compile 'com.madgag.spongycastle:prov:1.51.0.0'
 
   compile "org.codehaus.groovy:groovy-all:2.4.1"

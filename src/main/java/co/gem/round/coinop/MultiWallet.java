@@ -22,7 +22,7 @@ import java.util.List;
 
 public class MultiWallet {
 
-  public enum Blockchain {
+  public static enum Blockchain {
     TESTNET, MAINNET
   }
 
@@ -147,7 +147,7 @@ public class MultiWallet {
   }
 
   public DeterministicKey childPrimaryPublicKeyFromPath(String path) {
-    return childKeyFromPath(path, this.primaryPrivateKey.dropPrivateBytes());
+    return childKeyFromPath(path, this.primaryPrivateKey.dropPrivateBytes().dropParent());
   }
 
   public DeterministicKey childBackupPublicKeyFromPath(String path) {

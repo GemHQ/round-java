@@ -2,7 +2,7 @@ package co.gem.round.crypto;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.bouncycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.crypto.InvalidCipherTextException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -22,7 +22,7 @@ public class PassphraseBoxTest {
   private static String clearText = "0123456789abcdef";
 
   @Test
-  public void testEncryptAndDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException, org.bouncycastle.crypto.InvalidCipherTextException {
+  public void testEncryptAndDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException {
     EncryptedMessage encrypted = PassphraseBox.encrypt(passphrase, clearText);
     String decrypted = PassphraseBox.decrypt(passphrase, encrypted);
 
@@ -41,7 +41,7 @@ public class PassphraseBoxTest {
       "0fd09cdbcbcd885fd";
 
   @Test
-  public void testWalletDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException, org.bouncycastle.crypto.InvalidCipherTextException {
+  public void testWalletDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException {
     EncryptedMessage encrypted = new EncryptedMessage();
     encrypted.ciphertext = "718877e7aed7ef43c8aefbfce3a856b4a85a092cafc88a85a22a14c7ce632ac3f83beef10ac0797441209039ebd947c2";
     encrypted.iv = "680546fd230d044778c9e7da09712946";
