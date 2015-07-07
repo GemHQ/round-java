@@ -9,6 +9,7 @@ import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.macs.HMac;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.spongycastle.crypto.paddings.ZeroBytePadding;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
 import org.spongycastle.util.Arrays;
@@ -64,8 +65,8 @@ public class PassphraseBox {
     this.aesSecretKey = new SecretKeySpec(aesKey, "AES");
     this.hmacSecretKey = new SecretKeySpec(Arrays.copyOfRange(key, 32, 64), "HmacSHA256");
 
-    this.encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
-    this.decryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
+    this.encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()), new ZeroBytePadding());
+    this.decryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()), new ZeroBytePadding());
   }
 
   private byte[] cipherData(BufferedBlockCipher cipher, byte[] data) throws InvalidCipherTextException, UnsupportedEncodingException {

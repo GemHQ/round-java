@@ -29,17 +29,6 @@ public class PassphraseBoxTest {
     Assert.assertEquals(clearText, decrypted);
   }
 
-  private static String privateSeed = "tprv8ZgxMBicQKsPdNEYgZf36mKTrVaRwmZYvBZPYjo7WvCv8Y7gveBfEBtE29BrNu" +
-      "MGeFkkXhZZe25XR5fVNHu2mMpD6wBZtnix5cMSenNEbAi";
-  private static String salt = "84ec1df2cf8ee18f64972694b76d96d0";
-  private static String iv = "4cee52b034f390a20e7cc6a6fc5d4fa82cdbb079e471269c";
-  private static int iterations = 100000;
-  private static String ciphertext = "b8e5691bc0c17b3429bedd819b9be296fe9409e" +
-      "6eec437699e1f3792b713dbe62c18e29b50c5421387a28d062bc41b07d3bf27c34" +
-      "179a590b212588f84e10369cec37b89a676b066f5893dbbaba263695db29e70a30" +
-      "b0f8d3877960ba37c3da225cc23463b9623fb4292be3834a60ca8c79f237560670" +
-      "0fd09cdbcbcd885fd";
-
   @Test
   public void testWalletDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException {
     EncryptedMessage encrypted = new EncryptedMessage();
