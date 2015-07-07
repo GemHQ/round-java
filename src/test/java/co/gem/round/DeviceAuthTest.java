@@ -18,16 +18,17 @@ public class DeviceAuthTest {
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
 //    client = Round.client("https://api-sandbox.gem.co/");
-    client = Round.client("http://localhost:8999/");
+    client = Round.client(Utils.getApiUrl());
   }
 
 
   @Test
-  public void deviceAuthTest() throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, IOException, InterruptedException {
+  public void deviceAuthTest() throws
+          NoSuchAlgorithmException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, IOException, InterruptedException {
     client.authenticateIdentify(Utils.getApiToken());
     String email = Utils.getRandomUserEmail();
     System.out.println(email);
-    String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
+    String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "http://www.google.com");
     System.out.println("This will sleep for 60 seconds while the user completes signup. Hurry!");
     Thread.sleep(60000);
     User user = client.authenticateDevice(Utils.getApiToken(), deviceToken, email);

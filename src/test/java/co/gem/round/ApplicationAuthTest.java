@@ -1,7 +1,6 @@
 package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
-import co.gem.round.Utils;
 import co.gem.round.patchboard.Client;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +17,7 @@ public class ApplicationAuthTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    client = Round.client("http://localhost:8999");
+    client = Round.client(Utils.getApiUrl());
     app = client.authenticateApplication(Utils.getApiToken(), Utils.getAdminToken());
     app.setTotpSecret(Utils.getTotpSecret());
     // This is definitely a bug. Identify doesn't work if done before application auth
