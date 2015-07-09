@@ -1,12 +1,9 @@
 package co.gem.round.crypto;
 
 import co.gem.round.encoding.Hex;
-import org.spongycastle.asn1.pkcs.PBEParameter;
-import org.spongycastle.asn1.pkcs.PBKDF2Params;
 import org.spongycastle.crypto.*;
 import org.spongycastle.crypto.engines.AESEngine;
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
-import org.spongycastle.crypto.macs.HMac;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.crypto.paddings.ZeroBytePadding;
@@ -17,11 +14,8 @@ import org.spongycastle.util.Arrays;
 
 import javax.crypto.*;
 import javax.crypto.Mac;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
@@ -36,6 +30,7 @@ public class PassphraseBox {
   private SecretKeySpec hmacSecretKey;
 
   final int IVBYTES = 16;
+  public static final String UTF_8 = "UTF-8";
 
   static final int DEFAULT_ITERATIONS = 100000;
 
@@ -96,7 +91,7 @@ public class PassphraseBox {
     // Decrypt the actual_ciphertext.
     CipherParameters ivAndKey = new ParametersWithIV(new KeyParameter(aesKey), encryptedIv);
     decryptCipher.init(false, ivAndKey);
-    return new String(cipherData(decryptCipher, ctextb), "UTF-8");
+    return new String(cipherData(decryptCipher, ctextb), UTF_8);
   }
 
   public EncryptedMessage encrypt(String message) throws InvalidAlgorithmParameterException, InvalidKeyException,
@@ -104,7 +99,7 @@ public class PassphraseBox {
 
     CipherParameters ivAndKey = new ParametersWithIV(new KeyParameter(aesKey), this.iv);
     encryptCipher.init(true, ivAndKey);
-    byte[] es = cipherData(encryptCipher, message.getBytes(StandardCharsets.UTF_8));
+    byte[] es = cipherData(encryptCipher, message.getBytes(UTF_8));
 
     Mac hmac = Mac.getInstance("HmacSHA256");
     hmac.init(this.hmacSecretKey);
