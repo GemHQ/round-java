@@ -1,45 +1,69 @@
 package co.gem.round.crypto;
 
+import co.gem.round.Utils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.runner.RunWith;
 import org.spongycastle.crypto.InvalidCipherTextException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Julian on 7/30/14.
  */
+@RunWith(Theories.class)
 public class PassphraseBoxTest {
-  private static String passphrase = "passphrase";
-  private static String clearText = "0123456789abcdef";
 
-  @Test
-  public void testEncryptAndDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException {
-    EncryptedMessage encrypted = PassphraseBox.encrypt(passphrase, clearText);
-    String decrypted = PassphraseBox.decrypt(passphrase, encrypted);
-
-    Assert.assertEquals(clearText, decrypted);
+  private static class TestCyphertext {
+    public String passphrase;
+    public String cleartext;
+    public EncryptedMessage encrypted;
   }
 
-  @Test
-  public void testWalletDecrypt() throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException {
-    EncryptedMessage encrypted = new EncryptedMessage();
-    encrypted.ciphertext = "718877e7aed7ef43c8aefbfce3a856b4a85a092cafc88a85a22a14c7ce632ac3f83beef10ac0797441209039ebd947c2";
-    encrypted.iv = "680546fd230d044778c9e7da09712946";
-    encrypted.salt = "e713895c90c226cb4d46c4ba4ac60371";
-    encrypted.iterations = 99307;
+  @DataPoints
+  public static List<TestCyphertext> cipherTexts() throws
+      URISyntaxException, FileNotFoundException, IOException {
+    JsonObject json = Utils.loadJsonResource("/wallet_ciphertexts.json");
+    JsonArray jsonCiphertexts = json.getAsJsonArray("ciphertexts");
+    ArrayList<TestCyphertext> ciphertexts = new ArrayList<>();
+    for (JsonElement e : jsonCiphertexts) {
+      JsonObject obj = e.getAsJsonObject();
+      TestCyphertext ciphertext = new TestCyphertext();
+      ciphertext.passphrase = obj.get("passphrase").getAsString();
+      ciphertext.cleartext = obj.get("cleartext").getAsString();
+      ciphertext.encrypted = EncryptedMessage.fromJson(obj.get("encrypted").getAsJsonObject());
+      ciphertexts.add(ciphertext);
+    }
 
-    String result = PassphraseBox.decrypt("veryveryveryveryverylongpassphrase", encrypted);
-    System.out.println(result);
-    Assert.assertEquals("hellohellohello!", result);
+    return ciphertexts;
+  }
+
+  @Theory
+  public void testWalletDecrypt(TestCyphertext ciphertext) throws
+      NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException,
+      InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException,
+      InvalidKeyException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException {
+    EncryptedMessage encrypted = PassphraseBox.encrypt(ciphertext.passphrase, ciphertext.cleartext);
+    String decrypted = PassphraseBox.decrypt(ciphertext.passphrase, encrypted);
+    String originalDecrypted = PassphraseBox.decrypt(ciphertext.passphrase, ciphertext.encrypted);
+    Assert.assertEquals(ciphertext.cleartext, decrypted);
+    Assert.assertEquals(originalDecrypted, decrypted);
   }
 
 }

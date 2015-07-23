@@ -1,8 +1,12 @@
 package co.gem.round;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.junit.Assert;
+
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Random;
 
 /**
@@ -58,6 +62,31 @@ public class Utils {
     Random rand = new Random();
     String first = email[0] + "+roundjavatest" + rand.nextInt(100000);
     return first + "@" + email[1];
+  }
+
+
+  public static JsonObject loadJsonResource(String path) throws
+      URISyntaxException, FileNotFoundException, IOException {
+    URL url = Utils.class.getResource("/wallet_ciphertexts.json");
+    Assert.assertNotNull(url);
+
+    String payload = null;
+    BufferedReader br = new BufferedReader(new FileReader(new File(url.toURI())));
+    try {
+      StringBuilder sb = new StringBuilder();
+      String line = br.readLine();
+
+      while (line != null) {
+        sb.append(line);
+        sb.append("\n");
+        line = br.readLine();
+      }
+      payload = sb.toString();
+    } finally {
+      br.close();
+    }
+
+    return new JsonParser().parse(payload).getAsJsonObject();
   }
 }
 
