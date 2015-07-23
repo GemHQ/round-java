@@ -6,9 +6,16 @@ import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.spongycastle.crypto.InvalidCipherTextException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Collections;
 
@@ -18,17 +25,15 @@ public class DeviceAuthTest {
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
 //    client = Round.client("https://api-sandbox.gem.co/");
-    client = Round.client(Utils.getApiUrl());
+    client = Round.client("https://api-sandbox.gem.co");
   }
 
-
   @Test
-  public void deviceAuthTest() throws
-          NoSuchAlgorithmException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, IOException, InterruptedException {
+  public void deviceAuthTest() throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, IOException, InterruptedException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, NoSuchProviderException, InvalidCipherTextException {
     client.authenticateIdentify(Utils.getApiToken());
     String email = Utils.getRandomUserEmail();
     System.out.println(email);
-    String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "http://www.google.com");
+    String deviceToken = client.users().create(email, "fname", "lname", "wat", "testnet", "daaaaname");
     System.out.println("This will sleep for 60 seconds while the user completes signup. Hurry!");
     Thread.sleep(60000);
     User user = client.authenticateDevice(Utils.getApiToken(), deviceToken, email);

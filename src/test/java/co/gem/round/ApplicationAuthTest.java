@@ -1,13 +1,21 @@
 package co.gem.round;
 
 import co.gem.round.coinop.MultiWallet;
+import co.gem.round.Utils;
 import co.gem.round.patchboard.Client;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.spongycastle.crypto.InvalidCipherTextException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Random;
 
@@ -17,7 +25,7 @@ public class ApplicationAuthTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-    client = Round.client(Utils.getApiUrl());
+    client = Round.client("https://api-sandbox.gem.co/");
     app = client.authenticateApplication(Utils.getApiToken(), Utils.getAdminToken());
     app.setTotpSecret(Utils.getTotpSecret());
     // This is definitely a bug. Identify doesn't work if done before application auth
@@ -25,7 +33,7 @@ public class ApplicationAuthTest {
   }
 
   @Test
-  public void createWalletsTest() throws IOException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, NoSuchAlgorithmException {
+  public void createWalletsTest() throws IOException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, NoSuchProviderException, InvalidCipherTextException {
     Wallet.Wrapper wrapper = app.wallets().create("name", "passphrase");
     Wallet wallet = wrapper.getWallet();
     try {
@@ -45,7 +53,7 @@ public class ApplicationAuthTest {
   }
 
   @Test
-  public void viewUsersTest() throws IOException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, NoSuchAlgorithmException {
+  public void viewUsersTest() throws IOException, Client.UnexpectedStatusCodeException, InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, NoSuchProviderException, InvalidCipherTextException {
     int size = app.users().size();
     int random = new Random().nextInt(1000000);
     String email = "email" + random + "@mailinator.com";
@@ -54,7 +62,7 @@ public class ApplicationAuthTest {
   }
 
   @Test
-  public void differentNetworkAcountsTest() throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+  public void differentNetworkAcountsTest() throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, NoSuchProviderException, InvalidCipherTextException {
     Wallet.Wrapper wrapper = app.wallets().create("name", "passphrase");
     Wallet wallet = wrapper.getWallet();
     Account testnetAccount = wallet.accounts().create("name", Round.Network.TESTNET);

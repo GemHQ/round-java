@@ -18,9 +18,7 @@ buildscript {
 }
 
 repositories {
-	mavenCentral()
-  mavenLocal()
-  maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+  mavenCentral()
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -28,7 +26,7 @@ dependencies {
   compile 'com.squareup.okhttp:okhttp:2.1.0'
   compile 'com.google.code.gson:gson:2.3.1'
   compile 'com.google.guava:guava:18.0'
-  compile 'org.bitcoinj:bitcoinj-core:0.13-SNAPSHOT'
+  compile 'org.bitcoinj:bitcoinj-core:0.13.1'
   compile 'org.abstractj.kalium:kalium:0.3.0'
   compile 'org.jboss.aerogear:aerogear-otp-java:1.0.0'
   compile 'com.madgag.spongycastle:prov:1.51.0.0'
@@ -39,10 +37,10 @@ dependencies {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+  classifier = 'sources'
+  from sourceSets.main.allSource
 }
 
 artifacts {
-    archives sourcesJar
+  archives sourcesJar
 }

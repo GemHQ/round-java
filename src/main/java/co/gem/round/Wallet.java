@@ -6,9 +6,16 @@ import co.gem.round.crypto.PassphraseBox;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonObject;
+import org.spongycastle.crypto.InvalidCipherTextException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 
 /**
@@ -35,7 +42,7 @@ public class Wallet extends Base {
 
   public void unlock(String passphrase, UnlockedWalletCallback callback)
       throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
+      NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, InvalidCipherTextException {
 
     String decryptedSeed = null;
 
@@ -81,7 +88,7 @@ public class Wallet extends Base {
 
   /**
    * Getter for the elements of the encrypted primary seed.
-   * @return EncryptedMessage containing ciphertext, salt, nonce, iterations for decryption purposes
+   * @return EncryptedMessage containing ciphertext, salt, iv, iterations for decryption purposes
    */
   public EncryptedMessage getEncryptedSeed() {
     if (this.encryptedSeed == null) {
@@ -90,7 +97,7 @@ public class Wallet extends Base {
       EncryptedMessage encryptedMessage = new EncryptedMessage();
       encryptedMessage.ciphertext = seedObject.get("ciphertext").getAsString();
       encryptedMessage.salt = seedObject.get("salt").getAsString();
-      encryptedMessage.nonce = seedObject.get("nonce").getAsString();
+      encryptedMessage.iv = seedObject.get("iv").getAsString();
       encryptedMessage.iterations = Integer.parseInt(seedObject.get("iterations").getAsString());
       this.encryptedSeed = encryptedMessage;
     }

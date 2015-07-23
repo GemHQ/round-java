@@ -7,9 +7,16 @@ import co.gem.round.crypto.PassphraseBox;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
 import com.google.gson.JsonObject;
+import org.spongycastle.crypto.InvalidCipherTextException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 
 /**
@@ -36,7 +43,7 @@ public class UserCollection extends BaseCollection<User> {
    */
   public String create(String email, String firstName, String lastName, String passphrase,
                      String deviceName) throws NoSuchAlgorithmException, Client.UnexpectedStatusCodeException,
-      InvalidKeySpecException, IOException {
+      InvalidKeySpecException, IOException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, NoSuchProviderException, InvalidCipherTextException {
     return create(email, firstName, lastName, passphrase, deviceName, null);
   }
 
@@ -57,7 +64,7 @@ public class UserCollection extends BaseCollection<User> {
    */
   public String create(String email, String firstName, String lastName, String passphrase,
                      String deviceName, String redirectUri)
-      throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+      throws Client.UnexpectedStatusCodeException, IOException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidAlgorithmParameterException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, NoSuchProviderException, InvalidCipherTextException {
     MultiWallet multiWallet = MultiWallet.generate(Network.blockchainNetwork("bitcoin"));
     String primaryPrivateSeed = multiWallet.serializedPrimaryPrivateSeed();
     EncryptedMessage encryptedPrivateSeed = PassphraseBox.encrypt(passphrase, primaryPrivateSeed);
@@ -68,7 +75,7 @@ public class UserCollection extends BaseCollection<User> {
 
     JsonObject payload = new JsonObject();
     if (redirectUri != null) {
-      payload.addProperty("redirect_uri", redirectUri);
+//      payload.addProperty("redirect_uri", redirectUri);
     }
     payload.addProperty("email", email);
     payload.addProperty("device_name", deviceName);
