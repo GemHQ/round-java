@@ -6,16 +6,19 @@
  * user guide available at http://gradle.org/docs/1.12/userguide/tutorial_java_projects.html
  */
 
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'idea'
-
-
 buildscript {
   repositories {
     jcenter()
   }
 }
+
+plugins {
+  id "com.jfrog.bintray" version "1.2"
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 
 repositories {
   mavenCentral()
@@ -31,7 +34,7 @@ dependencies {
   compile 'org.jboss.aerogear:aerogear-otp-java:1.0.0'
   compile 'com.madgag.spongycastle:prov:1.51.0.0'
 
-  compile "org.codehaus.groovy:groovy-all:2.4.1"
+  testCompile "org.codehaus.groovy:groovy-all:2.4.1"
   testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
   testCompile 'junit:junit:4.11'
 }
@@ -43,4 +46,39 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 artifacts {
   archives sourcesJar
+}
+
+bintray {
+  def localProperties = loadLocalProperties()
+  user = localProperties.get('bintray.user')
+  key = localProperties.get('bintray.api_key')
+  publications = ['GemPublication']
+  pkg {
+    repo = 'maven'
+    name = 'round-java'
+    userOrg = 'gem'
+    licenses = ['MIT']
+    vcsUrl = 'https://github.com/GemHQ/round-java.git'
+    version {
+      name = '0.8.0'
+      vcsTag = '0.8.0'
+    }
+  }
+}
+
+publishing {
+  publications {
+    GemPublication(MavenPublication) {
+      from components.java
+      groupId 'co.gem'
+      artifactId 'round-java'
+      version '0.8.0'
+    }
+  }
+}
+
+def loadLocalProperties() {
+  Properties properties = new Properties()
+  properties.load(project.rootProject.file('local.properties').newDataInputStream())
+  return properties
 }
