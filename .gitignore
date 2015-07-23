@@ -11,5 +11,7 @@ build/
 *.idea
 *.DS_Store
 *.iml
+*.iws
+*.ipr
 round/
 local.properties
