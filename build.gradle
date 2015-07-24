@@ -9,16 +9,24 @@
 buildscript {
   repositories {
     jcenter()
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
   }
-}
-
-plugins {
-  id "com.jfrog.bintray" version "1.2"
+  dependencies {
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2"
+  }
 }
 
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.bintray"
+
+allprojects {
+  sourceCompatibility = '1.7'
+  targetCompatibility = '1.7'
+}
 
 repositories {
   mavenCentral()
@@ -29,7 +37,9 @@ dependencies {
   compile 'com.squareup.okhttp:okhttp:2.1.0'
   compile 'com.google.code.gson:gson:2.3.1'
   compile 'com.google.guava:guava:18.0'
-  compile 'org.bitcoinj:bitcoinj-core:0.13.1'
+  compile('org.bitcoinj:bitcoinj-core:0.13.1') {
+    exclude module: 'scrypt'
+  }
   compile 'org.abstractj.kalium:kalium:0.3.0'
   compile 'org.jboss.aerogear:aerogear-otp-java:1.0.0'
   compile 'com.madgag.spongycastle:prov:1.51.0.0'
