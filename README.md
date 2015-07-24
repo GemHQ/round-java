@@ -20,9 +20,21 @@ The round client is designed to interact with Gem's API to make building blockch
 ### Prerequisites:
 * Java 7
 
-#### [Linux (debian-based, tested on Ubuntu 14.04)](docs/install.md#linux-debian-based-tested-on-ubuntu-1404)
-#### [Mac OSX](docs/install.md#mac-osx)
-#### [Heroku](docs/install.md#heroku)
+The SDK is available on JCenter.
+
+#### Gradle
+Add JCenter to your repositories closure:
+    ```groovy
+    repositories {
+      jcenter()
+    }
+    ```
+Add round-java to your dependencies closure:
+    ```groovy
+    dependencies {
+      compile 'co.gem:round-java:0.8.0'
+    }
+    ```
 
 ## Getting Started Tutorial
 #### Table of Contents
@@ -81,7 +93,7 @@ In this step you will create your own personal Gem user and wallet authorized on
 	```java
     //  Store the device token for future authentication
     String deviceToken = client.users().create("EMAIL", "YOUR FIRST NAME", "YOUR LAST NAME",
-    		"aReallyStrongPassphrase", "SOME DEVICE NAME", "https://some-redirect-uri.com/");
+        "aReallyStrongPassphrase", "SOME DEVICE NAME", "https://some-redirect-uri.com/");
 	```
 
 1. Your application should **store the deviceToken permanently** as this will be required to authenticate from your app as this user.
@@ -136,7 +148,7 @@ You will be able to make a payment on a single confirmation.  While you wait for
 In this section you’ll learn how to create a payment a multi-signature payment in an HD wallet.  Once your address gets one more more confirmations we’ll be able to send a payment out of the wallet.  To make a payment, you'll unlock a wallet, generate a list of payees and then call the pay method.
 
 1. Unlock the wallet:
-			
+
   ```java
     user.wallet().unlock("aReallyStrongPassphrase", new UnlockedWalletCallback() {
       @Override
@@ -151,7 +163,7 @@ In this section you’ll learn how to create a payment a multi-signature payment
 	// address, amount (satoshis), confirmations the UTXOs must have
 	Transaction transaction = account.payToAddress("mxzdT4ShBudVtZbMqPMh9NVM3CS56Fp11s", 25000, 6)
 	String mfaUri = transaction.getMfaUri();
-	// Redirect the user to the above URI to approve the transaction. 
+	// Redirect the user to the above URI to approve the transaction.
 	```
 
 
