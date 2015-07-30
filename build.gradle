@@ -70,8 +70,8 @@ bintray {
     licenses = ['MIT']
     vcsUrl = 'https://github.com/GemHQ/round-java.git'
     version {
-      name = '0.8.0'
-      vcsTag = '0.8.0'
+      name = '0.8.1'
+      vcsTag = '0.8.1'
     }
   }
 }
@@ -82,7 +82,7 @@ publishing {
       from components.java
       groupId 'co.gem'
       artifactId 'round-java'
-      version '0.8.0'
+      version '0.8.1'
     }
   }
 }
