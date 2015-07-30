@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.util.Map;
+
 /**
  * Base class for building Gem API singleton objects.  Simplifies interactions with the json resources
  *
@@ -27,6 +29,16 @@ public class Base {
   public Base(Resource resource, Round round) {
     this.resource = resource;
     this.round = round;
+  }
+
+  public Base(Resource resource, Round round, JsonObject attributes) {
+    this(resource, round);
+
+    if (attributes != null) {
+      for (Map.Entry<String, JsonElement> entry : attributes.entrySet()) {
+        this.resource.attributes().add(entry.getKey(), entry.getValue());
+      }
+    }
   }
 
   public void fetch() throws Client.UnexpectedStatusCodeException, IOException {

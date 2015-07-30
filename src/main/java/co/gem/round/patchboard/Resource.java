@@ -53,10 +53,13 @@ public class Resource implements Iterable<Resource>{
 
   public Resource subresource(String name, Map<String, String> query) throws
     IOException, Client.UnexpectedStatusCodeException {
-    String url = attributes.get(name).getAsJsonObject()
-        .get(URL).getAsString();
-    String schemaId = resourceSpec.schemaSpec().associationSchemaId(name);
-    return client.resources(name, url, schemaId, query);
+    if (attributes.has(name)) {
+      String url = attributes.get(name).getAsJsonObject()
+          .get(URL).getAsString();
+      String schemaId = resourceSpec.schemaSpec().associationSchemaId(name);
+      return client.resources(name, url, schemaId, query);
+    }
+    return null;
   }
 
   public Resource action(String name)
@@ -87,6 +90,8 @@ public class Resource implements Iterable<Resource>{
   }
 
   public JsonObject attributes() {
+    if (attributes == null)
+      attributes = new JsonObject();
     return attributes;
   }
   public String url() {

@@ -2,8 +2,11 @@ package co.gem.round;
 
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Resource;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Gem users are the objects that interact with wallets.  When creating a user, the user will have a default wallet
@@ -15,6 +18,7 @@ public class User extends Base {
   public User(Resource resource, Round round) {
     super(resource, round);
   }
+  public User(Resource resource, Round round, JsonObject attributes) { super(resource, round, attributes); }
 
   /**
    * Getter all the wallets belonging to a user
@@ -33,8 +37,10 @@ public class User extends Base {
 
   public Devices devices() throws
       IOException, Client.UnexpectedStatusCodeException {
-    Resource resource = this.resource.subresource("devices");
-    Devices devices = new Devices(resource, round);
+    if (this.resource.subresource("devices") != null) {
+      return new Devices(this.resource.subresource("devices"), this.round);
+    }
+    Devices devices = this.round.deviceQuery(this.email());
     return devices;
   }
 

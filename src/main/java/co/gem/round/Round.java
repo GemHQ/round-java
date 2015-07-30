@@ -3,6 +3,8 @@ package co.gem.round;
 import co.gem.round.patchboard.Client;
 import co.gem.round.patchboard.Patchboard;
 import co.gem.round.patchboard.Resource;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -125,7 +127,9 @@ public class Round {
     Map<String, String> query = new HashMap<String, String>();
     query.put("email", email);
     Resource resource = patchboardClient.resources("user_query", query);
-    return new User(resource, this);
+    JsonObject attributes = new JsonObject();
+    attributes.addProperty("email", email);
+    return new User(resource, this, attributes);
   }
 
   /**
@@ -144,6 +148,13 @@ public class Round {
   public UserCollection users() {
     Resource resource = patchboardClient.resources("users");
     return new UserCollection(resource, this);
+  }
+
+  public Devices deviceQuery(String email) {
+    Map<String, String> query = new HashMap<>();
+    query.put("email", email);
+    Resource resource = patchboardClient.resources("devices_query", query);
+    return new Devices(resource, this);
   }
 
   public Client patchboardClient() { return patchboardClient; }
