@@ -35,7 +35,7 @@ Add round-java to your dependencies closure:
 
 ```gradle
 dependencies {
-	compile 'co.gem:round-java:0.8.0'
+	compile 'co.gem:round-java:0.8.1'
 }
 ```
 
