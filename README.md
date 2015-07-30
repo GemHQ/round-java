@@ -24,17 +24,20 @@ The SDK is available on JCenter.
 
 #### Gradle
 Add JCenter to your repositories closure:
-    ```groovy
-    repositories {
-      jcenter()
-    }
-    ```
+
+```gradle
+repositories {
+	jcenter()
+}
+```
+
 Add round-java to your dependencies closure:
-    ```groovy
-    dependencies {
-      compile 'co.gem:round-java:0.8.0'
-    }
-    ```
+
+```gradle
+dependencies {
+	compile 'co.gem:round-java:0.8.0'
+}
+```
 
 ## Getting Started Tutorial
 #### Table of Contents
