@@ -24,8 +24,7 @@ public class DeviceAuthTest {
 
   @Before
   public void setUp() throws Client.UnexpectedStatusCodeException, IOException {
-//    client = Round.client("https://api-sandbox.gem.co/");
-    client = Round.client("https://api-sandbox.gem.co");
+    client = Round.client("https://api.gem.co");
   }
 
   @Test
