@@ -1,5 +1,6 @@
 package co.gem.round.patchboard;
 
+import co.gem.round.BaseCollection;
 import co.gem.round.patchboard.definition.ActionSpec;
 import co.gem.round.patchboard.definition.ResourceSpec;
 import co.gem.round.patchboard.definition.SchemaSpec;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +91,25 @@ public class Resource implements Iterable<Resource>{
 
   }
 
+  public Resource setPage(int page){
+    Map<String, String> queryMap = new HashMap<String, String>();
+    if (url.contains("?")) {
+      String[] urlSegments = url.split("\\?");
+      this.url = urlSegments[0];
+      String[] queryElements = urlSegments[1].split("&");
+      for (int i = 0; i < queryElements.length; ++i) {
+        if (!queryElements[i].contains("limit=") && !queryElements[i].contains("offset=")) {
+          String[] keyAndVal = queryElements[i].split("=");
+          queryMap.put(keyAndVal[0], keyAndVal[1]);
+        }
+      }
+    }
+    queryMap.put("limit", Integer.toString(BaseCollection.PAGE_LIMIT));
+    queryMap.put("offset", Integer.toString(BaseCollection.PAGE_LIMIT * page));
+    this.url = this.url + "?" + client.queryStringFromObject(queryMap);
+
+    return this;
+  }
   public JsonObject attributes() {
     if (attributes == null)
       attributes = new JsonObject();
