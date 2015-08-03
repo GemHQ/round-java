@@ -97,7 +97,7 @@ public class Wallet extends Base {
       EncryptedMessage encryptedMessage = new EncryptedMessage();
       encryptedMessage.ciphertext = seedObject.get("ciphertext").getAsString();
       encryptedMessage.salt = seedObject.get("salt").getAsString();
-      encryptedMessage.iv = seedObject.get("iv").getAsString();
+      encryptedMessage.iv = seedObject.get("iv").isJsonNull() ? null : seedObject.get("iv").getAsString();
       encryptedMessage.iterations = Integer.parseInt(seedObject.get("iterations").getAsString());
       this.encryptedSeed = encryptedMessage;
     }

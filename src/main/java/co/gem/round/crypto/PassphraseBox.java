@@ -10,7 +10,6 @@ import org.spongycastle.crypto.paddings.ZeroBytePadding;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.crypto.params.ParametersWithIV;
 import org.spongycastle.util.Arrays;
-import org.abstractj.kalium.crypto.SecretBox;
 
 import javax.crypto.*;
 import javax.crypto.Mac;
@@ -33,7 +32,6 @@ public class PassphraseBox {
   private SecretKeySpec hmacSecretKey;
   private int iterations;
   private SecureRandom random;
-  private SecretBox box;
   private Mode mode;
 
   final int IVBYTES = 16;
@@ -50,8 +48,8 @@ public class PassphraseBox {
   }
 
   public PassphraseBox(String passphrase, String salt, int iterations, Mode mode) throws
-      NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
-      InvalidKeyException, NoSuchProviderException {
+          NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+          InvalidKeyException, NoSuchProviderException {
     this.mode = mode;
 
     random = new SecureRandom();
@@ -81,11 +79,7 @@ public class PassphraseBox {
       this.encryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()), new ZeroBytePadding());
       this.decryptCipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()), new ZeroBytePadding());
     } else if (this.mode == Mode.SODIUM) {
-      PBEKeySpec spec = new PBEKeySpec(passphrase.toCharArray(), this.salt, iterations, 32 * 8);
-      SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-
-      byte[] key = skf.generateSecret(spec).getEncoded();
-      this.box = new SecretBox(key);
+      throw new NoSuchAlgorithmException("Round does not support libsodium as of version 0.9.0");
     }
   }
 
@@ -99,14 +93,12 @@ public class PassphraseBox {
     return out;
   }
 
-  public String decrypt(String iv, String nonce, String ciphertext) throws
+  public String decrypt(String iv, String ciphertext) throws
       InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException,
       IllegalBlockSizeException, UnsupportedEncodingException, InvalidCipherTextException,
       NoSuchAlgorithmException {
     if (this.mode == Mode.AES) {
       return decryptAes(iv, ciphertext);
-    } else if (this.mode == Mode.SODIUM) {
-      return decryptSodium(nonce, ciphertext);
     } else {
       throw new NoSuchAlgorithmException();
     }
@@ -134,13 +126,6 @@ public class PassphraseBox {
     CipherParameters ivAndKey = new ParametersWithIV(new KeyParameter(aesKey), this.iv);
     decryptCipher.init(false, ivAndKey);
     return new String(cipherData(decryptCipher, ctextb), UTF_8);
-  }
-
-  public String decryptSodium(String nonce, String ciphertext) {
-    byte[] nonceBytes = Hex.decode(nonce);
-    byte[] ciphertextBytes = Hex.decode(ciphertext);
-    String message = new String(this.box.decrypt(nonceBytes, ciphertextBytes));
-    return message;
   }
 
   public EncryptedMessage encrypt(String message) throws
@@ -173,14 +158,13 @@ public class PassphraseBox {
       NoSuchPaddingException, InvalidAlgorithmParameterException, BadPaddingException,
       IllegalBlockSizeException, NoSuchProviderException, UnsupportedEncodingException, InvalidCipherTextException {
     Mode mode = null;
-    if (encryptedMessage.iv != null)
+    if (encryptedMessage.iv != null) {
       mode = Mode.AES;
-    else if (encryptedMessage.nonce != null)
-      mode = Mode.SODIUM;
-    else
+    } else {
       throw new NoSuchAlgorithmException();
+    }
     PassphraseBox box = new PassphraseBox(passphrase, encryptedMessage.salt, encryptedMessage.iterations, mode);
-    return box.decrypt(encryptedMessage.iv, encryptedMessage.nonce, encryptedMessage.ciphertext);
+    return box.decrypt(encryptedMessage.iv, encryptedMessage.ciphertext);
   }
 
   public static EncryptedMessage encrypt(String passphrase, String message) throws

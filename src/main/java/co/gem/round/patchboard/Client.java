@@ -26,6 +26,7 @@ public class Client {
   private OkHttpClient httpClient;
   private AuthorizerInterface authorizer;
   private Patchboard patchboard;
+  private String name;
 
   public Client(Patchboard patchboard, OkHttpClient httpClient, AuthorizerInterface authorizer) {
     this.patchboard = patchboard;
@@ -50,6 +51,7 @@ public class Client {
   }
 
   public Resource resources(String name, String url, String schemaId, Map<String, String> query) {
+
     SchemaSpec schemaSpec = null;
     if (schemaId != null) {
       schemaSpec = patchboard.definition().schemaById(schemaId);

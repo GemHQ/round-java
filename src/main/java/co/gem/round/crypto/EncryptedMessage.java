@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 public class EncryptedMessage {
   public String salt;
   public String iv;
-  public String nonce;
   public String ciphertext;
   public int iterations;
 
@@ -19,8 +18,6 @@ public class EncryptedMessage {
     serialized.addProperty("iterations", iterations);
     if (iv != null)
       serialized.addProperty("iv", iv);
-    if (nonce != null)
-      serialized.addProperty("nonce", iv);
     return serialized;
   }
 
@@ -34,8 +31,6 @@ public class EncryptedMessage {
       message.iterations = json.get("iterations").getAsInt();
     if (json.has("iv"))
       message.iv = json.get("iv").getAsString();
-    if (json.has("nonce"))
-      message.nonce = json.get("nonce").getAsString();
     return message;
   }
 }
