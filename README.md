@@ -35,7 +35,7 @@ Add round-java to your dependencies closure:
 
 ```gradle
 dependencies {
-	compile 'co.gem:round-java:0.8.1'
+	compile 'co.gem:round-java:0.9.0'
 }
 ```
 
@@ -65,10 +65,10 @@ This tutorial assumes that you have completed the developer signup and that you 
 ### 1. Run the Client
 In this step you will learn how to instantiate the API client for the given networks.
 
-1. Create the client object using the sandbox stack
+1. Create the client object
 
 	```java
-	Round client = Round.client("https://api-sandbox.gem.co");
+	Round client = Round.client("https://api.gem.co");
 	```
 
 [[top]](README.md#getting-started-tutorial)
@@ -78,7 +78,7 @@ In this step your application and you will retrieve the API Token for the applic
 
 1. Set the redirect url by clicking in the options gear and selecting `add redirect url`
 
-1. In the [console](https://sandbox.gem.co) copy your api_token by clicking on show
+1. In the [console](https://developers.gem.co) copy your api_token by clicking on show
 
 1. Go back to your shell session and set a variable for api_token
 

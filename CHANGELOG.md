@@ -1,4 +1,10 @@
 
+0.9.0 / 2015-08-03
+==================
+
+  * Added pagination support to Collections (default limit 100 per page)
+  * Removed Kalium dependency (and support for nacl-encrypted wallets)
+
 0.7.1 / 2015-04-20
 ==================
 

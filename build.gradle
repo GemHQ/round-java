@@ -40,7 +40,6 @@ dependencies {
   compile('org.bitcoinj:bitcoinj-core:0.13.1') {
     exclude module: 'scrypt'
   }
-  compile 'org.abstractj.kalium:kalium:0.3.0'
   compile 'org.jboss.aerogear:aerogear-otp-java:1.0.0'
   compile 'com.madgag.spongycastle:prov:1.51.0.0'
 
@@ -70,8 +69,8 @@ bintray {
     licenses = ['MIT']
     vcsUrl = 'https://github.com/GemHQ/round-java.git'
     version {
-      name = '0.8.1'
-      vcsTag = '0.8.1'
+      name = '0.9.0'
+      vcsTag = '0.9.0'
     }
   }
 }
@@ -82,7 +81,7 @@ publishing {
       from components.java
       groupId 'co.gem'
       artifactId 'round-java'
-      version '0.8.1'
+      version '0.9.0'
     }
   }
 }
