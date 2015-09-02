@@ -59,9 +59,14 @@ artifacts {
 }
 
 bintray {
-  def localProperties = loadLocalProperties()
-  user = localProperties.get('bintray.user')
-  key = localProperties.get('bintray.api_key')
+  try {
+    def localProperties = loadLocalProperties()
+    user = localProperties.get('bintray.user')
+    key = localProperties.get('bintray.api_key')
+  } catch(Exception e) {
+    user = null
+    key = null
+  }
   publications = ['GemPublication']
   pkg {
     repo = 'maven'
