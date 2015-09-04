@@ -360,7 +360,7 @@ public class Account extends Base {
       }
     });
     if (redirectUri != null) {
-      payment.setMfaUri(redirectUri);
+      payment.setRedirectUri(redirectUri);
     }
     if (wallet.hasApplication()) {
       payment.approve();

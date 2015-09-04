@@ -94,8 +94,8 @@ public class Transaction extends Base {
     return null;
   }
 
-  public void setMfaUri(String redirectUri) {
-    resource.attributes().addProperty("mfa_uri", redirectUri);
+  public void setRedirectUri(String redirectUri) {
+    resource.attributes().addProperty("redirect_uri", redirectUri);
   }
 
   public Transaction approve()
