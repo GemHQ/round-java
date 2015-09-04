@@ -77,7 +77,7 @@ public class Account extends Base {
 
   /**
    * Getter for addresses within an account
-   * @return
+   * @return AddressCollection
    * @throws IOException
    * @throws Client.UnexpectedStatusCodeException
    * @see co.gem.round.AddressCollection
@@ -121,9 +121,9 @@ public class Account extends Base {
 
   @Deprecated
   private Transaction payToEmail(String passphrase, String email, long amount)
-      throws IOException, Client.UnexpectedStatusCodeException,
-      NoSuchAlgorithmException, InvalidKeySpecException {
-    return this.payToEmail(passphrase, email, 6);
+          throws IOException, Client.UnexpectedStatusCodeException,
+          NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidAlgorithmParameterException, InvalidCipherTextException, IllegalBlockSizeException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException {
+    return this.payToEmail(passphrase, email, amount, 6);
   }
   @Deprecated
   public Transaction payToEmail(String passphrase, String email, long amount, int confirmations)
@@ -147,7 +147,25 @@ public class Account extends Base {
   public Transaction payToAddress(String passphrase, String address, long amount)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchProviderException, InvalidCipherTextException {
-    return this.payToAddress(passphrase, address, amount, 6);
+    return this.payToAddress(passphrase, address, amount, null, 6);
+  }
+
+  /**
+   * Make a payment to a specific bitcoin address.
+   * @param passphrase String passphrase to the wallet
+   * @param address String valid bitcoin address based on the network
+   * @param amount Long amount in satoshis
+   * @param redirectUri String used to override default mfa uri
+   * @return Payment signed payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   */
+  public Transaction payToAddress(String passphrase, String address, long amount,  String redirectUri)
+          throws IOException, Client.UnexpectedStatusCodeException,
+          NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchProviderException, InvalidCipherTextException {
+    return this.payToAddress(passphrase, address, amount, redirectUri, 6);
   }
 
   /**
@@ -169,6 +187,25 @@ public class Account extends Base {
   }
 
   /**
+   *
+   * @param passphrase String passphrase to the wallet
+   * @param address String valid bitcoin address based on the network
+   * @param amount Long amount in satoshis
+   * @param redirectUri String used to override default mfa uri
+   * @param confirmations Int number of confirmations UTXOs must have to be used in the payment
+   * @return Payment signed payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   */
+  public Transaction payToAddress(String passphrase, String address, long amount, String redirectUri, int confirmations)
+          throws IOException, Client.UnexpectedStatusCodeException,
+          NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchProviderException, InvalidCipherTextException {
+    return this.pay(passphrase, Recipient.recipientWithAddress(address, amount), redirectUri, confirmations);
+  }
+
+  /**
    * Make a payment to a Recipient object with a default of 6 confirmations for UTXO selection
    * @param passphrase String
    * @param recipient Recipient
@@ -184,6 +221,25 @@ public class Account extends Base {
       NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, InvalidCipherTextException {
     List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
     return this.pay(passphrase, recipients, 6);
+  }
+
+  /**
+   *
+   * @param passphrase String passphrase to the wallet
+   * @param recipient Recipient
+   * @param redirectUri String used to override default mfa uri
+   * @return Payment signed broadcasted payment object (transaction)
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   */
+  public Transaction pay(String passphrase, Recipient recipient, String redirectUri)
+          throws IOException, Client.UnexpectedStatusCodeException,
+          NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, InvalidCipherTextException {
+    List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
+    return this.pay(passphrase, recipients, redirectUri, 6);
   }
 
   /**
@@ -206,6 +262,26 @@ public class Account extends Base {
   }
 
   /**
+   *
+   * @param passphrase String passphrase to the wallet
+   * @param recipient Recipient
+   * @param redirectUri String used to override default mfa uri
+   * @param confirmations Int number of confirmations UTXOs must have to be used in the payment
+   * @return Payment signed broadcasted payment object (transaction)
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   */
+  public Transaction pay(String passphrase, Recipient recipient, String redirectUri, int confirmations)
+          throws IOException, Client.UnexpectedStatusCodeException,
+          NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, InvalidCipherTextException {
+    List<Recipient> recipients = Arrays.asList(new Recipient[]{recipient});
+    return this.pay(passphrase, recipients, redirectUri, confirmations);
+  }
+
+  /**
    * Make payment to a list of recipients.  This is a transaction with multiple To: addresses and amounts
    * @param passphrase String
    * @param recipients List of recipients
@@ -223,6 +299,24 @@ public class Account extends Base {
   }
 
   /**
+   *
+   * @param passphrase String passphrase to the wallet
+   * @param recipients List of recipients
+   * @param redirectUri String used to override default mfa uri
+   * @return Signed broadcasted payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   */
+  public Transaction pay(String passphrase, List<Recipient> recipients, String redirectUri)
+          throws IOException, Client.UnexpectedStatusCodeException,
+          NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException, NoSuchProviderException, InvalidCipherTextException {
+    return this.pay(passphrase, recipients, redirectUri, 6);
+  }
+
+  /**
    * Make payment to a list of recipients.  This is a transaction with multiple To: addresses and amounts
    * @param passphrase String
    * @param recipients List of recipients
@@ -235,6 +329,26 @@ public class Account extends Base {
    * @see co.gem.round.Recipient
    */
   public Transaction pay(String passphrase, List<Recipient> recipients, int confirmations)
+          throws IOException, Client.UnexpectedStatusCodeException,
+          NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+          BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, NoSuchProviderException, InvalidCipherTextException {
+    return this.pay(passphrase,recipients,null,confirmations);
+  }
+
+  /**
+   *
+   * @param passphrase String passphrase to the wallet
+   * @param recipients List of recipients
+   * @param redirectUri String used to override default mfa uri
+   * @param confirmations Int number of confirmations UTXOs must have for selection in the transaction
+   * @return Signed broadcasted payment
+   * @throws IOException
+   * @throws Client.UnexpectedStatusCodeException
+   * @throws NoSuchAlgorithmException
+   * @throws InvalidKeySpecException
+   * @see co.gem.round.Recipient
+   */
+  public Transaction pay(String passphrase, List<Recipient> recipients, String redirectUri, int confirmations)
       throws IOException, Client.UnexpectedStatusCodeException,
       NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
       BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, NoSuchProviderException, InvalidCipherTextException {
@@ -245,6 +359,9 @@ public class Account extends Base {
         payment.sign(wallet);
       }
     });
+    if (redirectUri != null) {
+      payment.setMfaUri(redirectUri);
+    }
     if (wallet.hasApplication()) {
       payment.approve();
     }

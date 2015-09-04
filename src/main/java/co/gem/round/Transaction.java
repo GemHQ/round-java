@@ -94,6 +94,10 @@ public class Transaction extends Base {
     return null;
   }
 
+  public void setMfaUri(String redirectUri) {
+    resource.attributes().addProperty("mfa_uri", redirectUri);
+  }
+
   public Transaction approve()
       throws IOException, Client.UnexpectedStatusCodeException {
     resource = this.resource().action("approve", new JsonObject());
