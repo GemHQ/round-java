@@ -6,5 +6,5 @@ import co.gem.round.patchboard.Client;
 import java.io.IOException;
 
 public interface UnlockedWalletCallback {
-  public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException;
+    public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException;
 }

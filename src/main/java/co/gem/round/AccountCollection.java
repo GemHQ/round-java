@@ -11,9 +11,9 @@ import java.io.IOException;
  * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class AccountCollection extends BaseCollection<Account> {
-  public static final String RESOURCE_NAME = "accounts";
+    public static final String RESOURCE_NAME = "accounts";
 
-  private Wallet wallet;
+    private Wallet wallet;
 
 //  public AccountCollection(String url, Round round, Wallet wallet) {
 //    super(url, round, RESOURCE_NAME);
@@ -22,49 +22,49 @@ public class AccountCollection extends BaseCollection<Account> {
 //    setWallets();
 //  }
 
-  public AccountCollection(Resource resource, Round round, Wallet wallet) {
-    super(resource, round);
+    public AccountCollection(Resource resource, Round round, Wallet wallet) {
+        super(resource, round);
 
-    this.wallet = wallet;
-    setWallets();
-  }
-
-  private void setWallets() {
-    for (Account account : list) {
-      account.setWallet(wallet);
+        this.wallet = wallet;
+        setWallets();
     }
-  }
 
-  @Override
-  public void populateCollection(Iterable<Resource> resources) {
-    for (Resource resource : resources) {
-      Account account = new Account(resource, round);
-      account.setWallet(this.wallet);
-      this.add(account.getString("name"), account);
+    private void setWallets() {
+        for (Account account : list) {
+            account.setWallet(wallet);
+        }
     }
-  }
 
-  /**
-   * Creates a new account within a Wallet.
-   *
-   * @param name
-   * @return Account
-   * @throws IOException
-   * @throws Client.UnexpectedStatusCodeException
-   * @see co.gem.round.Account
-   */
-  public Account create(String name, Round.Network network)
-      throws IOException, Client.UnexpectedStatusCodeException {
-    JsonObject body = new JsonObject();
-    body.addProperty("name", name);
-    body.addProperty("network", network.toString());
+    @Override
+    public void populateCollection(Iterable<Resource> resources) {
+        for (Resource resource : resources) {
+            Account account = new Account(resource, round);
+            account.setWallet(this.wallet);
+            this.add(account.getString("name"), account);
+        }
+    }
 
-    Resource accountResource = resource.action("create", body);
+    /**
+     * Creates a new account within a Wallet.
+     *
+     * @param name
+     * @return Account
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.Account
+     */
+    public Account create(String name, Round.Network network)
+            throws IOException, Client.UnexpectedStatusCodeException {
+        JsonObject body = new JsonObject();
+        body.addProperty("name", name);
+        body.addProperty("network", network.toString());
 
-    Account account = new Account(accountResource, this.round);
-    account.setWallet(wallet);
-    account.fetch();
-    this.add(account.key(), account);
-    return account;
-  }
+        Resource accountResource = resource.action("create", body);
+
+        Account account = new Account(accountResource, this.round);
+        account.setWallet(wallet);
+        account.fetch();
+        this.add(account.key(), account);
+        return account;
+    }
 }

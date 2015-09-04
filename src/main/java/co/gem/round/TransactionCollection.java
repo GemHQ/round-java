@@ -15,53 +15,53 @@ import java.util.List;
  */
 public class TransactionCollection extends BaseCollection<Transaction> {
 
-  public TransactionCollection(Resource resource, Round round) {
-    super(resource, round);
-  }
-
-  @Override
-  public void populateCollection(Iterable<Resource> resources) {
-    for (Resource resource : resources) {
-      Transaction transaction = new Transaction(resource, round);
-      add(transaction.key(), transaction);
-    }
-  }
-
-  /**
-   * Requests a payment object to be created by the Gem API.  This will lock UTXOs while you inspect the unsigned
-   * payment for things like the suggested fee.
-   * @param recipients List of recipients
-   * @return Payment - unsigned and not broadcasted
-   * @throws java.io.IOException
-   * @throws co.gem.round.patchboard.Client.UnexpectedStatusCodeException
-   */
-  public Transaction create(List<Recipient> recipients, int confirmations)
-      throws IOException, Client.UnexpectedStatusCodeException {
-    JsonArray payeesJson = new JsonArray();
-    for (Recipient recipient : recipients) {
-      JsonObject payeeJson = new JsonObject();
-      if (recipient.email != null) {
-        payeeJson.addProperty("email", recipient.email);
-      } else if (recipient.address != null) {
-        payeeJson.addProperty("address", recipient.address);
-      }
-
-      payeeJson.addProperty("amount", recipient.amount);
-      payeesJson.add(payeeJson);
+    public TransactionCollection(Resource resource, Round round) {
+        super(resource, round);
     }
 
-    JsonObject body = new JsonObject();
-    body.add("payees", payeesJson);
-    body.addProperty("utxo_confirmations", confirmations);
+    @Override
+    public void populateCollection(Iterable<Resource> resources) {
+        for (Resource resource : resources) {
+            Transaction transaction = new Transaction(resource, round);
+            add(transaction.key(), transaction);
+        }
+    }
 
-    Resource paymentResource = resource.action("create", body);
+    /**
+     * Requests a payment object to be created by the Gem API.  This will lock UTXOs while you inspect the unsigned
+     * payment for things like the suggested fee.
+     * @param recipients List of recipients
+     * @return Payment - unsigned and not broadcasted
+     * @throws java.io.IOException
+     * @throws co.gem.round.patchboard.Client.UnexpectedStatusCodeException
+     */
+    public Transaction create(List<Recipient> recipients, int confirmations)
+            throws IOException, Client.UnexpectedStatusCodeException {
+        JsonArray payeesJson = new JsonArray();
+        for (Recipient recipient : recipients) {
+            JsonObject payeeJson = new JsonObject();
+            if (recipient.email != null) {
+                payeeJson.addProperty("email", recipient.email);
+            } else if (recipient.address != null) {
+                payeeJson.addProperty("address", recipient.address);
+            }
 
-    return new Transaction(paymentResource, this.round);
-  }
+            payeeJson.addProperty("amount", recipient.amount);
+            payeesJson.add(payeeJson);
+        }
 
-  public Transaction create(List<Recipient> recipients)
-      throws IOException, Client.UnexpectedStatusCodeException {
-    return this.create(recipients, 6);
-  }
+        JsonObject body = new JsonObject();
+        body.add("payees", payeesJson);
+        body.addProperty("utxo_confirmations", confirmations);
+
+        Resource paymentResource = resource.action("create", body);
+
+        return new Transaction(paymentResource, this.round);
+    }
+
+    public Transaction create(List<Recipient> recipients)
+            throws IOException, Client.UnexpectedStatusCodeException {
+        return this.create(recipients, 6);
+    }
 
 }

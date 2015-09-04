@@ -13,29 +13,29 @@ import java.io.IOException;
  * Created by julian on 11/25/14.
  */
 public class Patchboard {
-  private static OkHttpClient httpClient = new OkHttpClient();
+    private static OkHttpClient httpClient = new OkHttpClient();
 
-  private Definition definition;
+    private Definition definition;
 
-  private Patchboard(Definition definition) {
-    this.definition = definition;
-  }
+    private Patchboard(Definition definition) {
+        this.definition = definition;
+    }
 
-  public static Patchboard discover(String url) throws IOException {
-    Request.Builder builder = new Request.Builder().url(url);
-    builder.header("Accept", "application/json");
-    Request request = builder.build();
-    Response response = httpClient.newCall(request).execute();
-    JsonObject definitionJson = new JsonParser().parse(response.body().string()).getAsJsonObject();
-    Definition definition = Definition.parse(definitionJson);
-    return new Patchboard(definition);
-  }
+    public static Patchboard discover(String url) throws IOException {
+        Request.Builder builder = new Request.Builder().url(url);
+        builder.header("Accept", "application/json");
+        Request request = builder.build();
+        Response response = httpClient.newCall(request).execute();
+        JsonObject definitionJson = new JsonParser().parse(response.body().string()).getAsJsonObject();
+        Definition definition = Definition.parse(definitionJson);
+        return new Patchboard(definition);
+    }
 
-  public Client spawn(AuthorizerInterface authorizer) {
-    return new Client(this, httpClient, authorizer);
-  }
+    public Client spawn(AuthorizerInterface authorizer) {
+        return new Client(this, httpClient, authorizer);
+    }
 
-  public Definition definition() {
-    return definition;
-  }
+    public Definition definition() {
+        return definition;
+    }
 }
