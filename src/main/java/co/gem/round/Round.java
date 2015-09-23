@@ -102,8 +102,9 @@ public class Round {
         params.put("api_token", apiToken);
         params.put("admin_token", adminToken);
         patchboardClient.authorizer().authorize(AuthScheme.APPLICATION, params);
+
         Map<String, String> identifyParams = new HashMap<>();
-        params.put("api_token", apiToken);
+        identifyParams.put("api_token", apiToken);
         patchboardClient.authorizer().authorize(AuthScheme.IDENTIFY, identifyParams);
 
         Application app = application();

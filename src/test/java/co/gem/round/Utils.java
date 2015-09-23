@@ -17,14 +17,14 @@ public class Utils {
 
   // Set these for testing.
 
-  private static final String API_URL = "https://api.gem.co";
+  private static final String API_URL = "http://localhost:8999";
 
-  private static final String API_TOKEN = "WQj_QQgOvhJXo4ISE0oryGUBwcmLW7c0CvO59qMZ-tE";
-  private static final String ADMIN_TOKEN = "bm-UBRjQOFBCyod6MbdyGX0nVHvEb2gjoPkZYMpPlO8";
-  private static final String TOTP_SECRET = "zh2l2ntslymi72on";
+  private static final String API_TOKEN = "gLtx5wivoHyOJlTQSQBp8nqv_u7Ung8vZzVwYKrfoXs";
+  private static final String ADMIN_TOKEN = "P_EXnT9RjKCZhpSOyvqv0ER6AGPRotJFuszz90kKwWY";
+  private static final String TOTP_SECRET = "oi3skxjunerfarqt";
 
 
-  private static final String USER_EMAIL = "joshua+usertest1@gem.co";
+  private static final String USER_EMAIL = "poema+usertest1@gem.co";
 
 
   public static String getUserInput(String str) throws IOException {
