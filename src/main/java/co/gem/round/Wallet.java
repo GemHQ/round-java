@@ -17,6 +17,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Wallet is a gem wallet which is the HD Multi-Sig (2of3) wallet that is owned by a User.  Wallets provide access to
@@ -71,6 +73,22 @@ public class Wallet extends Base {
      */
     public Account defaultAccount() throws Client.UnexpectedStatusCodeException, IOException {
         return accounts().get(0);
+    }
+
+    /**
+     * Gets account in a wallet with name matching accountName parameter.
+     * @param accountName Account name
+     * @return Account
+     * @throws Client.UnexpectedStatusCodeException
+     * @throws IOException
+     * @see co.gem.round.Account
+     */
+    public Account account(String accountName) throws Client.UnexpectedStatusCodeException, IOException {
+        Map<String, String> query = new HashMap<>();
+        query.put("name", accountName);
+        Account account = new Account(resource.subresource("account_query", query), this.round);
+        account.fetch();
+        return account;
     }
 
     /**
