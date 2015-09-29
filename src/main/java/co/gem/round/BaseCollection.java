@@ -50,14 +50,28 @@ public abstract class BaseCollection<T> extends Base implements Iterable<T> {
     }
 
     public List<T> asList() {
+        fetchIfNeeded();
         return list;
     }
-    public Map<String, T> asMap() { return map; }
+    public Map<String, T> asMap() {
+        fetchIfNeeded();
+        return map;
+    }
 
     public abstract void populateCollection(Iterable<Resource> collection);
 
     @Override
     public Iterator<T> iterator() {
+        fetchIfNeeded();
         return list.iterator();
+    }
+
+    private void fetchIfNeeded() {
+        if (list.isEmpty() && map.isEmpty()) {
+            try {
+                fetch();
+            } catch (Client.UnexpectedStatusCodeException | IOException ignore) {
+            }
+        }
     }
 }

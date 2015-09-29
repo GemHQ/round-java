@@ -92,15 +92,29 @@ public class Wallet extends Base {
     }
 
     /**
-     * Getter for accounts in a wallet
+     * Getter for accounts in a wallet. Returns populated AccountCollection object. To
+     * retrieve reference without fetching accounts use 'accounts(false)'
      * @return AccountCollection of Accounts
      * @throws Client.UnexpectedStatusCodeException
      * @throws IOException
      * @see co.gem.round.AccountCollection
      */
     public AccountCollection accounts() throws Client.UnexpectedStatusCodeException, IOException {
+        return accounts(true);
+    }
+
+    /**
+     * Getter for AccountCollection object in a wallet.
+     * @param fetch boolean used to determine whether to populate collection
+     * @return AccountCollection object
+     * @throws Client.UnexpectedStatusCodeException
+     * @throws IOException
+     * @see co.gem.round.AccountCollection
+     */
+    public AccountCollection accounts(boolean fetch) throws Client.UnexpectedStatusCodeException, IOException {
         AccountCollection accounts = new AccountCollection(resource.subresource("accounts"), this.round, this);
-        accounts.fetch();
+        if (fetch)
+            accounts.fetch();
         return accounts;
     }
 
