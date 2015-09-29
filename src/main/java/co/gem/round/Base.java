@@ -14,80 +14,80 @@ import java.util.Map;
  * @author Julian Vergel de Dios (julian@gem.co) on 12/18/14.
  */
 public class Base {
-  protected Resource resource;
-  protected Round round;
+    protected Resource resource;
+    protected Round round;
 
-  public static final String DEFAULT_ACTION = "get";
+    public static final String DEFAULT_ACTION = "get";
 
-  public Base() {}
+    public Base() {}
 
-  public Base(String url, Round round, String resourceName) {
-    this.round = round;
-    resource = this.round.patchboardClient().resources(resourceName, url);
-  }
-
-  public Base(Resource resource, Round round) {
-    this.resource = resource;
-    this.round = round;
-  }
-
-  public Base(Resource resource, Round round, JsonObject attributes) {
-    this(resource, round);
-
-    if (attributes != null) {
-      for (Map.Entry<String, JsonElement> entry : attributes.entrySet()) {
-        this.resource.attributes().add(entry.getKey(), entry.getValue());
-      }
+    public Base(String url, Round round, String resourceName) {
+        this.round = round;
+        resource = this.round.patchboardClient().resources(resourceName, url);
     }
-  }
 
-  public void fetch() throws Client.UnexpectedStatusCodeException, IOException {
-    resource = resource.action(DEFAULT_ACTION);
-  }
+    public Base(Resource resource, Round round) {
+        this.resource = resource;
+        this.round = round;
+    }
 
-  public String key() {
-    return getString("key");
-  }
+    public Base(Resource resource, Round round, JsonObject attributes) {
+        this(resource, round);
 
-  public String url() { return resource.url(); }
+        if (attributes != null) {
+            for (Map.Entry<String, JsonElement> entry : attributes.entrySet()) {
+                this.resource.attributes().add(entry.getKey(), entry.getValue());
+            }
+        }
+    }
 
-  public Resource resource() {
-    return resource;
-  }
+    public void fetch() throws Client.UnexpectedStatusCodeException, IOException {
+        resource = resource.action(DEFAULT_ACTION);
+    }
 
-  public JsonElement getAttribute(String key) {
-    if (resource.attributes().has(key))
-      return resource.attributes().get(key);
-    return null;
-  }
+    public String key() {
+        return getString("key");
+    }
 
-  public String getString(String key) {
-    if (getAttribute(key) == null) return null;
-    return getAttribute(key).getAsString();
-  }
+    public String url() { return resource.url(); }
 
-  public Integer getInt(String key) {
-    if (getAttribute(key) == null) return null;
-    return getAttribute(key).getAsInt();
-  }
+    public Resource resource() {
+        return resource;
+    }
 
-  public Double getDouble(String key) {
-    if (getAttribute(key) == null) return null;
-    return getAttribute(key).getAsDouble();
-  }
+    public JsonElement getAttribute(String key) {
+        if (resource.attributes().has(key))
+            return resource.attributes().get(key);
+        return null;
+    }
 
-  public Float getFloat(String key) {
-    if (getAttribute(key) == null) return null;
-    return getAttribute(key).getAsFloat();
-  }
+    public String getString(String key) {
+        if (getAttribute(key) == null) return null;
+        return getAttribute(key).getAsString();
+    }
 
-  public Long getLong(String key) {
-    if (getAttribute(key) == null) return null;
-    return getAttribute(key).getAsLong();
-  }
+    public Integer getInt(String key) {
+        if (getAttribute(key) == null) return null;
+        return getAttribute(key).getAsInt();
+    }
 
-  public JsonObject getObject(String key) {
-    if (getAttribute(key) == null) return null;
-    return getAttribute(key).getAsJsonObject();
-  }
+    public Double getDouble(String key) {
+        if (getAttribute(key) == null) return null;
+        return getAttribute(key).getAsDouble();
+    }
+
+    public Float getFloat(String key) {
+        if (getAttribute(key) == null) return null;
+        return getAttribute(key).getAsFloat();
+    }
+
+    public Long getLong(String key) {
+        if (getAttribute(key) == null) return null;
+        return getAttribute(key).getAsLong();
+    }
+
+    public JsonObject getObject(String key) {
+        if (getAttribute(key) == null) return null;
+        return getAttribute(key).getAsJsonObject();
+    }
 }

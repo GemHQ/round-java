@@ -9,25 +9,25 @@ import co.gem.round.patchboard.Resource;
  */
 public class Address extends Base {
 
-  public Address(Resource resource, Round round) {
-    super(resource, round);
-  }
+    public Address(Resource resource, Round round) {
+        super(resource, round);
+    }
 
-  /**
-   * Getter for the Address string from the Address object.
-   * @return String address
-   */
-  public String getAddressString() {
-    return getString("string");
-  }
+    /**
+     * Getter for the Address string from the Address object.
+     * @return String address
+     */
+    public String getAddressString() {
+        return getString("string");
+    }
 
-  /**
-   * Getter for the path within the wallet.
-   * @return String wallet path to the address
-   */
-  public String getAddressPath() {
-    return getString("path");
-  }
+    /**
+     * Getter for the path within the wallet.
+     * @return String wallet path to the address
+     */
+    public String getAddressPath() {
+        return getString("path");
+    }
 }
 
 
