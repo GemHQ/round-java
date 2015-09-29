@@ -24,7 +24,7 @@ public class Utils {
   private static final String TOTP_SECRET = "oi3skxjunerfarqt";
 
 
-  private static final String USER_EMAIL = "poema+usertest1@gem.co";
+  private static final String USER_EMAIL = "poema@gem.co";
 
 
   public static String getUserInput(String str) throws IOException {
