@@ -94,6 +94,10 @@ public class Transaction extends Base {
     return null;
   }
 
+  public void setRedirectUri(String redirectUri) {
+    resource.attributes().addProperty("redirect_uri", redirectUri);
+  }
+
   public Transaction approve()
       throws IOException, Client.UnexpectedStatusCodeException {
     resource = this.resource().action("approve", new JsonObject());
