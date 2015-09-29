@@ -38,7 +38,7 @@ public class ApplicationAuthTest {
         int random = new Random().nextInt(1000000);
         String walletName = "Wallet" + random;
 
-        Wallet.Wrapper wrapper = app.wallets().create(walletName, "passphrase");
+        Wallet.Wrapper wrapper = app.wallets(false).create(walletName, "passphrase");
         Wallet wallet = wrapper.getWallet();
         try {
             wallet.unlock("wrong", new UnlockedWalletCallback() {
@@ -47,7 +47,7 @@ public class ApplicationAuthTest {
                     Assert.fail();
                 }
             });
-        } catch (Exception e) {  }
+        } catch (Exception ignore) {  }
         wallet.unlock("passphrase", new UnlockedWalletCallback() {
             @Override
             public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {
@@ -73,13 +73,13 @@ public class ApplicationAuthTest {
         Wallet wallet = wrapper.getWallet();
 
         Account testnetAccount = wallet.accounts().create("name", Round.Network.TESTNET);
-        Account bitcoinAccount = wallet.accounts().create("name2", Round.Network.BITCOIN);
+        Account bitcoinAccount = wallet.accounts(false).create("name2", Round.Network.BITCOIN);
         Account litecoinAccount = wallet.accounts().create("name3", Round.Network.LITECOIN);
-        Account dogecoinAccount = wallet.accounts().create("name4", Round.Network.DOGECOIN);
+        Account dogecoinAccount = wallet.accounts(false).create("name4", Round.Network.DOGECOIN);
 
-        Address testnetAddress = testnetAccount.addresses().create();
+        Address testnetAddress = testnetAccount.addresses(false).create();
         Address bitcoinAddress = bitcoinAccount.addresses().create();
-        Address litecoinAddress = litecoinAccount.addresses().create();
+        Address litecoinAddress = litecoinAccount.addresses(false).create();
         Address dogecoinAddress = dogecoinAccount.addresses().create();
 
         System.out.println(testnetAddress.getAddressString());

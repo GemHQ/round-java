@@ -13,17 +13,41 @@ import java.util.Map;
 
 /**
  * Created by julian on 12/18/14.
+ *
  */
 public class Application extends Base{
     public Application(Resource resource, Round round) {
         super(resource, round);
     }
 
+    /**
+     * Getter for users collection. Returns populated UserCollection object. To
+     * retrieve reference without fetching users use 'users(false)'
+     * @return UserCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.UserCollection
+     */
     public UserCollection users()
+            throws IOException, Client.UnexpectedStatusCodeException {
+        return users(true);
+    }
+
+    /**
+     * Getter for users collection.
+     * @param fetch boolean used to determine whether to populate collection
+     * @return UserCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.UserCollection
+     */
+    public UserCollection users(boolean fetch)
             throws IOException, Client.UnexpectedStatusCodeException {
         Resource usersResource = resource.subresource("users");
         UserCollection users = new UserCollection(usersResource, round);
-        users.fetch();
+        if (fetch) {
+            users.fetch();
+        }
         return users;
     }
 
@@ -50,16 +74,33 @@ public class Application extends Base{
     }
 
     /**
-     *
+     * Getter for wallets. Returns populated WalletCollection object. To
+     * retrieve reference without fetching wallets use 'wallets(false)'
      * @return WalletCollection of wallets
      * @throws IOException
      * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.WalletCollection
      */
     public WalletCollection wallets()
             throws IOException, Client.UnexpectedStatusCodeException {
+        return wallets(true);
+    }
+
+    /**
+     * Getter for WalletCollection object.
+     * @param fetch boolean used to determine whether to populate collection
+     * @return WalletCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.WalletCollection
+     */
+    public WalletCollection wallets(boolean fetch)
+            throws IOException, Client.UnexpectedStatusCodeException {
         Resource walletsResource = resource.subresource("wallets");
         WalletCollection wallets = new WalletCollection(walletsResource, round, this);
-        wallets.fetch();
+        if (fetch) {
+            wallets.fetch();
+        }
         return wallets;
     }
 

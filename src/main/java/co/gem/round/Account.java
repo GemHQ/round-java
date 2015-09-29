@@ -1,16 +1,9 @@
 package co.gem.round;
 
-import co.gem.round.coinop.MultiWallet;
-import co.gem.round.patchboard.Client;
-import co.gem.round.patchboard.Resource;
 import com.google.common.base.Joiner;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+
 import org.spongycastle.crypto.InvalidCipherTextException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -21,6 +14,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import co.gem.round.coinop.MultiWallet;
+import co.gem.round.patchboard.Client;
+import co.gem.round.patchboard.Resource;
 
 /**
  * Account class is the primary class where most of the interactions for the wallet will occur.  From an account, you
@@ -36,30 +37,88 @@ public class Account extends Base {
         super(resource, round);
     }
 
+    /**
+     * Getter for transactions on an account with the specified status
+     * @param status list of desired status to populate collection with
+     * @return TransactionCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.Transaction.Status
+     */
     public TransactionCollection transactions(List<Transaction.Status> status) throws IOException, Client.UnexpectedStatusCodeException {
         return transactions(null, status);
     }
 
+    /**
+     * Getter for transactions on an account of the specified type
+     * @param type desired transaction type to populate collection with
+     * @return TransactionCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.Transaction.Type
+     */
     public TransactionCollection transactions(Transaction.Type type) throws IOException, Client.UnexpectedStatusCodeException {
         return transactions(type, null);
     }
 
+    /**
+     * Getter for transactions on an account. Returns populated TransactionCollection object. To
+     * retrieve reference without fetching transactions use 'transactions(false)'
+     * @return TransactionCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.TransactionCollection
+     */
     public TransactionCollection transactions() throws IOException, Client.UnexpectedStatusCodeException {
         return transactions(null, null);
     }
 
+    /**
+     * Getter for TransactionCollection object
+     * @param fetch boolean used to determine whether to populate collection
+     * @return TransactionCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.TransactionCollection
+     */
+    public TransactionCollection transactions(boolean fetch) throws IOException, Client.UnexpectedStatusCodeException {
+        return transactions(null, null, fetch);
+    }
+
+    /**
+     * Getter for the wallet this account belongs to
+     * @return Wallet
+     * @see co.gem.round.Wallet
+     */
     public Wallet getWallet() {
         return wallet;
     }
 
     /**
-     * Getter for transactions on an account
+     * Getter for transactions on an account. Returns populated TransactionCollection object.
+     * @param type desired transaction type to populate collection with
+     * @param status list of desired status to populate collection with
      * @return TransactionCollection
      * @throws IOException
      * @throws Client.UnexpectedStatusCodeException
      * @see co.gem.round.TransactionCollection
      */
     public TransactionCollection transactions(Transaction.Type type, List<Transaction.Status> status)
+            throws IOException, Client.UnexpectedStatusCodeException {
+        return transactions(type, status, true);
+    }
+
+    /**
+     * Getter for transactions on an account.
+     * @param type desired transaction type
+     * @param status list of desired transaction status
+     * @param fetch boolean used to determine whether to populate collection
+     * @return TransactionCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.TransactionCollection
+     */
+    public TransactionCollection transactions(Transaction.Type type, List<Transaction.Status> status, boolean fetch)
             throws IOException, Client.UnexpectedStatusCodeException {
         Map<String, String> query = new HashMap<>();
         if (type != null) {
@@ -70,13 +129,15 @@ public class Account extends Base {
         }
         Resource transactionsResource = resource.subresource("transactions", query);
         TransactionCollection transactions = new TransactionCollection(transactionsResource, this.round);
-        transactions.fetch();
-
+        if (fetch) {
+            transactions.fetch();
+        }
         return transactions;
     }
 
     /**
-     * Getter for addresses within an account
+     * Getter for addresses within an account. Returns populated AddressCollection object. To
+     * retrieve reference without fetching addresses use 'addresses(false)'
      * @return AddressCollection
      * @throws IOException
      * @throws Client.UnexpectedStatusCodeException
@@ -84,10 +145,24 @@ public class Account extends Base {
      */
     public AddressCollection addresses()
             throws IOException, Client.UnexpectedStatusCodeException {
+        return addresses(true);
+    }
+
+    /**
+     * Getter for AccountCollection object
+     * @param fetch boolean used to determine whether to populate collection
+     * @return AddressCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.AddressCollection
+     */
+    public AddressCollection addresses(boolean fetch)
+            throws IOException, Client.UnexpectedStatusCodeException {
         Resource addressesResource = resource.subresource("addresses");
         AddressCollection addresses = new AddressCollection(addressesResource, this.round);
-        addresses.fetch();
-
+        if (fetch) {
+            addresses.fetch();
+        }
         return addresses;
     }
 
@@ -113,6 +188,14 @@ public class Account extends Base {
      */
     public long pendingBalance() {
         return getLong("pending_balance");
+    }
+
+    /**
+     * Getter for the available balance on an account.
+     * @return Long available balance
+     */
+    public long availableBalance() {
+        return getLong("available_balance");
     }
 
     public void setWallet(Wallet wallet) {
@@ -352,7 +435,7 @@ public class Account extends Base {
             throws IOException, Client.UnexpectedStatusCodeException,
             NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
             BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, NoSuchProviderException, InvalidCipherTextException {
-        final Transaction payment = this.transactions().create(recipients, confirmations);
+        final Transaction payment = this.transactions(false).create(recipients, confirmations);
         this.wallet.unlock(passphrase, new UnlockedWalletCallback() {
             @Override
             public void execute(MultiWallet wallet) throws IOException, Client.UnexpectedStatusCodeException {

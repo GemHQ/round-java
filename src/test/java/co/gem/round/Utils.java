@@ -11,10 +11,9 @@ import java.util.Random;
 
 /**
  * Created by jled on 12/31/14.
+ *
  */
 public class Utils {
-
-
   // Set these for testing.
 
   private static final String API_URL = "http://localhost:8999";
@@ -39,7 +38,9 @@ public class Utils {
     System.out.println(str);
   }
 
-  public static String getApiUrl() { return API_URL; }
+  public static String getApiUrl() {
+      return API_URL;
+  }
 
   public static String getAdminToken() {
     return ADMIN_TOKEN;

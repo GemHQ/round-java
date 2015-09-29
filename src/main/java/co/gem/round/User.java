@@ -21,7 +21,8 @@ public class User extends Base {
     public User(Resource resource, Round round, JsonObject attributes) { super(resource, round, attributes); }
 
     /**
-     * Getter all the wallets belonging to a user
+     * Getter all the wallets belonging to a user. Returns populated WalletCollection object. To
+     * retrieve reference without fetching wallets use 'wallets(false)'
      * @return WalletCollection
      * @throws IOException
      * @throws Client.UnexpectedStatusCodeException
@@ -29,9 +30,24 @@ public class User extends Base {
      */
     public WalletCollection wallets() throws
             IOException, Client.UnexpectedStatusCodeException {
+        return wallets(true);
+    }
+
+    /**
+     * Getter for WalletCollection associated with a user.
+     * @param fetch boolean used to determine whether to populate collection
+     * @return WalletCollection
+     * @throws IOException
+     * @throws Client.UnexpectedStatusCodeException
+     * @see co.gem.round.WalletCollection
+     */
+    public WalletCollection wallets(boolean fetch) throws
+            IOException, Client.UnexpectedStatusCodeException {
         Resource resource = this.resource.subresource("wallets");
         WalletCollection wallets = new WalletCollection(resource, round);
-        wallets.fetch();
+        if (fetch) {
+            wallets.fetch();
+        }
         return wallets;
     }
 
@@ -40,8 +56,7 @@ public class User extends Base {
         if (this.resource.subresource("devices") != null) {
             return new Devices(this.resource.subresource("devices"), this.round);
         }
-        Devices devices = this.round.deviceQuery(this.email());
-        return devices;
+        return this.round.deviceQuery(this.email());
     }
 
     /**
