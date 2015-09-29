@@ -95,7 +95,7 @@ In this step you will create your own personal Gem user and wallet authorized on
 
 	```java
     //  Store the device token for future authentication
-    String deviceToken = client.users().create("EMAIL", "YOUR FIRST NAME", "YOUR LAST NAME",
+    String deviceToken = client.users(false).create("EMAIL", "YOUR FIRST NAME", "YOUR LAST NAME",
         "aReallyStrongPassphrase", "SOME DEVICE NAME", "https://some-redirect-uri.com/");
 	```
 
@@ -121,8 +121,15 @@ In this step you will learn how to authenticate to the Gem API on a User's devic
 1. Get the default wallet and then default account
 
 	```java
-	Account account = fullUser.wallet().defaultAccount();
+	Wallet wallet = fullUser.wallet();
+	Account account = wallet.defaultAccount();
 	```
+1. Or create an account...say an altcoin!
+
+ ```java
+ // network takes one of 'BITCOIN', 'TESTNET', 'LITECOIN', 'DOGECOIN'
+ Account account = wallet.accounts(false).create("ACCOUNT NAME", Round.Network.LITECOIN);
+ ```
 
 [[top]](README.md#getting-started-tutorial)
 
@@ -132,7 +139,7 @@ In this section you'll learn how to create an address to fund with testnet coins
 1. Create an address
 
 	```java
-	Address address = account.addresses().create();
+	Address address = account.addresses(false).create();
 	System.out.println(address.getAddressString());
 	System.out.println(address.getAddressPath());
 	```
