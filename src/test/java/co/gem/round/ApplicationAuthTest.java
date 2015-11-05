@@ -77,7 +77,7 @@ public class ApplicationAuthTest {
         Account litecoinAccount = wallet.accounts().create("name3", Round.Network.LITECOIN);
         Account dogecoinAccount = wallet.accounts(false).create("name4", Round.Network.DOGECOIN);
 
-        Address testnetAddress = testnetAccount.addresses(false).create();
+        Address testnetAddress = testnetAccount.addresses().create();
         Address bitcoinAddress = bitcoinAccount.addresses().create();
         Address litecoinAddress = litecoinAccount.addresses(false).create();
         Address dogecoinAddress = dogecoinAccount.addresses().create();
@@ -98,6 +98,13 @@ public class ApplicationAuthTest {
         boolean startsWithA = dogecoinAddress.getAddressString().charAt(0) == 'A';
         boolean startsWith9 = dogecoinAddress.getAddressString().charAt(0) == '9';
         Assert.assertTrue(startsWithA || startsWith9);
+
+        testnetAccount.fetch();
+
+        System.out.print(testnetAccount.availableBalance());
+
+        Transaction transaction = testnetAccount.payToAddress("passphrase", "n2eMqTT929pb1RDNuqEnxdaLau1rxy3efi", 100000l, "http://www.google.com", 6);
+        Assert.assertEquals("http://www.google.com", transaction.getString("redirect_uri"));
     }
 
     // The following will reset your API token and mess some stuff up.

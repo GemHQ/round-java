@@ -175,6 +175,14 @@ public class Account extends Base {
     }
 
     /**
+     * Getter for the network of the account
+     * @return String network
+     */
+    public String network() {
+        return getString("network");
+    }
+
+    /**
      * Getter for the balance of the account.  This is 1 or more confirmations
      * @return Long balance
      */
