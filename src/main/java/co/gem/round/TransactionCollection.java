@@ -35,7 +35,55 @@ public class TransactionCollection extends BaseCollection<Transaction> {
      * @throws java.io.IOException
      * @throws co.gem.round.patchboard.Client.UnexpectedStatusCodeException
      */
-    public Transaction create(List<Recipient> recipients, int confirmations)
+    public Transaction create(List<Recipient> recipients, List<Payer> payers,
+                              String remainderAccountKey, String changeAccountKey,
+                              String network, int confirmations)
+            throws IOException, Client.UnexpectedStatusCodeException {
+        JsonArray payeesJson = new JsonArray();
+        for (Recipient recipient : recipients) {
+            JsonObject payeeJson = new JsonObject();
+            if (recipient.email != null) {
+                payeeJson.addProperty("email", recipient.email);
+            } else if (recipient.address != null) {
+                payeeJson.addProperty("address", recipient.address);
+            }
+
+            payeeJson.addProperty("amount", recipient.amount);
+            payeesJson.add(payeeJson);
+        }
+
+        JsonObject body = new JsonObject();
+        body.add("payees", payeesJson);
+
+        if (payers != null) {
+            JsonArray payersJson = new JsonArray();
+            for (Payer payer : payers) {
+                JsonObject payerJson = new JsonObject();
+                payerJson.addProperty("amount", payer.amount);
+                payerJson.addProperty("account", payer.accountKey);
+
+                payersJson.add(payerJson);
+            }
+            body.add("payers", payersJson);
+        }
+        if (remainderAccountKey != null && !remainderAccountKey.equals("")) {
+            body.addProperty("remainder_account", remainderAccountKey);
+        }
+        if (changeAccountKey != null && !changeAccountKey.equals("")) {
+            body.addProperty("change_account", changeAccountKey);
+        }
+
+        body.addProperty("utxo_confirmations", confirmations);
+        if (network != null && !network.equals("")) {
+            body.addProperty("network", network);
+        }
+
+        Resource paymentResource = resource.action("create", body);
+
+        return new Transaction(paymentResource, this.round);
+    }
+
+    public Transaction create(List<Recipient> recipients, int confirmations, String network)
             throws IOException, Client.UnexpectedStatusCodeException {
         JsonArray payeesJson = new JsonArray();
         for (Recipient recipient : recipients) {
@@ -53,10 +101,18 @@ public class TransactionCollection extends BaseCollection<Transaction> {
         JsonObject body = new JsonObject();
         body.add("payees", payeesJson);
         body.addProperty("utxo_confirmations", confirmations);
+        if (network != null && !network.equals("")) {
+            body.addProperty("network", network);
+        }
 
         Resource paymentResource = resource.action("create", body);
 
         return new Transaction(paymentResource, this.round);
+    }
+
+    public Transaction create(List<Recipient> recipients, int confirmations)
+            throws IOException, Client.UnexpectedStatusCodeException {
+        return this.create(recipients, confirmations, null);
     }
 
     public Transaction create(List<Recipient> recipients)
